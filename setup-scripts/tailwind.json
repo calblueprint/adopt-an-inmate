@@ -1,0 +1,12 @@
+{
+  "name": "tailwind",
+  "dependencies": [
+    "tailwind-merge",
+    "clsx",
+    "class-variance-authority"
+  ],
+  "devDependencies": [
+    "@tailwindcss/postcss",
+    "tailwindcss"
+  ]
+}

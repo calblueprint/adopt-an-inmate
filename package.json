@@ -1,0 +1,51 @@
+{
+  "name": "web-app-template",
+  "version": "0.1.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "pnpm exec eslint .",
+    "lint:fix": "pnpm exec eslint . --fix",
+    "tsc": "pnpm exec tsc --noEmit",
+    "prettier": "pnpm exec prettier --check .",
+    "prettier:fix": "pnpm exec prettier --write .",
+    "prepare": "husky",
+    "pre-commit": "concurrently \"pnpm run tsc\" \"pnpm run lint\" \"pnpm run prettier\"",
+    "setup:styled-components": "node ./setup-scripts/setup styled-components",
+    "setup:tailwind": "node ./setup-scripts/setup tailwind",
+    "delete-setup": "node ./setup-scripts/delete-setup"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.52.1",
+    "next": "^15.5.2",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.41.0",
+    "@typescript-eslint/parser": "^8.41.0",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.32.0",
+    "eslint-config-next": "15.5.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.5",
+    "prettier": "^3.3.3",
+    "typescript": "^5"
+  },
+  "pnpm": {
+    "overrides": {
+      "nanoid": "^3.3.8"
+    }
+  },
+  "overrides": {
+    "nanoid": "^3.3.8"
+  }
+}

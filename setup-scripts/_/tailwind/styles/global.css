@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+@theme default {
+  --color-primary: #0078E8; /* BP-Blue */
+}

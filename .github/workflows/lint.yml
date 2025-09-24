@@ -1,0 +1,71 @@
+---
+name: Lint
+
+#############################
+# Start the job on push     #
+#############################
+on:
+  push:
+    branches-ignore: [main]
+  pull_request:
+    branches: [main]
+
+###############
+# Set the Job #
+###############
+jobs:
+  build:
+    # Name the Job
+    name: Run ESLint, Prettier, and TypeScript compiler
+    # Set the agent to run on
+    runs-on: ubuntu-latest
+
+    ##################
+    # Load all steps #
+    ##################
+    steps:
+      ##########################
+      # Checkout the code base #
+      ##########################
+      - name: Checkout Code
+        uses: actions/checkout@v5
+        with:
+          # Full git history is needed to get a proper
+          # list of changed files within `super-linter`
+          fetch-depth: 0
+
+      ################################
+      # Install packages             #
+      ################################
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
+      
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      ################################
+      # Lint codebase                #
+      ################################
+      - name: Run ESLint
+        run: pnpm run lint
+
+      ################################
+      # Check Prettier on codebase   #
+      ################################
+      - name: Run Prettier
+        run: pnpm run prettier
+
+      ################################
+      # Check for TypeScript errors  #
+      ################################
+      - name: Run TypeScript compiler (tsc)
+        run: pnpm run tsc

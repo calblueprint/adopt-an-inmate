@@ -1,7 +1,5 @@
 # Adopt an Inmate
 
-[//]: # "Delete this section when done!"
-
 This project is being built by a team at [Blueprint](https://calblueprint.org), a student organization at the University of California, Berkeley building software pro bono for nonprofits.
 
 ## Getting Started

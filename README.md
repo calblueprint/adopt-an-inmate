@@ -2,28 +2,6 @@
 
 [//]: # "Delete this section when done!"
 
-## PL TODOs
-
-- Update the GitHub PR template located in `.github/pull_request_template.md` to suit your project
-- Update this README (Ctrl-F "insert" and replace it with the relevant project-specific info)
-- Discuss which styling library to use with your devs and run the relevant script to update this repo
-- Update this README to remove the todos
-
-Setup scripts (only run once):
-```sh
-# setup styled components
-pnpm setup:styled-components
-
-# setup tailwind
-pnpm setup:tailwind
-
-# delete setup scripts
-pnpm delete-setup
-```
-
----
-[//]: # "When done, delete the section above up to and including this comment!"
-
 This project is being built by a team at [Blueprint](https://calblueprint.org), a student organization at the University of California, Berkeley building software pro bono for nonprofits.
 
 ## Getting Started

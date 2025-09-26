@@ -23,5 +23,6 @@
   "plugins": [
     "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-tailwindcss"
-  ]
+  ],
+  "tailwindStylesheet": "./resources/css/app.css"
 }

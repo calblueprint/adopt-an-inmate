@@ -4,7 +4,7 @@
   "bracketSpacing": true,
   "printWidth": 80,
   "semi": true,
-  "singleQuote": false,
+  "singleQuote": true,
   "trailingComma": "all",
   "importOrder": [
     "<TYPES>^(node:)",
@@ -20,5 +20,9 @@
     "^[.]",
     "[.]css$"
   ],
-  "plugins": ["@ianvs/prettier-plugin-sort-imports"]
+  "plugins": [
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
+  ],
+  "tailwindStylesheet": "./styles/global.css"
 }

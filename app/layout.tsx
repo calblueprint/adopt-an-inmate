@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "@/styles/global.css";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import '@/styles/global.css';
 
 // font definitions
 const sans = Inter({
-  variable: "--font-sans",
-  subsets: ["latin"],
+  variable: '--font-sans',
+  subsets: ['latin'],
 });
 
 // site metadata - what shows up on embeds
 export const metadata: Metadata = {
-  title: "Project Name",
-  description: "Description of project",
+  title: 'Project Name',
+  description: 'Description of project',
 };
 
 export default function RootLayout({

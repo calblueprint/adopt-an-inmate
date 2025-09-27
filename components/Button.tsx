@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef } from 'react';
 
 export const Button = forwardRef<
   HTMLButtonElement,
@@ -6,4 +6,4 @@ export const Button = forwardRef<
 >(({ children, ...props }) => {
   return <button {...props}>{children}</button>;
 });
-Button.displayName = "Button";
+Button.displayName = 'Button';

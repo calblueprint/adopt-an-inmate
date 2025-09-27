@@ -1,28 +1,4 @@
-# \[Insert Project Name\]
-
-[//]: # "Delete this section when done!"
-
-## PL TODOs
-
-- Update the GitHub PR template located in `.github/pull_request_template.md` to suit your project
-- Update this README (Ctrl-F "insert" and replace it with the relevant project-specific info)
-- Discuss which styling library to use with your devs and run the relevant script to update this repo
-- Update this README to remove the todos
-
-Setup scripts (only run once):
-```sh
-# setup styled components
-pnpm setup:styled-components
-
-# setup tailwind
-pnpm setup:tailwind
-
-# delete setup scripts
-pnpm delete-setup
-```
-
----
-[//]: # "When done, delete the section above up to and including this comment!"
+# Adopt an Inmate
 
 This project is being built by a team at [Blueprint](https://calblueprint.org), a student organization at the University of California, Berkeley building software pro bono for nonprofits.
 
@@ -52,15 +28,15 @@ Additional resources:
    1. Clone this repo
       - using SSH (recommended)
         ```bash
-        git clone git@github.com:calblueprint/[insert-project-repo.git]
+        git clone git@github.com:calblueprint/adopt-an-inmate
         ```
       - using HTTPS
         ```bash
-        git clone https://github.com/calblueprint/[insert-project-repo.git]
+        git clone https://github.com/calblueprint/adopt-an-inmate.git
         ```
    2. Enter the cloned directory
       ```bash
-      cd [insert-project-name]
+      cd adopt-an-inmate
       ```
    3. Install project dependencies. This command installs all packages from [`package.json`](package.json).
       ```bash
@@ -68,7 +44,7 @@ Additional resources:
       ```
 
 2. Set up secrets:
-   1. In the project's root directory (`[insert-project-name]/`), create a new file named `.env.local`
+   1. In the project's root directory (`adopt-an-inmate`), create a new file named `.env.local`
    2. Copy the credentials from [Blueprint's internal Notion](https://www.notion.so/calblueprint/Environment-Setup-6fb1e251cdca4393b9dd47a3436abc11?pvs=4#9c2ff603f7a44348835c97e96d521d2d) (access is required) and paste them into the `.env.local` file.
 
 **Helpful resources**
@@ -79,7 +55,7 @@ Additional resources:
 ### Development environment
 
 - **[VSCode](https://code.visualstudio.com/) (recommended)**
-  1. Open the `[insert-project-name]` project in VSCode.
+  1. Open the `adopt-an-inmate` project in VSCode.
   2. Install recommended workspace VSCode extensions. You should see a pop-up on the bottom right to "install the recommended extensions for this repository".
 
 ### Running the app

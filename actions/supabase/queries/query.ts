@@ -10,3 +10,16 @@ export async function fetchAllRows() {
 
   return data;
 }
+
+export async function someQuery() {
+  const { data, error } = await supabase.from('table').select('*');
+
+  console.log('data: ', data);
+  console.log('error: ', error);
+
+  if (error) {
+    throw new Error(`Error fetching data: ${error.message}`);
+  }
+
+  return data;
+}

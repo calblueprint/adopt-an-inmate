@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '@/styles/global.css';
+import { cn } from '@/lib/utils';
 
 // font definitions
 const sans = Inter({
@@ -21,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={sans.className}>{children}</body>
+      <body className={cn(sans.className, 'h-svh w-full')}>{children}</body>
     </html>
   );
 }

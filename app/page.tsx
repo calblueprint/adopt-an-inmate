@@ -1,29 +1,25 @@
-import { CSSProperties } from 'react';
 import Image from 'next/image';
 import BPLogo from '@/assets/images/bp-logo.png';
+import CustomLink from '@/components/CustomLink';
 
 export default function Home() {
   return (
-    <main style={mainStyles}>
-      <Image style={imageStyles} src={BPLogo} alt="Blueprint Logo" />
-      <p>Open up app/page.tsx to get started!</p>
+    <main className="flex h-full w-full flex-col items-center justify-center">
+      <Image className="mb-2 h-20 w-20" src={BPLogo} alt="Blueprint Logo" />
+      <div>
+        <p>Directory:</p>
+        <ul className="list-disc pl-4">
+          <li>
+            <CustomLink href="/applications">Applications</CustomLink>
+          </li>
+          <li>
+            <CustomLink href="/sign-up">Sign up</CustomLink>
+          </li>
+          <li>
+            <CustomLink href="/login">Login</CustomLink>
+          </li>
+        </ul>
+      </div>
     </main>
   );
 }
-
-// CSS styles
-
-const mainStyles: CSSProperties = {
-  width: '100%',
-  height: '100vh',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
-
-const imageStyles: CSSProperties = {
-  width: '80px',
-  height: '80px',
-  marginBottom: '0.5rem',
-};

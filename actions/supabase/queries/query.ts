@@ -11,15 +11,18 @@ export async function fetchAllRows() {
   return data;
 }
 
-export async function someQuery() {
-  const { data, error } = await supabase.from('table').select('*');
+export function someQuery() {
+  return supabase
+    .from('table')
+    .select('*')
+    .then(({ data, error }) => {
+      console.log('data: ', data);
+      console.log('error: ', error);
 
-  console.log('data: ', data);
-  console.log('error: ', error);
+      if (error) {
+        throw new Error(`Error fetching data: ${error.message}`);
+      }
 
-  if (error) {
-    throw new Error(`Error fetching data: ${error.message}`);
-  }
-
-  return data;
+      return data;
+    });
 }

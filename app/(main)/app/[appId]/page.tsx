@@ -1,4 +1,6 @@
+import StageDecider from '@/components/application/StageDecider';
 import CustomLink from '@/components/CustomLink';
+import { ApplicationContextProvider } from '@/contexts/ApplicationContext';
 
 export default async function ApplicationDetailPage({
   params,
@@ -9,8 +11,13 @@ export default async function ApplicationDetailPage({
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
-      <CustomLink href="/">← Go back</CustomLink>
-      <div className="text-center">Viewing application {appId}</div>
+      <CustomLink href="/app">← All applications</CustomLink>
+      <p>Viewing application {appId}</p>
+      <ApplicationContextProvider
+        defaultAppState={{ appId, highestStageAchieved: 'pre' }}
+      >
+        <StageDecider />
+      </ApplicationContextProvider>
     </div>
   );
 }

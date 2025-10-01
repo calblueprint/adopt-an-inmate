@@ -10,7 +10,7 @@ export default function HomePage() {
         <p>Directory:</p>
         <ul className="list-disc pl-4">
           <li>
-            <CustomLink href="/app/1234567890">Sample app</CustomLink>
+            <CustomLink href="/app">Apps page</CustomLink>
           </li>
           <li>
             <CustomLink href="/sign-up">Sign up</CustomLink>

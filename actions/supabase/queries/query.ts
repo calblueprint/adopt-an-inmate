@@ -20,7 +20,6 @@ export async function fetchTopK(embedding: number[], k_value: number) {
   if (error) {
     throw new Error(`Error fetching top k vectors: ${error.message}`);
   }
-  
+
   return data;
 }
-

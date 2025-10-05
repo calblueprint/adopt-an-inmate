@@ -1,8 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useApplicationStageRecorder } from '@/hooks/useApplication';
+import { notFound, useSearchParams } from 'next/navigation';
+import { useApplicationStageRecorder } from '@/hooks/application';
 import MainApplication from './MainApplication';
 import MatchingView from './MatchingView';
 import PreApplication from './PreApplication';
@@ -19,5 +19,5 @@ export default function StageDecider() {
   if (stage === 'matches') return <MatchingView />;
   if (stage === 'submitted') return <SubmittedView />;
 
-  throw new Error(`App state has invalid stage ${stage}`);
+  throw notFound();
 }

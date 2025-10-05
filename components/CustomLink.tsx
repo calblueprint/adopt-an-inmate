@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { cva } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
 
 type LinkVariant = 'default';
 
@@ -20,7 +19,5 @@ export default function CustomLink({
   variant = 'default',
   ...props
 }: React.ComponentProps<typeof Link> & { variant?: LinkVariant }) {
-  return (
-    <Link className={cn(linkVariant({ variant }), className)} {...props} />
-  );
+  return <Link className={linkVariant({ variant, className })} {...props} />;
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { notFound, useSearchParams } from 'next/navigation';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 
 export const useApplicationStageRecorder = () => {
@@ -18,11 +18,12 @@ export const useApplicationStageRecorder = () => {
     const highestIdx = stages.findIndex(
       stage => stage === highestAttainedStage,
     );
-    if (currentIdx === -1 || highestIdx === -1) return;
+    if (currentIdx === -1) throw notFound();
+    if (highestIdx === -1) throw new Error('An unexpected error occured');
 
-    // update highest achieved stage
-    // TODO: add logic to prevent skips without filling out the form
     if (currentIdx > highestIdx) {
+      // update highest achieved stage
+      // TODO: add logic to prevent skips without filling out the form
       setAppState(state => ({
         ...state,
         highestStageAchieved: stages[currentIdx],

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
 // change this to test
-const isLoggedIn = false;
+const isLoggedIn = true;
 
 export default function MainLayout({
   children,

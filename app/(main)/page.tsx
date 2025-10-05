@@ -18,6 +18,9 @@ export default function HomePage() {
           <li>
             <CustomLink href="/login">Login</CustomLink>
           </li>
+          <li>
+            <CustomLink href="/onboarding">Onboarding</CustomLink>
+          </li>
         </ul>
       </div>
     </main>

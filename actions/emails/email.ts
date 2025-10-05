@@ -14,15 +14,15 @@ export async function autoEmailSender(
   if (typeof senderAddress === 'undefined') {
     throw new Error('Sender address is undefined');
   }
-  
+
   if (typeof senderAppPassword === 'undefined') {
     throw new Error('Sender app password is undefined');
   }
-  
+
   if (typeof recipient === 'undefined') {
     throw new Error('Recipient is undefined');
   }
-  
+
   const transporter = nodemailer.createTransport({
     secure: true,
     host: 'smtp.gmail.com',

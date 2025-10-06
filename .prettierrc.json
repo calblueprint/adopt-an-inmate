@@ -24,5 +24,6 @@
     "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-tailwindcss"
   ],
-  "tailwindStylesheet": "./styles/global.css"
+  "tailwindStylesheet": "./styles/global.css",
+  "endOfLine": "lf"
 }

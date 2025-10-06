@@ -1,7 +1,6 @@
 .github/
 .vscode/
 .next/
-setup-scripts/
 
 README.md
 package-lock.json

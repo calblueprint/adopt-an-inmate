@@ -1,4 +1,4 @@
-import autoEmailSender from "@/actions/emails/email";
+import autoEmailSender from '@/actions/emails/email';
 
 export async function GET() {
   await autoEmailSender(
@@ -13,5 +13,5 @@ export async function GET() {
     process.exit(1);
   });
 
-  return new Response("hello")
+  return new Response('hello');
 }

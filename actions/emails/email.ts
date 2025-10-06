@@ -30,13 +30,12 @@ export async function autoEmailSender(
     },
   });
 
-  const info = await transporter.sendMail({
+  await transporter.sendMail({
     from: `${senderName} <${senderAddress}>`,
     to: recipient,
     subject: subject,
     text: text,
   });
-
 }
 
 export default autoEmailSender;

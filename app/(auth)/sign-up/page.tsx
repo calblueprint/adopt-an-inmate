@@ -21,7 +21,7 @@ export default function SignUpPage() {
       if (error.code?.includes('email_exists')) {
         throw new Error('This email is already registered');
       } else {
-        throw new Error(`Error signing up user: ${error.message}`);
+        alert(`Error signing up user: ${error.message}`);
       }
     } else {
       console.log('User signed up successfully:', data);

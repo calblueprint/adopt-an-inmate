@@ -1,7 +1,4 @@
-import * as dotenv from 'dotenv';
 import nodemailer from 'nodemailer';
-
-dotenv.config({ path: '.env.local' });
 
 export async function autoEmailSender(
   senderAddress: string | undefined,
@@ -40,22 +37,6 @@ export async function autoEmailSender(
     text: text,
   });
 
-  console.log('Message sent:', info.messageId);
 }
-
-// Testing Function: Change the inputs as needed to test
-// NOTE: The password is the app password, not the normal password (will need to set it up in your 2FA settings)
-
-autoEmailSender(
-  process.env.TESTING_EMAIL_ADDRESS,
-  process.env.TESTING_EMAIL_APP_PASSWORD,
-  'NAME',
-  'TEXT',
-  'SUBJECT',
-  process.env.TESTING_EMAIL_RECIPIENT,
-).catch(err => {
-  console.error('Error sending email:', err);
-  process.exit(1);
-});
 
 export default autoEmailSender;

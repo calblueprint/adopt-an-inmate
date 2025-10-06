@@ -1,17 +1,21 @@
-import { serverError, serverLog, serverWarn } from './wrappers';
+import { serverError, serverInfo, serverLog, serverWarn } from './wrappers';
 
 // create logger class for abstraction
 class Logger {
-  static async log(message?: unknown, ...optionalParams: unknown[]) {
-    await serverLog(message, ...optionalParams);
+  static async log(message: string) {
+    await serverLog(message);
   }
 
-  static async warn(message?: unknown, ...optionalParams: unknown[]) {
-    await serverWarn(message, ...optionalParams);
+  static async warn(message: string) {
+    await serverWarn(message);
   }
 
-  static async error(message?: unknown, ...optionalParams: unknown[]) {
-    await serverError(message, ...optionalParams);
+  static async error(message: string) {
+    await serverError(message);
+  }
+
+  static async info(message: string) {
+    await serverInfo(message);
   }
 }
 

@@ -13,23 +13,18 @@
  * client-side code.
  */
 
-export async function serverLog(
-  message?: unknown,
-  ...optionalParams: unknown[]
-) {
-  console.log(message, ...optionalParams);
+export async function serverLog(message: string) {
+  console.log(message);
 }
 
-export async function serverWarn(
-  message?: unknown,
-  ...optionalParams: unknown[]
-) {
-  console.warn(message, ...optionalParams);
+export async function serverWarn(message: string) {
+  console.warn(message);
 }
 
-export async function serverError(
-  message?: unknown,
-  ...optionalParams: unknown[]
-) {
-  console.error(message, ...optionalParams);
+export async function serverError(message: string) {
+  console.error(message);
+}
+
+export async function serverInfo(message: string) {
+  console.info(message);
 }

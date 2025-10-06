@@ -5,36 +5,35 @@ import { useRouter } from 'next/navigation';
 import supabase from '@/actions/supabase/client';
 import CustomLink from '@/components/CustomLink';
 
-export default function SignUpPage() {
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   //const [isSignUp, setIsSignUp] = useState(false); // toggle between sign in / sign up, not used for now
   const router = useRouter();
 
-  const handleSignUp = async () => {
-    const { data, error } = await supabase.auth.signUp({
+  const handleSignIn = async () => {
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
-      if (error.code?.includes('email_exists')) {
-        throw new Error('This email is already registered');
+      if (error.code?.includes('invalid_credentials')) {
+        alert('Invalid login credentials. Please try again.');
       } else {
-        throw new Error(`Error signing up user: ${error.message}`);
+        alert(`Error signing in user: ${error.message}`); // in case there are other errors
       }
     } else {
-      console.log('User signed up successfully:', data);
+      console.log('User signed in successfully:', data);
+      router.push('/');
     }
-
-    router.push('/');
 
     return data;
   };
 
   return (
     <div className="mx-auto mt-24 flex max-w-md flex-col gap-8 rounded-lg border border-gray-300 p-8 shadow-lg">
-      <h2>Sign Up Page</h2>
+      <h2>Login</h2>
       <CustomLink href="/">← Back to Home</CustomLink>
 
       <input
@@ -51,14 +50,7 @@ export default function SignUpPage() {
         onChange={e => setPassword(e.target.value)}
       />
 
-      <button onClick={handleSignUp}>Sign Up</button>
+      <button onClick={handleSignIn}>Sign In</button>
     </div>
   );
-
-  // return (
-  //   <div className="flex h-full w-full flex-col items-center justify-center">
-  //     <CustomLink href="/">← Back to Home</CustomLink>
-  //     <div className="text-center">Sign up page</div>
-  //   </div>
-  // );
 }

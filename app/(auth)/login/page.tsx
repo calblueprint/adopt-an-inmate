@@ -8,7 +8,6 @@ import CustomLink from '@/components/CustomLink';
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  //const [isSignUp, setIsSignUp] = useState(false); // toggle between sign in / sign up, not used for now
   const router = useRouter();
 
   const handleSignIn = async () => {
@@ -24,7 +23,6 @@ export default function LoginPage() {
         alert(`Error signing in user: ${error.message}`); // in case there are other errors
       }
     } else {
-      console.log('User signed in successfully:', data);
       router.push('/');
     }
 

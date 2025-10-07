@@ -8,7 +8,6 @@ import CustomLink from '@/components/CustomLink';
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  //const [isSignUp, setIsSignUp] = useState(false); // toggle between sign in / sign up, not used for now
   const router = useRouter();
 
   const handleSignUp = async () => {
@@ -19,15 +18,15 @@ export default function SignUpPage() {
 
     if (error) {
       if (error.code?.includes('email_exists')) {
-        throw new Error('This email is already registered');
+        alert(
+          'This email is already registered. Please use a different email.',
+        );
       } else {
         alert(`Error signing up user: ${error.message}`);
       }
     } else {
-      console.log('User signed up successfully:', data);
+      router.push('/');
     }
-
-    router.push('/');
 
     return data;
   };
@@ -54,11 +53,4 @@ export default function SignUpPage() {
       <button onClick={handleSignUp}>Sign Up</button>
     </div>
   );
-
-  // return (
-  //   <div className="flex h-full w-full flex-col items-center justify-center">
-  //     <CustomLink href="/">← Back to Home</CustomLink>
-  //     <div className="text-center">Sign up page</div>
-  //   </div>
-  // );
 }

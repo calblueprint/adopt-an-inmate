@@ -10,3 +10,16 @@ export async function fetchAllRows() {
 
   return data;
 }
+
+export async function fetchTopK(embedding: number[], k_value: number) {
+  const { data, error } = await supabase.rpc('find_top_k', {
+    query_embedding: embedding,
+    k: k_value,
+  });
+
+  if (error) {
+    throw new Error(`Error fetching top k vectors: ${error.message}`);
+  }
+
+  return data;
+}

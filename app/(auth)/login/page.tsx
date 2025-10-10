@@ -5,24 +5,22 @@ import { useRouter } from 'next/navigation';
 import supabase from '@/actions/supabase/client';
 import CustomLink from '@/components/CustomLink';
 
-export default function SignUpPage() {
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleSignUp = async () => {
-    const { data, error } = await supabase.auth.signUp({
+  const handleSignIn = async () => {
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
-      if (error.code && error.code === 'email_exists') {
-        alert(
-          'This email is already registered. Please use a different email.',
-        );
+      if (error.code && error.code === 'invalid_credentials') {
+        alert('Invalid login credentials. Please try again.');
       } else {
-        alert(`Error signing up user: ${error.message}`);
+        alert(`Error signing in user: ${error.message}`); // in case there are other errors
       }
     } else {
       router.push('/');
@@ -33,7 +31,7 @@ export default function SignUpPage() {
 
   return (
     <div className="mx-auto mt-24 flex max-w-md flex-col gap-8 rounded-lg border border-gray-300 p-8 shadow-lg">
-      <h2>Sign Up Page</h2>
+      <h2>Login</h2>
       <CustomLink href="/">← Back to Home</CustomLink>
 
       <input
@@ -50,7 +48,7 @@ export default function SignUpPage() {
         onChange={e => setPassword(e.target.value)}
       />
 
-      <button onClick={handleSignUp}>Sign Up</button>
+      <button onClick={handleSignIn}>Sign In</button>
     </div>
   );
 }

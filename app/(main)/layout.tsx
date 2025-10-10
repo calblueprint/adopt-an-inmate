@@ -1,15 +1,18 @@
 import { redirect } from 'next/navigation';
+import { getSupabaseServerClient } from '@/actions/supabase/server';
 
-// change this to test
-const isLoggedIn = true;
-
-export default function MainLayout({
+export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // handle auth logic
-  if (!isLoggedIn) return redirect('/login');
+  // fetch session
+  const supabase = await getSupabaseServerClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session || session.expires_in <= 0) return redirect('/login');
 
   return children;
 }

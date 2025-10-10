@@ -2,3 +2,4 @@ sentence-transformers
 supabase
 vecs
 python-dotenv
+tqdm

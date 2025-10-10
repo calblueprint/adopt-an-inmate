@@ -1,35 +1,45 @@
-from config import supabase_client, vx, model
+from tqdm import tqdm
+from clients import model, vx, adoptee_vector_collection, adoptee_table
 
-def store_data():
-  """Store the vector information in the adoptee_vector table."""
+def upsert_data(model, database_table, vector_collection, batch_size=64):
+  """
+  Encodes and upserts data to a vector database in batches.
 
-  adoptee = supabase_client.table("adoptee").select("*").execute().data
-  adoptee_vector = vx.get_or_create_collection("adoptee_vector", dimension=384)
+  Args:
+      model: The embedding model.
+      database_table (list): A list of dictionaries containing the data.
+      vector_collection: The vector collection to which to upsert records.
+      batch_size (int): The number of records to process per batch.
+  """
 
-  records = []
+  for i in tqdm(range(0, len(database_table), batch_size)):
+    batch = database_table[i:i + batch_size]
 
-  for row in adoptee:
-    row_id = row['id']
-    text = row['bio']
-    embedding = model.encode(text).tolist()
+    ids = [row['id'] for row in batch]
+    bios = [row['bio'] for row in batch]
 
-    metadata = {
-      "bio": row["bio"], 
-      "gender": row["gender"],
-      "age": row["age"],
-      "veteran_status": row["veteran_status"],
-      "offense": row["offense"],
-      "state": row["state"]
-    }
+    embeddings = model.encode(bios, show_progress_bar=False).tolist()
 
-    records.append(((row_id, embedding, metadata)))
+    records = []
 
-  try:
-    adoptee_vector.upsert(records)
-  except Exception as e:
-    print("Upsert failed:", e)
+    for j, row in enumerate(batch):
+      metadata = {
+        "bio": row["bio"], 
+        "gender": row["gender"],
+        "age": row["age"],
+        "veteran_status": row["veteran_status"],
+        "offense": row["offense"],
+        "state": row["state"]
+      }
 
-  vx.disconnect()
+      records.append(((ids[j], embeddings[j], metadata)))
+
+    try:
+      vector_collection.upsert(records)
+      print(f"Successfully upserted batch starting at index {i}")
+    except Exception as e:
+      print(f"Upsert failed for batch starting at index {i}: {e}")
 
 if __name__ == "__main__":
-  store_data()
+  upsert_data(model, adoptee_table, adoptee_vector_collection)
+  vx.disconnect()

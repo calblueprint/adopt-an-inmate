@@ -14,7 +14,6 @@ supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
 # Initialize vecs
 DB_CONNECTION = os.getenv("DATABASE_URL")
 vx = vecs.create_client(DB_CONNECTION)
-adoptee_vector = vx.get_or_create_collection("adoptee_vector", dimension=384)
 
 # Initialize model
 model = SentenceTransformer("paraphrase-MiniLM-L3-v2")

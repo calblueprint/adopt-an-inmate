@@ -22,6 +22,7 @@ const eslintConfig = [
       'build',
       '.vscode',
       'next-env.d.ts',
+      'adopt-an-inmate-venv',
     ],
   },
   {

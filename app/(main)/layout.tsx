@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getSupabaseServerClient } from '@/actions/supabase/server';
+import { getSupabaseServerClient } from '@/lib/supabase';
 
 export default async function MainLayout({
   children,

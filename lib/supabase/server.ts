@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { createServerClient as createServerClientSB } from '@supabase/ssr';
-import Logger from '../logging';
+import Logger from '../../actions/logging';
 
 export async function getSupabaseServerClient() {
   if (

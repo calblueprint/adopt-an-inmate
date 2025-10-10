@@ -1,0 +1,4 @@
+sentence-transformers==5.1.1
+supabase==2.22.0
+vecs==0.4.5
+python-dotenv==1.1.1

@@ -17,7 +17,7 @@ export default function SignUpPage() {
     });
 
     if (error) {
-      if (error.code?.includes('email_exists')) {
+      if (error.code && error.code === 'email_exists') {
         alert(
           'This email is already registered. Please use a different email.',
         );

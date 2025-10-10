@@ -17,7 +17,7 @@ export default function LoginPage() {
     });
 
     if (error) {
-      if (error.code?.includes('invalid_credentials')) {
+      if (error.code && error.code === 'invalid_credentials') {
         alert('Invalid login credentials. Please try again.');
       } else {
         alert(`Error signing in user: ${error.message}`); // in case there are other errors

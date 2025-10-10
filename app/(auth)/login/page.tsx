@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { loginWithEmailPassword } from '@/actions/auth';
 import CustomLink from '@/components/CustomLink';
-import { getSupabaseBrowserClient } from '@/lib/supabase';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -11,8 +11,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleSignIn = async () => {
-    const supabase = getSupabaseBrowserClient();
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await loginWithEmailPassword({
       email,
       password,
     });
@@ -26,8 +25,6 @@ export default function LoginPage() {
     } else {
       router.push('/');
     }
-
-    return data;
   };
 
   return (

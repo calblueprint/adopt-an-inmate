@@ -1,5 +1,7 @@
 sentence-transformers
 supabase
 vecs
-python-dotenvrequests
+python-dotenv
+requests
 pandas
+tqdm

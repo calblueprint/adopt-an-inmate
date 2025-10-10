@@ -1,19 +1,11 @@
-import os
-from dotenv import load_dotenv
-import supabase
-import vecs
-from sentence_transformers import SentenceTransformer
+# Model configuration
+MODEL_NAME = "paraphrase-MiniLM-L3-v2"
 
-load_dotenv(os.path.join(os.path.dirname(__file__), "../../.env.local"))
+dimensions = {"paraphrase-MiniLM-L3-v2": 384}
+MODEL_DIMENSION = dimensions[MODEL_NAME]
 
-# Initialize Supabase
-SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
-SUPABASE_ANON_KEY = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
-supabase_client = supabase.create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+# Supabase configuration
+SUPABASE_TABLE_NAME = "adoptee"
 
-# Initialize vecs
-DB_CONNECTION = os.getenv("DATABASE_URL")
-vx = vecs.create_client(DB_CONNECTION)
-
-# Initialize model
-model = SentenceTransformer("paraphrase-MiniLM-L3-v2")
+# Collection configuration
+VECS_COLLECTION_NAME = "adoptee_vector"

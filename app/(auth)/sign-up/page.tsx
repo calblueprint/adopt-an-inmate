@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getSupabaseBrowserClient } from '@/actions/supabase/client';
 import CustomLink from '@/components/CustomLink';
+import { getSupabaseBrowserClient } from '@/lib/supabase';
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('');

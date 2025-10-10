@@ -1,6 +1,6 @@
 'use server';
 
-import { getSupabaseServerClient } from '../server';
+import { getSupabaseServerClient } from '@/lib/supabase';
 
 // Example query to fetch all rows from your_table_name
 export async function fetchAllRows() {

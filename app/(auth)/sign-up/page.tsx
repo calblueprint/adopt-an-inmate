@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import supabase from '@/actions/supabase/client';
+import { signUpWithEmailPassword } from '@/actions/auth';
 import CustomLink from '@/components/CustomLink';
 
 export default function SignUpPage() {
@@ -11,7 +11,7 @@ export default function SignUpPage() {
   const router = useRouter();
 
   const handleSignUp = async () => {
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await signUpWithEmailPassword({
       email,
       password,
     });
@@ -27,8 +27,6 @@ export default function SignUpPage() {
     } else {
       router.push('/');
     }
-
-    return data;
   };
 
   return (

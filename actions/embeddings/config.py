@@ -4,7 +4,7 @@ import supabase
 import vecs
 from sentence_transformers import SentenceTransformer
 
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "../../../.env.local"))
+load_dotenv(os.path.join(os.path.dirname(__file__), "../../.env.local"))
 
 # Initialize Supabase
 SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")

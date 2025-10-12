@@ -9,6 +9,7 @@ apiKey = os.environ["MONDAY_API_KEY"]
 apiUrl = "https://api.monday.com/v2"
 headers = {"Authorization" : apiKey, "API-Version" : "2023-04"}
 
+
 def fetchAdopteeBios():
 
   def requestNextPage(argQuery, cursor=None):
@@ -64,3 +65,5 @@ def fetchAdopteeBios():
     print(f'heres the first bio of the batch: {nextPg[1][0]}')
     print(f'and the updated fullBio length: {len(fullBios)}') #weird, ending length is 3954 > 3947
 
+#FOR TESTING, DELETE ALONG W PRINT STATEMENTS
+fetchAdopteeBios()

@@ -1,52 +1,16 @@
-'use client';
-
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { loginWithEmailPassword } from '@/actions/auth';
-import CustomLink from '@/components/CustomLink';
+import Image from 'next/image';
+import Logo from '@/assets/images/Adopt_An_Inmate_logo.png';
+import { LogInCard } from '@/components/LoginCard';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const router = useRouter();
-
-  const handleSignIn = async () => {
-    const { error } = await loginWithEmailPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      if (error.code && error.code === 'invalid_credentials') {
-        alert('Invalid login credentials. Please try again.');
-      } else {
-        alert(`Error signing in user: ${error.message}`); // in case there are other errors
-      }
-    } else {
-      router.push('/');
-    }
-  };
-
   return (
-    <div className="mx-auto mt-24 flex max-w-md flex-col gap-8 rounded-lg border border-gray-300 p-8 shadow-lg">
-      <h2>Login</h2>
-      <CustomLink href="/">← Back to Home</CustomLink>
-
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-      />
-
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
-
-      <button onClick={handleSignIn}>Sign In</button>
+    <div className="h-full w-full bg-[#EDEBE9]">
+      <div className="flex flex-col">
+        <Image src={Logo} width={100} height={100} alt="Logo" />
+        <div className="flex h-full w-full flex-col items-center justify-items-center">
+          <LogInCard />
+        </div>
+      </div>
     </div>
   );
 }

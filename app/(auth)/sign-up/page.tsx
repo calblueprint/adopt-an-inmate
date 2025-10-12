@@ -1,79 +1,19 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { signUpWithEmailPassword } from '@/actions/auth';
-import CustomLink from '@/components/CustomLink';
+import Image from 'next/image';
+import Logo from '@/assets/images/Adopt_An_Inmate_logo.png';
+import { SignUpCard } from '@/components/SignUpCard';
 
 export default function SignUpPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const router = useRouter();
-
-  const passwordsMatch = useMemo(
-    () => password === confirmPassword,
-    [password, confirmPassword],
-  );
-
-  const handleSignUp = async () => {
-    if (!passwordsMatch) {
-      alert('Passwords do not match. Please try again.');
-      return;
-    }
-
-    const { error } = await signUpWithEmailPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      if (error.code && error.code === 'user_already_exists') {
-        alert(
-          'This email is already registered. Please use a different email.',
-        );
-      } else {
-        alert(`Error signing up user: ${error.message}`);
-      }
-    } else {
-      router.push('/');
-    }
-  };
-
   return (
-    <div className="mx-auto mt-24 flex max-w-md flex-col gap-8 rounded-lg border border-gray-300 p-8 shadow-lg">
-      <h2>Sign Up Page</h2>
-      <CustomLink href="/">← Back to Home</CustomLink>
-
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-      />
-
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
-
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChange={e => setConfirmPassword(e.target.value)}
-      />
-
-      {confirmPassword.length > 0 &&
-        (passwordsMatch ? (
-          <p>Passwords match</p>
-        ) : (
-          <p>Passwords do not match</p>
-        ))}
-
-      <button onClick={handleSignUp}>Sign Up</button>
+    // This is the background
+    <div className="h-full w-full bg-[#EDEBE9]">
+      <div className="flex flex-col">
+        <Image src={Logo} width={100} height={100} alt="Logo" />
+        <div className="flex h-full w-full flex-col items-center justify-items-center">
+          <SignUpCard />
+        </div>
+      </div>
     </div>
   );
 }

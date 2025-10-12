@@ -1,5 +1,6 @@
+import type { VariantProps } from 'class-variance-authority';
 import Link from 'next/link';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 
 const linkVariant = cva('', {
   variants: {
@@ -14,7 +15,6 @@ const linkVariant = cva('', {
 });
 
 type LinkVariantProp = VariantProps<typeof linkVariant>['variant'];
-
 
 export default function CustomLink({
   className,

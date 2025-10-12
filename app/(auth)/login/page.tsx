@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import CustomLink from '@/components/CustomLink';
+import logo from '@/assets/images/Adopt_An_Inmate_logo_even_better.png';
 import { LogInCard } from '@/components/LoginCard';
 
 // import Logo from "";
@@ -7,12 +7,13 @@ import { LogInCard } from '@/components/LoginCard';
 export default function SignUpPage() {
   return (
     <div className="h-full w-full bg-[#EDEBE9]">
-      <div className="flex flex-col">
+      <div className="flex flex-col items-center gap-[143px]">
         <Image
-          src={'/../../assets/images/Adopt_An_Inmate_logo.png'}
-          width={100}
-          height={100}
+          src={logo}
+          width={53.981}
+          height={42.055}
           alt="Logo"
+          className="mt-[38px]"
         />
         <div className="flex h-full w-full flex-col items-center justify-items-center">
           <LogInCard />

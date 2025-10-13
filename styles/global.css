@@ -2,4 +2,15 @@
 
 @theme default {
   --color-primary: #0078e8; /* BP-Blue */
+
+  --font-golos: 'Golos Text', sans-serif;
+  --font-bespoke: var(--font-bespokevar), sans-serif;
+  --font-golos: var(--font-golosvar);
+  --color-gray11: #62646d;
+}
+
+@layer base {
+  body {
+    @apply font-bespoke;
+  }
 }

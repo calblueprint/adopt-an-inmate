@@ -9,7 +9,7 @@ export function LogInCard() {
     <div className="flex h-1/2 w-[26.438rem] flex-col rounded-[0.938rem] bg-[#FDFDFD]">
       <div className="pt-[27px] pr-[30px] pb-[27px] pl-[30px]">
         <div className="p-b-[1.188rem]">
-          <p className="font-[Bespoke Sans Variable] text-[26px] font-[500] font-bold font-normal not-italic">
+          <p className="font-bespoke text-[26px] font-bold not-italic">
             Log in
           </p>
         </div>
@@ -18,7 +18,7 @@ export function LogInCard() {
           <div className="flex flex-col">
             {/* This is the Email title and textbox */}
             <div className="flex flex-col gap-[0px]">
-              <p className="font-[Bespoke Sans Variable] text-[16px] font-normal text-[#8C8D99] not-italic">
+              <p className="font-bespoke text-[16px] font-normal text-[#8C8D99] not-italic">
                 Email
               </p>
               <TextBox input="email" placeholder="jamie@example.com" />
@@ -27,7 +27,7 @@ export function LogInCard() {
             {/* This is the password title and textbox */}
             <div className="flex flex-col gap-[0px]">
               <div className="flex flex-row justify-between pt-[16px]">
-                <p className="font-[Bespoke Sans Variable] text-[16px] font-normal text-[#8C8D99] not-italic">
+                <p className="font-bespoke text-[16px] font-normal text-[#8C8D99] not-italic">
                   Password
                 </p>
                 <CustomLink
@@ -50,7 +50,7 @@ export function LogInCard() {
         <hr className="h-[2px] w-full border border-t-2 border-[#E1E1E1]" />
 
         <div className="flex flex-row items-center justify-between pt-[2rem]">
-          <p className="font-[Bespoke Sans Variable] text-[0.813rem] text-[#1E1F24]">
+          <p className="font-bespoke text-[0.813rem] font-medium text-[#1E1F24]">
             Don&#39;t have an account?
           </p>
           <Button variant="secondary">Sign Up</Button>

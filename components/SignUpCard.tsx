@@ -2,8 +2,6 @@
 
 import { Button } from './Button';
 import Checkbox from './Checkbox';
-import CheckboxExample from './Checkbox';
-import CustomLink from './CustomLink';
 import { TextBox } from './TextBoxField';
 
 export function SignUpCard() {

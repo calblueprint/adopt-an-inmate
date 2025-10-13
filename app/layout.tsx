@@ -35,6 +35,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn(sans.className, 'h-svh w-full')}>{children}</body>
       <body className={cn(bespoke.className, 'h-svh w-full')}>{children}</body>
+      <body className={cn(golos.className, 'h-svh w-full')}>{children}</body>
     </html>
   );
 }

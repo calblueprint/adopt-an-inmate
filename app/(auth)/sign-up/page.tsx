@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import Logo from '@/assets/images/Adopt_An_Inmate_logo_even_better.png';
+import Logo from '@/assets/images/Adopt_An_Inmate_logo.png';
 import { SignUpCard } from '@/components/SignUpCard';
 
 export default function SignUpPage() {

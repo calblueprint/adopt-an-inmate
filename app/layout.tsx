@@ -40,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={cn(bespoke.variable, golos.variable, 'h-svh w-full bg-bg')}
+        className={cn(bespoke.variable, golos.variable, 'bg-bg h-svh w-full')}
       >
         {children}
       </body>

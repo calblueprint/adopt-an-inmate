@@ -2,8 +2,9 @@ from dotenv import load_dotenv
 import os
 import requests
 import json
+import pandas as pd
 
-load_dotenv("example.env")
+load_dotenv(".env.local")
 
 apiKey = os.environ["MONDAY_API_KEY"]
 apiUrl = "https://api.monday.com/v2"
@@ -12,58 +13,57 @@ headers = {"Authorization" : apiKey, "API-Version" : "2023-04"}
 
 def fetchAdopteeBios():
 
+  def verifyNotNull(itemToIndex):
+    if itemToIndex:
+      return itemToIndex
+    else:
+      raise Exception(f'{itemToIndex} is null / not indexable')
+
+  def getQueryString(isInitial=True, c=None):
+    return f"""query {{
+                    boards(ids: {os.getenv("MONDAY_BOARD_ID")}) {{
+                      name
+                      items_page (limit: 100{'' if isInitial else f', cursor: "{c}"'}) {{ 
+                        cursor
+                        items {{
+                          id
+                          name
+                          group {{ id title }} 
+                          column_values(ids: "notes_for_matching__1") {{ id value }} }} }} }} }}"""
+
   def requestNextPage(argQuery, cursor=None):
     data = {'query' : argQuery}
     r = requests.post(url=apiUrl, json=data, headers=headers)
     response = r.json()
 
-    itemsPage = response["data"]["boards"][0]["items_page"]["items"] 
-    cursor = response["data"]["boards"][0]["items_page"]["cursor"]
+    board = verifyNotNull(response["data"]["boards"])
+    itemsPage = board[0]["items_page"]["items"] 
+    cursor = board[0]["items_page"]["cursor"]
 
     nextBios = []
     for item in itemsPage:
-      if item['group']['id'] == "1715196990_inmate_data_report___1": #ready to be matched group
-        rawMatchNote = item['column_values'][0]['value']
+      if verifyNotNull(item)['group']['id'] == "1715196990_inmate_data_report___1": 
+        rawMatchNote = verifyNotNull(item['column_values'])[0]['value']
         if rawMatchNote:
           note = json.loads(rawMatchNote).get('text', '') 
         else:
-          note = '' #missing idk what we should do tbh, remove?
-        nextBios.append((item['name'], note)) #tuple w ID, bio note
+          note = ''
+        nextBios.append((item['name'], note))
     return (cursor, nextBios)
 
-  initialQuery = f"""query {{
-                    boards(ids: {os.getenv("MONDAY_BOARD_ID")}) {{
-                      name
-                      items_page (limit: 100) {{
-                        cursor
-                        items {{
-                          id
-                          name
-                          group {{ id title }} 
-                          column_values(ids: "notes_for_matching__1") {{
-                            id value }} }} }} }} }}"""
-
-  currCursor, fullBios = requestNextPage(initialQuery, isFirst=True)
+  initialQuery = getQueryString(isInitial=True)
+  currCursor, fullBios = requestNextPage(initialQuery)
 
   while currCursor:
     print("\nstarting new page\n")
-    nextQuery = f"""query {{
-                    boards(ids: {os.getenv("MONDAY_BOARD_ID")}) {{
-                      name
-                      items_page (limit: 100, cursor: "{currCursor}") {{
-                        cursor
-                        items {{
-                          id
-                          name
-                          group {{ id title }} 
-                          column_values(ids: "notes_for_matching__1") {{
-                            id value }} }} }} }} }}"""
-    nextPg = requestNextPage(nextQuery, isFirst=False, cursor=currCursor)
-    currCursor = nextPg[0]
+    nextQuery = getQueryString(isInitial=False, c=currCursor)
+    nextPg = requestNextPage(nextQuery, cursor=currCursor)
+    currCursor = verifyNotNull(nextPg)[0]
     fullBios.extend(nextPg[1])
-    print(f'current cursor is {currCursor}')
-    print(f'heres the first bio of the batch: {nextPg[1][0]}')
-    print(f'and the updated fullBio length: {len(fullBios)}') #weird, ending length is 3954 > 3947
 
-#FOR TESTING, DELETE ALONG W PRINT STATEMENTS
-fetchAdopteeBios()
+  adopteeIDs = [item[0] for item in fullBios]
+  adopteeBios = [item[1] for item in fullBios]
+  biosdf = pd.DataFrame(data={'Adoptee ID': adopteeIDs, 'Adoptee Bio': adopteeBios})
+
+  return biosdf
+

@@ -33,9 +33,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(sans.className, 'h-svh w-full')}>{children}</body>
-      <body className={cn(bespoke.className, 'h-svh w-full')}>{children}</body>
-      <body className={cn(golos.className, 'h-svh w-full')}>{children}</body>
+      <body
+        className={cn(
+          sans.className,
+          sans.variable,
+          bespoke.variable,
+          golos.variable,
+          'h-svh w-full',
+        )}
+      >
+        {children}
+      </body>
     </html>
   );
 }

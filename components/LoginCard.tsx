@@ -18,7 +18,7 @@ export function LogInCard() {
           <div className="flex flex-col">
             {/* This is the Email title and textbox */}
             <div className="flex flex-col gap-[0px]">
-              <p className="font-bespoke text-[16px] font-normal text-[#8C8D99] not-italic">
+              <p className="font-bespokevar text-[16px] font-normal text-[#8C8D99] not-italic">
                 Email
               </p>
               <TextBox input="email" placeholder="jamie@example.com" />
@@ -27,7 +27,7 @@ export function LogInCard() {
             {/* This is the password title and textbox */}
             <div className="flex flex-col gap-[0px]">
               <div className="flex flex-row justify-between pt-[16px]">
-                <p className="font-bespoke text-[16px] font-normal text-[#8C8D99] not-italic">
+                <p className="font-bespokevar text-[16px] font-normal text-[#8C8D99] not-italic">
                   Password
                 </p>
                 <CustomLink

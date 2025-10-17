@@ -6,7 +6,7 @@ export default function LoginPage() {
   return (
     <div className="h-full w-full bg-[#EDEBE9]">
       <div className="flex flex-col items-center gap-[143px]">
-        <div className="flex flex-row items-center gap-[23px] pt-[55px]">
+        <div className="flex flex-row items-center gap-6 pt-14">
           <Image src={Logo} width={53} height={42} alt="Logo" />
           <p className="font-golos text-xl font-extrabold text-[#AF2028]">
             {' '}

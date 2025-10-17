@@ -15,7 +15,7 @@ export function TextBox({ input, placeholder }: TextBoxProps) {
         placeholder={placeholder}
         value={info}
         onChange={e => setInfo(e.target.value)}
-        className="h-[2.188rem] w-full rounded-[8px] bg-[#EDEBE9] px-[10px] py-[8px] text-[#BABBC7] outline-gray11 transition-colors duration-200 focus-visible:bg-white focus-visible:text-gray11"
+        className="w-full rounded-[8px] bg-[#EDEBE9] px-[10px] py-[8px] text-[#BABBC7] outline-gray11 transition-colors duration-200 focus-visible:bg-white focus-visible:text-gray11"
       />
     </div>
   );

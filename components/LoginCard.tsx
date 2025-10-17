@@ -29,19 +29,19 @@ export function LogInCard() {
   };
 
   return (
-    <div className="flex h-1/2 w-[26.438rem] flex-col rounded-[0.938rem] bg-[#FDFDFD]">
-      <div className="pt-[27px] pr-[30px] pb-[27px] pl-[30px]">
+    <div className="bg-gray1 flex h-1/2 w-[26.438rem] flex-col rounded-[0.938rem]">
+      <div className="pb-[27px] pl-[30px] pr-[30px] pt-[27px]">
         <div className="p-b-[1.188rem]">
           <p className="font-bespoke text-[26px] font-bold not-italic">
             Log in
           </p>
         </div>
 
-        <div className="flex flex-col pt-[19px] pb-[1.25rem]">
+        <div className="flex flex-col pb-[1.25rem] pt-[19px]">
           <div className="flex flex-col">
             {/* This is the Email title and textbox */}
             <div className="flex flex-col gap-[0px]">
-              <p className="font-bespoke text-[16px] font-normal text-[#8C8D99] not-italic">
+              <p className="font-bespoke text-[16px] font-normal not-italic text-[#8C8D99]">
                 Email
               </p>
               <input
@@ -55,7 +55,7 @@ export function LogInCard() {
             {/* This is the password title and textbox */}
             <div className="flex flex-col gap-[0px]">
               <div className="flex flex-row justify-between pt-[16px]">
-                <p className="font-bespoke text-[16px] font-normal text-[#8C8D99] not-italic">
+                <p className="font-bespoke text-[16px] font-normal not-italic text-[#8C8D99]">
                   Password
                 </p>
                 <CustomLink

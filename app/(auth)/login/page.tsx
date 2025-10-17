@@ -7,13 +7,7 @@ export default function LoginPage() {
     <div className="h-full w-full bg-[#EDEBE9]">
       <div className="flex flex-col items-center gap-[143px]">
         <div className="flex flex-row items-center gap-[23px] pt-[55px]">
-          <Image
-            src={Logo}
-            width={53.981}
-            height={42.055}
-            alt="Logo"
-            className=""
-          />
+          <Image src={Logo} width={53} height={42} alt="Logo" />
           <p className="font-golos text-xl font-extrabold text-[#AF2028]">
             {' '}
             Adopt an Inmate

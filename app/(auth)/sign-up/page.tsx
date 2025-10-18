@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signUpWithEmailPassword } from '@/actions/auth';
 import CustomLink from '@/components/CustomLink';
@@ -10,7 +10,11 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const router = useRouter();
-  const passwordsMatch = password === confirmPassword;
+
+  const passwordsMatch = useMemo(
+    () => password === confirmPassword,
+    [password, confirmPassword],
+  );
 
   const handleSignUp = async () => {
     if (!passwordsMatch) {

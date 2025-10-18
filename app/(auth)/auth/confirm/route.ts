@@ -13,7 +13,6 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const token_hash = searchParams.get('token_hash');
   const type = searchParams.get('type') as EmailOtpType | null;
-  const next = searchParams.get('next') ?? '/';
 
   if (token_hash && type) {
     const supabase = await getSupabaseServerClient();
@@ -22,9 +21,10 @@ export async function GET(request: NextRequest) {
       type,
       token_hash,
     });
+
+    // redirect to confirmation page
     if (!error) {
-      // redirect user to specified redirect URL or root of app
-      redirect(next);
+      redirect('/?confirmation=true');
     }
   }
 

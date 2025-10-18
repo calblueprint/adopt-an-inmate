@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import supabase from '@/actions/supabase/client';
+import { signUpWithEmailPassword } from '@/actions/auth';
 import CustomLink from '@/components/CustomLink';
 
 export default function SignUpPage() {
@@ -10,7 +10,11 @@ export default function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const router = useRouter();
-  const passwordsMatch = password === confirmPassword;
+
+  const passwordsMatch = useMemo(
+    () => password === confirmPassword,
+    [password, confirmPassword],
+  );
 
   const handleSignUp = async () => {
     if (!passwordsMatch) {
@@ -18,7 +22,7 @@ export default function SignUpPage() {
       return;
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await signUpWithEmailPassword({
       email,
       password,
     });
@@ -34,8 +38,6 @@ export default function SignUpPage() {
     } else {
       router.push('/');
     }
-
-    return data;
   };
 
   return (

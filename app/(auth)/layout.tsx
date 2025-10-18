@@ -13,11 +13,10 @@ export default async function MainLayout({
   // preventing potential spoofing of cookies
   const {
     data: { user },
-    error,
   } = await supabase.auth.getUser();
 
-  // ensure only logged in user has access to main application
-  if (error || !user) return redirect('/login');
+  // redirect already logged-in users to main page
+  if (user) return redirect('/');
 
   return children;
 }

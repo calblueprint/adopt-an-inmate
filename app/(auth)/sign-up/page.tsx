@@ -1,15 +1,12 @@
-'use client';
-
-import Image from 'next/image';
-import Logo from '@/assets/images/Adopt_An_Inmate_logo.png';
-import { SignUpCard } from '@/components/SignUpCard';
+import Logo from '@/components/login_signup_components/logo';
+import { SignUpCard } from '@/components/login_signup_components/SignUpCard';
 
 export default function SignUpPage() {
   return (
     // This is the background
-    <div className="h-full w-full bg-[#EDEBE9]">
+    <div className="bg-gray2 h-full w-full">
       <div className="flex flex-col items-center gap-[97px]">
-        <Image src={Logo} width={53.981} height={42.055} alt="Logo" />
+        <Logo />
         <div className="flex h-full w-full flex-col items-center justify-items-center">
           <SignUpCard />
         </div>

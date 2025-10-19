@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { loginWithEmailPassword } from '@/actions/auth';
-import { Button } from './Button';
-import CustomLink from './CustomLink';
+import { Button } from '../Button';
+import CustomLink from '../CustomLink';
 
-export function LogInCard() {
+export function LoginCard() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
@@ -29,21 +29,18 @@ export function LogInCard() {
   };
 
   return (
-    <div className="bg-gray1 flex h-1/2 w-[26.438rem] flex-col rounded-[0.938rem]">
-      <div className="pb-[27px] pl-[30px] pr-[30px] pt-[27px]">
-        <div className="p-b-[1.188rem]">
-          <p className="font-bespoke text-[26px] font-bold not-italic">
-            Log in
-          </p>
+    <div className="bg-gray1 flex w-106 flex-col rounded-2xl">
+      <div className="px-8 py-7">
+        <div className="pb-5">
+          <p className="text-3xl font-bold">Log in</p>
         </div>
 
-        <div className="flex flex-col pb-[1.25rem] pt-[19px]">
+        <div className="flex flex-col py-5">
           <div className="flex flex-col">
             {/* This is the Email title and textbox */}
-            <div className="flex flex-col gap-[0px]">
-              <p className="font-bespoke text-[16px] font-normal not-italic text-[#8C8D99]">
-                Email
-              </p>
+            <div className="flex flex-col">
+              <p className="text-gray9 text-base">Email</p>
+              {/* <TextBox input="email" placeholder="jamie@example.com" /> */}
               <input
                 type="email"
                 placeholder="Email"
@@ -53,20 +50,15 @@ export function LogInCard() {
             </div>
 
             {/* This is the password title and textbox */}
-            <div className="flex flex-col gap-[0px]">
-              <div className="flex flex-row justify-between pt-[16px]">
-                <p className="font-bespoke text-[16px] font-normal not-italic text-[#8C8D99]">
-                  Password
-                </p>
-                <CustomLink
-                  variant="secondary"
-                  className="text-[13px]"
-                  href="/"
-                >
+            <div className="flex flex-col">
+              <div className="flex flex-row justify-between pt-4">
+                <p className="text-gray9 text-base">Password</p>
+                <CustomLink variant="secondary" className="text-sm" href="/">
                   Forgot your password?
                 </CustomLink>
               </div>
 
+              {/* <TextBox input="password" placeholder="Password" /> */}
               <input
                 type="password"
                 placeholder="Password"
@@ -75,15 +67,15 @@ export function LogInCard() {
               />
             </div>
           </div>
-          <Button variant="login" className="mt-[27px]" onClick={handleSignIn}>
+          <Button variant="login" className="mt-7" onClick={handleSignIn}>
             Login
           </Button>
         </div>
 
-        <hr className="h-[2px] w-full border border-t-2 border-[#E1E1E1]" />
+        <hr className="border-gray3 h-0.5 w-full border border-t-2" />
 
-        <div className="flex flex-row items-center justify-between pt-[2rem]">
-          <p className="font-bespoke text-[0.813rem] font-medium text-[#1E1F24]">
+        <div className="flex flex-row items-center justify-between pt-8">
+          <p className="text-gray12 text-sm font-medium">
             Don&#39;t have an account?
           </p>
           <Button variant="secondary">Sign Up</Button>

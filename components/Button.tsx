@@ -8,9 +8,9 @@ const buttonStyle = cva('', {
       default:
         'border border-gray-700 rounded-lg hover:bg-gray-50 transition-colors px-2 py-1 cursor-pointer',
       secondary:
-        'border border-[#BABBC7] bg-[#FCFCFD] rounded-lg hover:bg-[#1E4240] hover:text-[#FCFCFD] transition-colors px-2 py-1 cursor-pointer bg-[#FCFCFD] text-[#1E4240]',
+        'border border-gray8 bg-white1 rounded-lg hover:bg-cyan12 hover:text-white1 transition-colors px-2 py-1 cursor-pointer bg-white1 text-cyan12',
       login:
-        'bg-cyan12 rounded-lg transition-colors px-2 py-1 cursor-pointer text-[#FCFCFD]',
+        'bg-cyan12 rounded-lg transition-colors px-2 py-1 cursor-pointer text-white1',
     },
   },
   defaultVariants: {

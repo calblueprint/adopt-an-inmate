@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { signUpWithEmailPassword } from '@/actions/auth';
-import { Button } from './Button';
+import { Button } from '../Button';
 import Checkbox from './Checkbox';
 
 export function SignUpCard() {

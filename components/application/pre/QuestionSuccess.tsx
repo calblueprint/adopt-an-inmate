@@ -1,5 +1,5 @@
 import { MdOutlineCheckCircle } from 'react-icons/md';
-import { Button } from '@/components/Button';
+import { ButtonLink } from '@/components/Button';
 
 export default function QuestionSuccess() {
   return (
@@ -13,9 +13,13 @@ export default function QuestionSuccess() {
         Adopt an Inmate. Press continue to finish your application.
       </p>
       <div className="mt-6">
-        <Button variant="primary" className="w-full py-2">
+        <ButtonLink
+          href="?stage=main"
+          variant="primary"
+          className="w-full py-2"
+        >
           Continue
-        </Button>
+        </ButtonLink>
       </div>
     </div>
   );

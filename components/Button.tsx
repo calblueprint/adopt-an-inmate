@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import Link from 'next/link';
 import { cva } from 'class-variance-authority';
 
-const buttonStyle = cva('cursor-pointer', {
+const buttonStyle = cva('cursor-pointer block text-center', {
   variants: {
     variant: {
       default:

@@ -4,6 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/Button';
 import RadioCard from '@/components/RadioCard';
+import { useQuestionsContext } from '@/contexts/QuestionsContext';
 import IneligiblePopup from './IneligiblePopup';
 
 interface SeekingRomanceForm {
@@ -11,20 +12,22 @@ interface SeekingRomanceForm {
 }
 
 export default function QuestionSeekingRomance() {
+  const { setQuestionsCompleted } = useQuestionsContext();
   const { register, handleSubmit } = useForm<SeekingRomanceForm>();
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const onSubmit: SubmitHandler<SeekingRomanceForm> = values => {
-    const valueBool = values.seekingRomance.toLowerCase() !== 'false';
+    const isSeekingRomance = values.seekingRomance.toLowerCase() !== 'false';
     const params = new URLSearchParams(searchParams);
 
-    if (valueBool) {
+    if (isSeekingRomance) {
       params.set('error', 'true');
       router.replace(`?${params.toString()}`);
       return;
     }
 
+    setQuestionsCompleted(prev => (prev >= 1 ? prev : 1));
     params.set('q', '1');
     router.push(`?${params.toString()}`);
   };

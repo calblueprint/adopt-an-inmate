@@ -1,9 +1,10 @@
 import { forwardRef } from 'react';
+import Link from 'next/link';
 import { cva } from 'class-variance-authority';
 
 type ButtonVariant = 'default' | 'primary';
 
-const buttonStyle = cva('cursor-pointer', {
+const buttonStyle = cva('cursor-pointer block text-center', {
   variants: {
     variant: {
       default:
@@ -32,3 +33,15 @@ export const Button = forwardRef<
   );
 });
 Button.displayName = 'Button';
+
+export const ButtonLink = forwardRef<
+  HTMLAnchorElement,
+  React.ComponentPropsWithRef<typeof Link> & { variant?: ButtonVariant }
+>(({ children, className, variant = 'default', ...props }, ref) => {
+  return (
+    <Link ref={ref} className={buttonStyle({ className, variant })} {...props}>
+      {children}
+    </Link>
+  );
+});
+ButtonLink.displayName = 'ButtonLink';

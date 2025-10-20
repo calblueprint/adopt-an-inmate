@@ -4,6 +4,26 @@ import requests
 import pandas as pd
 
 class MondayBoardFetcher:
+  """
+    Fetches and aggregates adoptees' data from monday.com to return as a DataFrame.
+
+    Attributes:
+        API_KEY (str): monday.com API key loaded from environment.
+        API_URL (str): Base URL for monday.com API, also loaded from environment.
+        HEADERS (dict): Headers for requests.
+        BOARD_ID (str): ID of the board to fetch, also loaded from environment.
+
+    Methods:
+        _build_query(is_initial=True, cursor=None):
+            Constructs GraphQL query string for fetching board data.
+        _fetch_page(query):
+            Sends request to monday.com and returns cursor and a page-batch of adoptee rows. 
+            Takes in a query string (from helper function _build_query).
+        fetch_data():
+            Fetches all pages of items and returns a pandas DataFrame with the relevant columns.
+            Makes repeated calls to _fetch_page.
+    """
+  
   def __init__(self):
       load_dotenv(".env.local")
       self.API_KEY = os.environ["MONDAY_API_KEY"]
@@ -18,7 +38,7 @@ class MondayBoardFetcher:
         items_page (limit: 100{'' if is_initial else f', cursor: "{cursor}"'}) {{
           cursor
           items {{
-            id
+            id 
             name
             group {{ id title }} 
             column_values(ids: ["gender__1", 

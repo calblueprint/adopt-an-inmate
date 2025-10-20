@@ -31,7 +31,7 @@ export default function IneligiblePopup({ reason }: IneligiblePopupProps) {
         <Dialog.Overlay className="fixed inset-0 grid h-full w-full place-items-center bg-black/50">
           <Dialog.Content className="flex max-w-120 flex-col gap-2 rounded-lg bg-white p-10">
             <div className="flex w-full items-center justify-center">
-              <MdErrorOutline size={64} />
+              <MdErrorOutline size={64} className="text-red-12" />
             </div>
             <Dialog.Title asChild>
               <h1>Sorry!</h1>
@@ -43,7 +43,7 @@ export default function IneligiblePopup({ reason }: IneligiblePopupProps) {
             <div className="mt-2 flex w-full justify-center">
               <Dialog.Close asChild>
                 <Button
-                  className="w-full"
+                  className="w-full py-2"
                   variant="primary"
                   onClick={handleClose}
                 >

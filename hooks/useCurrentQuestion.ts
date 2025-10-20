@@ -2,7 +2,6 @@
 
 import { useMemo } from 'react';
 import { notFound, useSearchParams } from 'next/navigation';
-import { useQuestionsContext } from '@/contexts/QuestionsContext';
 
 /**
  * Fetches the current question as a number using
@@ -13,7 +12,6 @@ import { useQuestionsContext } from '@/contexts/QuestionsContext';
  * If valid, this hook will return the current question index.
  */
 export const useCurrentQuestionInt = () => {
-  const { numQuestions } = useQuestionsContext();
   const searchParams = useSearchParams();
 
   // get the q search param
@@ -32,7 +30,7 @@ export const useCurrentQuestionInt = () => {
   );
 
   // validate bounds of the parsed number
-  if (currQuestionInt < 0 || currQuestionInt >= numQuestions) throw notFound();
+  if (currQuestionInt < 0) throw notFound();
 
   return currQuestionInt;
 };

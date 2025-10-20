@@ -7,7 +7,12 @@ export default function ProgressBar() {
   const { questionsCompleted, numQuestions } = useQuestionsContext();
 
   return (
-    <div className="flex gap-1">
+    <div
+      className={cn(
+        'flex gap-1',
+        questionsCompleted >= numQuestions && 'hidden',
+      )}
+    >
       {[...Array(numQuestions).keys()].map((k, idx) => (
         <ProgressBarNode key={k} highlighted={idx < questionsCompleted} />
       ))}

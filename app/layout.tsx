@@ -1,12 +1,22 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import localFont from 'next/font/local';
 import '@/styles/global.css';
 import { cn } from '@/lib/utils';
 
 // font definitions
-const sans = Inter({
-  variable: '--font-sans',
-  subsets: ['latin'],
+const bespoke = localFont({
+  src: [
+    {
+      path: '../assets/fonts/BespokeSans-Variable.ttf',
+      style: 'normal',
+    },
+    {
+      path: '../assets/fonts/BespokeSans-VariableItalic.ttf',
+      style: 'italic',
+    },
+  ],
+  display: 'swap',
+  variable: '--font-bespoke',
 });
 
 // site metadata - what shows up on embeds
@@ -22,7 +32,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(sans.className, 'h-svh w-full')}>{children}</body>
+      <body className={cn(bespoke.variable, 'h-svh w-full bg-bg')}>
+        {children}
+      </body>
     </html>
   );
 }

@@ -64,12 +64,13 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-bespoke);
+  --font-bespoke: var(--font-bespoke);
+  --font-golos: var(--font-golos);
 }
 
 @layer base {
   * {
-    @apply font-sans;
+    @apply font-bespoke;
   }
 
   h1 {

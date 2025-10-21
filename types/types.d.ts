@@ -6,10 +6,6 @@ export interface ApplicationState {
 }
 
 export interface FormState {
-  preApp?: {
-    isSeekingRomance: boolean;
-    isIncarcerated: boolean;
-  };
   mainApp?: never;
   matchId?: never;
 }

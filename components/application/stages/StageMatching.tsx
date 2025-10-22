@@ -1,9 +1,9 @@
 'use client';
 
+import CustomLink from '@/components/CustomLink';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
-import CustomLink from '../CustomLink';
 
-export default function MatchingView() {
+export default function StageMatching() {
   const { appState } = useApplicationContext();
 
   return (

@@ -8,14 +8,14 @@ import RadioCard from '@/components/RadioCard';
 import { useQuestionsContext } from '@/contexts/QuestionsContext';
 import IneligiblePopup from './IneligiblePopup';
 
-interface SeekingRomanceForm {
+interface IsIncarceratedForm {
   isIncarcerated: 'true' | 'false';
 }
 
 export default function QuestionIncarcerated() {
   const { setQuestionsCompleted } = useQuestionsContext();
   const { register, handleSubmit, subscribe, setValue } =
-    useForm<SeekingRomanceForm>();
+    useForm<IsIncarceratedForm>();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -44,7 +44,7 @@ export default function QuestionIncarcerated() {
   }, [subscribe]);
 
   // handle submission
-  const onSubmit: SubmitHandler<SeekingRomanceForm> = values => {
+  const onSubmit: SubmitHandler<IsIncarceratedForm> = values => {
     const isIncarcerated = values.isIncarcerated.toLowerCase() !== 'false';
     const params = new URLSearchParams(searchParams);
 
@@ -68,7 +68,7 @@ export default function QuestionIncarcerated() {
           <h1>Are you currently incarcerated?</h1>
           <p className="text-sm">
             We ask this to make sure you&apos;re eligible to use this service.
-            Your answers will be stored on your device for convenience.
+            Your answers will only be stored on your device.
           </p>
         </header>
 

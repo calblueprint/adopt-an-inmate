@@ -68,7 +68,7 @@ export default function QuestionSeekingRomance() {
           <h1>Are you seeking romance?</h1>
           <p className="text-sm">
             We ask this to make sure you&apos;re eligible to use this service.
-            Your answers will be stored on your device for convenience.
+            Your answers will only be stored on your device.
           </p>
         </header>
 

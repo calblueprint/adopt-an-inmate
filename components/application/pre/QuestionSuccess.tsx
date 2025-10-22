@@ -13,6 +13,7 @@ export default function QuestionSuccess() {
         Adopt an Inmate. Press continue to finish your application.
       </p>
       <div className="mt-6">
+        {/* TODO: enforce checking completion of the pre-application in future */}
         <ButtonLink
           href="?stage=main"
           variant="primary"

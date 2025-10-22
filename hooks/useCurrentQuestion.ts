@@ -11,7 +11,7 @@ import { notFound, useSearchParams } from 'next/navigation';
  * If invalidated, this hook will throw a notFound error.
  * If valid, this hook will return the current question index.
  */
-export const useCurrentQuestionInt = () => {
+export const useCurrentQuestion = () => {
   const searchParams = useSearchParams();
 
   // get the q search param

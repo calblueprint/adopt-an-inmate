@@ -59,7 +59,11 @@ export function LoginCard() {
             <div className="flex flex-col">
               <div className="flex flex-row justify-between pt-4">
                 <p className="text-base text-gray-9">Password</p>
-                <CustomLink variant="secondary" className="text-sm" href="/">
+                <CustomLink
+                  variant="secondary"
+                  className="text-sm"
+                  href="/reset-password"
+                >
                   Forgot password?
                 </CustomLink>
               </div>

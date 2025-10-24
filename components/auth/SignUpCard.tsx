@@ -97,13 +97,16 @@ export function SignUpCard() {
           </div>
 
           {/* This is the checkbox and the terms of service line */}
-          <div className="flex flex-row gap-2 pt-8">
-            <Checkbox />
-            <p>
+          <label
+            className="mt-8 flex items-center gap-1.5 select-none"
+            htmlFor="tos"
+          >
+            <Checkbox id="tos" />
+            <p className="text-gray-9">
               I&#39;ve read and agreed to the{' '}
               <CustomLink href="#">Terms of Service</CustomLink>
             </p>
-          </div>
+          </label>
 
           <Button variant="login" className="mt-7" onClick={handleSignUp}>
             Sign Up

@@ -1,4 +1,4 @@
-import Logo from '@/components/login_signup_components/logo';
+import Logo from '@/components/login_signup_components/Logo';
 import { SignUpCard } from '@/components/login_signup_components/SignUpCard';
 
 export default function SignUpPage() {

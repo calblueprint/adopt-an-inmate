@@ -1,11 +1,12 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { signUpWithEmailPassword } from '@/actions/auth';
 import { Button } from '../Button';
 import CustomLink from '../CustomLink';
 import Checkbox from './Checkbox';
+import { TextBox } from './TextBoxField';
 
 export function SignUpCard() {
   const [email, setEmail] = useState('');
@@ -43,13 +44,13 @@ export function SignUpCard() {
   };
 
   return (
-    <div className="w-106 bg-gray1 flex flex-col rounded-2xl">
+    <div className="flex w-106 flex-col rounded-2xl bg-gray-1">
       <div className="px-8 py-7">
         <div className="pb-5">
           <p className="text-3xl font-bold">Sign Up</p>
-          <p className="text-gray4">
+          <p className="text-gray-9">
             Already have an account?{' '}
-            <CustomLink href="/" className="text-blue1">
+            <CustomLink href="/" className="text-link">
               Sign In
             </CustomLink>
           </p>
@@ -59,9 +60,8 @@ export function SignUpCard() {
           <div className="flex flex-col gap-6">
             {/* This is the Email title and textbox */}
             <div className="flex flex-col">
-              <p className="text-gray9 text-sm">Email</p>
-              {/* <TextBox input="email" placeholder="jamie@example.com" /> */}
-              <input
+              <p className="text-sm text-gray-9">Email</p>
+              <TextBox
                 type="email"
                 placeholder="Email"
                 value={email}
@@ -71,9 +71,8 @@ export function SignUpCard() {
 
             {/* This is the password title and textbox */}
             <div className="flex flex-col">
-              <p className="text-gray9 text-sm">Password</p>
-              {/* <TextBox input="password" placeholder="Password" /> */}
-              <input
+              <p className="text-sm text-gray-9">Password</p>
+              <TextBox
                 type="password"
                 placeholder="Password"
                 value={password}
@@ -83,9 +82,8 @@ export function SignUpCard() {
 
             {/* This is the password confirmation title and textbox */}
             <div className="flex flex-col">
-              <p className="text-gray9 text-sm">Password Confirmation</p>
-              {/* <TextBox input="password confirm" placeholder="Password" /> */}
-              <input
+              <p className="text-sm text-gray-9">Password Confirmation</p>
+              <TextBox
                 type="password"
                 placeholder="Confirm Password"
                 value={confirmPassword}

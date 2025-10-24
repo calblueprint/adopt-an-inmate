@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { loginWithEmailPassword } from '@/actions/auth';
 import { Button } from '../Button';
 import CustomLink from '../CustomLink';
+import { TextBox } from './TextBoxField';
 
 export function LoginCard() {
   const [email, setEmail] = useState('');
@@ -28,8 +29,14 @@ export function LoginCard() {
     }
   };
 
+  // TODO: replace with a <ButtonLink /> component
+  // when the pre-app PR is merged
+  const handleRouteToSignUp = () => {
+    router.push('/sign-up');
+  };
+
   return (
-    <div className="bg-gray1 flex w-106 flex-col rounded-2xl">
+    <div className="flex w-106 flex-col rounded-2xl bg-gray-1">
       <div className="px-8 py-7">
         <div className="pb-5">
           <p className="text-3xl font-bold">Log in</p>
@@ -39,11 +46,10 @@ export function LoginCard() {
           <div className="flex flex-col">
             {/* This is the Email title and textbox */}
             <div className="flex flex-col">
-              <p className="text-gray9 text-base">Email</p>
-              {/* <TextBox input="email" placeholder="jamie@example.com" /> */}
-              <input
+              <p className="text-base text-gray-9">Email</p>
+              <TextBox
                 type="email"
-                placeholder="Email"
+                placeholder="jamie@example.com"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
               />
@@ -52,14 +58,13 @@ export function LoginCard() {
             {/* This is the password title and textbox */}
             <div className="flex flex-col">
               <div className="flex flex-row justify-between pt-4">
-                <p className="text-gray9 text-base">Password</p>
+                <p className="text-base text-gray-9">Password</p>
                 <CustomLink variant="secondary" className="text-sm" href="/">
                   Forgot your password?
                 </CustomLink>
               </div>
 
-              {/* <TextBox input="password" placeholder="Password" /> */}
-              <input
+              <TextBox
                 type="password"
                 placeholder="Password"
                 value={password}
@@ -72,13 +77,15 @@ export function LoginCard() {
           </Button>
         </div>
 
-        <hr className="border-gray3 h-0.5 w-full border border-t-2" />
+        <div className="h-0.5 w-full border-t-2 border-gray-5" />
 
         <div className="flex flex-row items-center justify-between pt-8">
-          <p className="text-gray12 text-sm font-medium">
+          <p className="text-sm font-medium text-gray-12">
             Don&#39;t have an account?
           </p>
-          <Button variant="secondary">Sign Up</Button>
+          <Button variant="secondary" onClick={handleRouteToSignUp}>
+            Sign Up
+          </Button>
         </div>
       </div>
     </div>

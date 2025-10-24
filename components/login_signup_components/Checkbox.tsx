@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 
-function Checkbox() {
+interface CheckboxProps {
+  type: string;
+  checked: boolean;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export default function Checkbox() {
   const [isChecked, setIsChecked] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,5 +19,3 @@ function Checkbox() {
     </div>
   );
 }
-
-export default Checkbox;

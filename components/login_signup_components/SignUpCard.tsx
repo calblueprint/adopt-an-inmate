@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { signUpWithEmailPassword } from '@/actions/auth';
 import { Button } from '../Button';
+import CustomLink from '../CustomLink';
 import Checkbox from './Checkbox';
 
 export function SignUpCard() {
@@ -42,27 +43,24 @@ export function SignUpCard() {
   };
 
   return (
-    <div className="flex h-1/2 w-[26.438rem] flex-col rounded-[0.938rem] bg-[#FDFDFD]">
-      <div className="pt-[27px] pr-[30px] pb-[27px] pl-[30px]">
-        <div className="p-b-[1.188rem]">
-          <p className="font-[Bespoke Sans Variable] text-[26px] font-bold">
-            Sign Up
-          </p>
-          <p className="text-[#969696]">
+    <div className="w-106 bg-gray1 flex flex-col rounded-2xl">
+      <div className="px-8 py-7">
+        <div className="pb-5">
+          <p className="text-3xl font-bold">Sign Up</p>
+          <p className="text-gray4">
             Already have an account?{' '}
-            <a href="/" target="_blank" className="text-[#1D69B3]">
+            <CustomLink href="/" className="text-blue1">
               Sign In
-            </a>
+            </CustomLink>
           </p>
         </div>
 
-        <div className="flex flex-col pt-[19px] pb-[1.25rem]">
-          <div className="flex flex-col gap-[23px]">
+        <div className="flex flex-col py-5">
+          <div className="flex flex-col gap-6">
             {/* This is the Email title and textbox */}
-            <div className="flex flex-col gap-[0px]">
-              <p className="font-[Bespoke Sans Variable] text-[13px] font-normal text-[#8C8D99] not-italic">
-                Email
-              </p>
+            <div className="flex flex-col">
+              <p className="text-gray9 text-sm">Email</p>
+              {/* <TextBox input="email" placeholder="jamie@example.com" /> */}
               <input
                 type="email"
                 placeholder="Email"
@@ -72,10 +70,9 @@ export function SignUpCard() {
             </div>
 
             {/* This is the password title and textbox */}
-            <div className="flex flex-col gap-[0px]">
-              <p className="font-[Bespoke Sans Variable] text-[13px] font-normal text-[#8C8D99] not-italic">
-                Password
-              </p>
+            <div className="flex flex-col">
+              <p className="text-gray9 text-sm">Password</p>
+              {/* <TextBox input="password" placeholder="Password" /> */}
               <input
                 type="password"
                 placeholder="Password"
@@ -85,10 +82,9 @@ export function SignUpCard() {
             </div>
 
             {/* This is the password confirmation title and textbox */}
-            <div className="flex flex-col gap-[0px]">
-              <p className="font-[Bespoke Sans Variable] text-[13px] font-normal text-[#8C8D99] not-italic">
-                Password Confirmation
-              </p>
+            <div className="flex flex-col">
+              <p className="text-gray9 text-sm">Password Confirmation</p>
+              {/* <TextBox input="password confirm" placeholder="Password" /> */}
               <input
                 type="password"
                 placeholder="Confirm Password"
@@ -99,7 +95,7 @@ export function SignUpCard() {
           </div>
 
           {/* This is the checkbox and the terms of service line */}
-          <div className="flex flex-row gap-[7px] pt-[31px]">
+          <div className="flex flex-row gap-2 pt-8">
             <Checkbox />
             <p>I&#39;ve read and agreed to the terms of service</p>
           </div>
@@ -111,7 +107,7 @@ export function SignUpCard() {
               <p>Passwords do not match</p>
             ))}
 
-          <Button variant="login" className="mt-[27px]" onClick={handleSignUp}>
+          <Button variant="login" className="mt-7" onClick={handleSignUp}>
             Sign Up
           </Button>
         </div>

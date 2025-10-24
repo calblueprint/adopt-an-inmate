@@ -1,5 +1,6 @@
 import type { VariantProps } from 'class-variance-authority';
 import { forwardRef } from 'react';
+import Link from 'next/link';
 import { cva } from 'class-variance-authority';
 
 const buttonStyle = cva('', {
@@ -18,12 +19,12 @@ const buttonStyle = cva('', {
   },
 });
 
-type ButtonVariantProp = VariantProps<typeof buttonStyle>['variant'];
+type ButtonVariant = VariantProps<typeof buttonStyle>['variant'];
 
 export const Button = forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
-    variant?: ButtonVariantProp;
+    variant?: ButtonVariant;
   }
 >(({ children, className, variant = 'default', ...props }, ref) => {
   return (
@@ -37,3 +38,15 @@ export const Button = forwardRef<
   );
 });
 Button.displayName = 'Button';
+
+export const ButtonLink = forwardRef<
+  HTMLAnchorElement,
+  React.ComponentPropsWithRef<typeof Link> & { variant?: ButtonVariant }
+>(({ children, className, variant = 'default', ...props }, ref) => {
+  return (
+    <Link ref={ref} className={buttonStyle({ className, variant })} {...props}>
+      {children}
+    </Link>
+  );
+});
+ButtonLink.displayName = 'ButtonLink';

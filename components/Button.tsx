@@ -10,7 +10,7 @@ const buttonStyle = cva('', {
       secondary:
         'border border-gray-8 bg-gray-1 rounded-lg hover:bg-cyan-12 hover:text-gray-1 transition-colors px-2 py-1 cursor-pointer text-cyan-12',
       login:
-        'bg-cyan-12 rounded-lg transition-colors px-2 py-1 cursor-pointer text-gray-1',
+        'bg-cyan-12 rounded-lg transition-colors px-2.5 py-2.5 cursor-pointer text-gray-1',
     },
   },
   defaultVariants: {

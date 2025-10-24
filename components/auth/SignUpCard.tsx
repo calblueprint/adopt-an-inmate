@@ -4,9 +4,9 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signUpWithEmailPassword } from '@/actions/auth';
 import { Button } from '../Button';
+import Checkbox from '../Checkbox';
 import CustomLink from '../CustomLink';
-import Checkbox from './Checkbox';
-import { Textbox } from './Textbox';
+import { Textbox } from '../Textbox';
 
 export function SignUpCard() {
   const [email, setEmail] = useState('');
@@ -46,12 +46,12 @@ export function SignUpCard() {
   return (
     <div className="flex w-106 flex-col rounded-2xl bg-gray-1">
       <div className="px-8 py-7">
-        <div className="pb-5">
-          <p className="text-3xl font-bold">Sign Up</p>
-          <p className="text-gray-9">
+        <div className="pb-2">
+          <p className="text-3xl font-medium">Sign up</p>
+          <p className="mt-2 text-gray-9">
             Already have an account?{' '}
             <CustomLink href="/" className="text-link">
-              Sign In
+              Sign in.
             </CustomLink>
           </p>
         </div>
@@ -63,7 +63,7 @@ export function SignUpCard() {
               <p className="text-sm text-gray-9">Email</p>
               <Textbox
                 type="email"
-                placeholder="Email"
+                placeholder="Email address"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
               />
@@ -74,7 +74,7 @@ export function SignUpCard() {
               <p className="text-sm text-gray-9">Password</p>
               <Textbox
                 type="password"
-                placeholder="Password"
+                placeholder="Enter password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
               />
@@ -82,28 +82,28 @@ export function SignUpCard() {
 
             {/* This is the password confirmation title and textbox */}
             <div className="flex flex-col">
-              <p className="text-sm text-gray-9">Password Confirmation</p>
+              <p className="text-sm text-gray-9">Password confirmation</p>
               <Textbox
                 type="password"
-                placeholder="Confirm Password"
+                placeholder="Confirm password"
                 value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
               />
             </div>
+
+            {confirmPassword.length > 0 && !passwordsMatch && (
+              <p>Passwords do not match</p>
+            )}
           </div>
 
           {/* This is the checkbox and the terms of service line */}
           <div className="flex flex-row gap-2 pt-8">
             <Checkbox />
-            <p>I&#39;ve read and agreed to the terms of service</p>
+            <p>
+              I&#39;ve read and agreed to the{' '}
+              <CustomLink href="#">Terms of Service</CustomLink>
+            </p>
           </div>
-
-          {confirmPassword.length > 0 &&
-            (passwordsMatch ? (
-              <p>Passwords match</p>
-            ) : (
-              <p>Passwords do not match</p>
-            ))}
 
           <Button variant="login" className="mt-7" onClick={handleSignUp}>
             Sign Up

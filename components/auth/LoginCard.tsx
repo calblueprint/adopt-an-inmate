@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { loginWithEmailPassword } from '@/actions/auth';
 import { Button } from '../Button';
 import CustomLink from '../CustomLink';
-import { Textbox } from './Textbox';
+import { Textbox } from '../Textbox';
 
 export function LoginCard() {
   const [email, setEmail] = useState('');
@@ -38,8 +38,8 @@ export function LoginCard() {
   return (
     <div className="flex w-106 flex-col rounded-2xl bg-gray-1">
       <div className="px-8 py-7">
-        <div className="pb-5">
-          <p className="text-3xl font-bold">Log in</p>
+        <div className="pb-2">
+          <p className="text-3xl font-medium">Log in</p>
         </div>
 
         <div className="flex flex-col py-5">
@@ -60,7 +60,7 @@ export function LoginCard() {
               <div className="flex flex-row justify-between pt-4">
                 <p className="text-base text-gray-9">Password</p>
                 <CustomLink variant="secondary" className="text-sm" href="/">
-                  Forgot your password?
+                  Forgot password?
                 </CustomLink>
               </div>
 

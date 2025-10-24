@@ -1,5 +1,5 @@
-import { LoginCard } from '@/components/login_signup_components/LoginCard';
-import Logo from '@/components/login_signup_components/Logo';
+import { LoginCard } from '@/components/auth/LoginCard';
+import Logo from '@/components/Logo';
 
 export default function LoginPage() {
   return (

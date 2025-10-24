@@ -3,7 +3,10 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signUpWithEmailPassword } from '@/actions/auth';
+import { Button } from '@/components/Button';
+import Checkbox from '@/components/Checkbox';
 import CustomLink from '@/components/CustomLink';
+import { Textbox } from '@/components/Textbox';
 
 export default function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -41,39 +44,77 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="mx-auto mt-24 flex max-w-md flex-col gap-8 rounded-lg border border-gray-300 p-8 shadow-lg">
-      <h2>Sign Up Page</h2>
-      <CustomLink href="/">← Back to Home</CustomLink>
+    <div className="flex h-full w-full flex-col items-center justify-center">
+      <div className="flex w-106 flex-col rounded-2xl bg-gray-1">
+        <div className="px-8 py-7">
+          <div className="pb-2">
+            <p className="text-3xl font-medium">Sign up</p>
+            <p className="mt-2 text-gray-9">
+              Already have an account?{' '}
+              <CustomLink href="/login" className="text-link">
+                Sign in.
+              </CustomLink>
+            </p>
+          </div>
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-      />
+          <div className="flex flex-col py-5">
+            <div className="flex flex-col gap-6">
+              {/* This is the Email title and textbox */}
+              <div className="flex flex-col">
+                <p className="text-sm text-gray-9">Email</p>
+                <Textbox
+                  type="email"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                />
+              </div>
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
+              {/* This is the password title and textbox */}
+              <div className="flex flex-col">
+                <p className="text-sm text-gray-9">Password</p>
+                <Textbox
+                  type="password"
+                  placeholder="Enter password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                />
+              </div>
 
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChange={e => setConfirmPassword(e.target.value)}
-      />
+              {/* This is the password confirmation title and textbox */}
+              <div className="flex flex-col">
+                <p className="text-sm text-gray-9">Password confirmation</p>
+                <Textbox
+                  type="password"
+                  placeholder="Confirm password"
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                />
+              </div>
 
-      {confirmPassword.length > 0 &&
-        (passwordsMatch ? (
-          <p>Passwords match</p>
-        ) : (
-          <p>Passwords do not match</p>
-        ))}
+              {confirmPassword.length > 0 && !passwordsMatch && (
+                <p>Passwords do not match</p>
+              )}
+            </div>
 
-      <button onClick={handleSignUp}>Sign Up</button>
+            {/* This is the checkbox and the terms of service line */}
+            <label
+              className="mt-8 flex items-center gap-1.5 select-none"
+              htmlFor="tos"
+            >
+              <Checkbox id="tos" />
+              <p className="text-gray-9">
+                I&#39;ve read and agreed to the{' '}
+                <CustomLink href="#">Terms of Service</CustomLink>
+              </p>
+            </label>
+
+            <Button variant="login" className="mt-7" onClick={handleSignUp}>
+              Sign Up
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

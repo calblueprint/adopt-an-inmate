@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import Logo from '@/components/Logo';
 import { getSupabaseServerClient } from '@/lib/supabase';
 
 export default async function MainLayout({
@@ -18,5 +19,14 @@ export default async function MainLayout({
   // redirect already logged-in users to main page
   if (user) return redirect('/');
 
-  return children;
+  return (
+    <div className="flex size-full flex-col items-center gap-4">
+      <Logo />
+
+      {children}
+
+      {/* spacer */}
+      <div className="h-22" />
+    </div>
+  );
 }

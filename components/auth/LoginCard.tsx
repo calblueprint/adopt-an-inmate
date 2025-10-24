@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { loginWithEmailPassword } from '@/actions/auth';
 import { Button } from '../Button';
 import CustomLink from '../CustomLink';
-import { TextBox } from './TextBoxField';
+import { Textbox } from './Textbox';
 
 export function LoginCard() {
   const [email, setEmail] = useState('');
@@ -47,7 +47,7 @@ export function LoginCard() {
             {/* This is the Email title and textbox */}
             <div className="flex flex-col">
               <p className="text-base text-gray-9">Email</p>
-              <TextBox
+              <Textbox
                 type="email"
                 placeholder="jamie@example.com"
                 value={email}
@@ -64,7 +64,7 @@ export function LoginCard() {
                 </CustomLink>
               </div>
 
-              <TextBox
+              <Textbox
                 type="password"
                 placeholder="Password"
                 value={password}

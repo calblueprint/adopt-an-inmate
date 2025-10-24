@@ -6,7 +6,7 @@ import { signUpWithEmailPassword } from '@/actions/auth';
 import { Button } from '../Button';
 import CustomLink from '../CustomLink';
 import Checkbox from './Checkbox';
-import { TextBox } from './TextBoxField';
+import { Textbox } from './Textbox';
 
 export function SignUpCard() {
   const [email, setEmail] = useState('');
@@ -61,7 +61,7 @@ export function SignUpCard() {
             {/* This is the Email title and textbox */}
             <div className="flex flex-col">
               <p className="text-sm text-gray-9">Email</p>
-              <TextBox
+              <Textbox
                 type="email"
                 placeholder="Email"
                 value={email}
@@ -72,7 +72,7 @@ export function SignUpCard() {
             {/* This is the password title and textbox */}
             <div className="flex flex-col">
               <p className="text-sm text-gray-9">Password</p>
-              <TextBox
+              <Textbox
                 type="password"
                 placeholder="Password"
                 value={password}
@@ -83,7 +83,7 @@ export function SignUpCard() {
             {/* This is the password confirmation title and textbox */}
             <div className="flex flex-col">
               <p className="text-sm text-gray-9">Password Confirmation</p>
-              <TextBox
+              <Textbox
                 type="password"
                 placeholder="Confirm Password"
                 value={confirmPassword}

@@ -12,7 +12,7 @@ const textBoxStyle = cva('', {
   },
 });
 
-export function TextBox({
+export function Textbox({
   className,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement>) {

@@ -1,14 +1,20 @@
 import os
 from dotenv import load_dotenv
 import supabase
-import vecs
 from sentence_transformers import SentenceTransformer
+import vecs
 from config import MODEL_NAME, MODEL_DIMENSION, VECS_COLLECTION_NAME, SUPABASE_TABLE_NAME
 
 load_dotenv(os.path.join(os.path.dirname(__file__), "../../.env.local"))
 
-# Initialize model
-model = SentenceTransformer(MODEL_NAME)
+# Initialize model lazily
+model = None
+def get_sentence_model():
+    global model
+    if model is None:
+      print("Loading sentence transformer model...")
+      model = SentenceTransformer(MODEL_NAME)
+    return model
 
 # Initialize Supabase
 SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")

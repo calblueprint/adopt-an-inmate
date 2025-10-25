@@ -36,12 +36,12 @@ def upsert_data(client, database_table, vector_collection, batch_size=64):
       metadata = {
         "first_name": row.get("first_name", ""),
         "last_name": row.get("last_name", ""),
-        "bio": row["bio"], 
-        "gender": row["gender"],
-        "age": row["age"],
-        "veteran_status": row["veteran_status"],
-        "offense": row["offense"],
-        "state": row["state"]
+        "bio": row.get("bio", ""),
+        "gender": row.get("gender", ""),
+        "age": row.get("age", ""),
+        "veteran_status": row.get("veteran_status", ""),
+        "offense": row.get("offense", ""),
+        "state": row.get("state", "")
       }
 
       records.append((ids[j], embeddings[j], metadata))

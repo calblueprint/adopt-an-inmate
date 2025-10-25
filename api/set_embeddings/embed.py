@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler
 from tqdm import tqdm
-from clients import get_huggingface_client, vx, adoptee_vector_collection, adoptee_table
+from clients import client, vx, adoptee_vector_collection, adoptee_table
 import json
 
 def upsert_data(client, database_table, vector_collection, batch_size=64):
@@ -34,6 +34,8 @@ def upsert_data(client, database_table, vector_collection, batch_size=64):
 
     for j, row in enumerate(batch):
       metadata = {
+        "first_name": row.get("first_name", ""),
+        "last_name": row.get("last_name", ""),
         "bio": row["bio"], 
         "gender": row["gender"],
         "age": row["age"],
@@ -54,7 +56,6 @@ class handler(BaseHTTPRequestHandler):
 
   def do_GET(self):
     try:
-      client = get_huggingface_client()
       print("Starting data upsert...")
       upsert_data(client, adoptee_table, adoptee_vector_collection)
       vx.disconnect()
@@ -76,6 +77,8 @@ class handler(BaseHTTPRequestHandler):
     return
 
 if __name__ == "__main__":
+    # set up a simple HTTP server for local testing
+    # run python embed.py && curl http://localhost:8000/ to trigger the handler
     from http.server import HTTPServer
     port = 8000
     print(f"Starting local server at http://localhost:{port}")

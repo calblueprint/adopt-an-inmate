@@ -8,12 +8,8 @@ from huggingface_hub import InferenceClient
 load_dotenv(os.path.join(os.path.dirname(__file__), "../../.env.local"))
 
 # Initialize Hugging Face inference client
-HF_TOKEN = os.getenv("HUGGINGFACE_TOKEN")  # add this to your .env.local
+HF_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
 client = InferenceClient(model=MODEL_NAME, token=HF_TOKEN)
-
-def get_huggingface_client():
-    """Return the Hugging Face inference client."""
-    return client
 
 # Initialize Supabase
 SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
@@ -28,3 +24,4 @@ adoptee_vector_collection = vx.get_or_create_collection(
     name=VECS_COLLECTION_NAME,
     dimension=MODEL_DIMENSION
 )
+

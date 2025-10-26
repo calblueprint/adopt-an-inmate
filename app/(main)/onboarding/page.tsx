@@ -116,18 +116,15 @@ export default function OnboardingPage() {
           onChange={e => setState(e.target.value)}
         />
 
-        <input
-          type="checkbox"
-          checked={veteranStatus}
-          onChange={e => setVeteranStatus(e.target.checked)}
-        />
+        <div className="flex flex-row gap-3">
+          <p>Veteran Status</p>
+          <input
+            type="checkbox"
+            checked={veteranStatus}
+            onChange={e => setVeteranStatus(e.target.checked)}
+          />
+        </div>
 
-        {/* <button
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-          >
-          {isSubmitting ? 'Submitting...' : 'Submit'}
-        </button> */}
         <Button onClick={handleSubmit} disabled={isSubmitting}>
           {isSubmitting ? 'Submitting...' : 'Submit'}
         </Button>

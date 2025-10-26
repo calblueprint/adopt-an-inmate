@@ -38,6 +38,9 @@ export default function LoginPage() {
         case 'email_not_confirmed':
           setAuthError('Email not confirmed.');
           break;
+        case 'invalid_credentials':
+          setAuthError('Either email or password is incorrect.');
+          break;
         default:
           setAuthError('An unexpected error occurred, please try again later.');
       }
@@ -80,7 +83,7 @@ export default function LoginPage() {
                 <CustomLink
                   variant="secondary"
                   className="text-sm"
-                  href="/reset-password"
+                  href="/forgot-password"
                 >
                   Forgot password?
                 </CustomLink>

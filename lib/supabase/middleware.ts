@@ -44,18 +44,47 @@ export async function updateSession(request: NextRequest) {
   // Calling auth.getUser() refreshes the auth token (updates cookies)
   await supabase.auth.getUser();
 
-  // IMPORTANT: You *must* return the supabaseResponse object as it is.
-  // If you're creating a new response object with NextResponse.next() make sure to:
-  // 1. Pass the request in it, like so:
-  //    const myNewResponse = NextResponse.next({ request })
-  // 2. Copy over the cookies, like so:
-  //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
-  // 3. Change the myNewResponse object to fit your needs, but avoid changing
-  //    the cookies!
-  // 4. Finally:
-  //    return myNewResponse
-  // If this is not done, you may be causing the browser and server to go out
-  // of sync and terminate the user's session prematurely!
+  //   // IMPORTANT: You *must* return the supabaseResponse object as it is.
+  //   // If you're creating a new response object with NextResponse.next() make sure to:
+  //   // 1. Pass the request in it, like so:
+  //   //    const myNewResponse = NextResponse.next({ request })
+  //   // 2. Copy over the cookies, like so:
+  //   //    myNewResponse.cookies.setAll(supabaseResponse.cookies.getAll())
+  //   // 3. Change the myNewResponse object to fit your needs, but avoid changing
+  //   //    the cookies!
+  //   // 4. Finally:
+  //   //    return myNewResponse
+  //   // If this is not done, you may be causing the browser and server to go out
+  //   // of sync and terminate the user's session prematurely!
 
   return supabaseResponse;
 }
+
+//   const {
+//     data: { user },
+//   } = await supabase.auth.getUser();
+
+//   // DEBUG: Log the current state
+//   console.log('🔍 Middleware check:', {
+//     path: request.nextUrl.pathname,
+//     isLoggedIn: !!user,
+//     userEmail: user?.email,
+//   });
+
+//   const isOnboardingPage = request.nextUrl.pathname.startsWith('/onboarding');
+//   const isLoginPage = request.nextUrl.pathname.startsWith('/login');
+
+//   if (!user && isOnboardingPage) {
+//     console.log('❌ Redirecting to /login - user not authenticated');
+//     const redirectUrl = new URL('/login', request.url);
+//     return NextResponse.redirect(redirectUrl);
+//   }
+
+//   if (user && isLoginPage) {
+//     console.log('✅ Redirecting to / - user already logged in');
+//     const redirectUrl = new URL('/', request.url);
+//     return NextResponse.redirect(redirectUrl);
+//   }
+
+//   return supabaseResponse;
+// }

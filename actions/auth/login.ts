@@ -14,8 +14,8 @@ export async function loginWithEmailPassword({
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    Logger.error(`Error attempting sign in: ${error.message}`);
-    return { error };
+    Logger.error(`Error attempting sign in: ${error.message} (${error.code})`);
+    return { error: JSON.parse(JSON.stringify(error)) };
   }
 
   revalidatePath('/');

@@ -1,93 +1,119 @@
 'use client';
 
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { loginWithEmailPassword } from '@/actions/auth';
 import { Button, ButtonLink } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
 import { Textbox } from '@/components/Textbox';
 
+interface LoginForm {
+  email: string;
+  password: string;
+}
+
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>();
   const router = useRouter();
 
-  const handleSignIn = async () => {
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  const handleSignIn = async ({ email, password }: LoginForm) => {
     const { error } = await loginWithEmailPassword({
       email,
       password,
     });
 
+    // handle errors
     if (error) {
-      if (error.code && error.code === 'invalid_credentials') {
-        alert('Invalid login credentials. Please try again.');
-      } else {
-        alert(`Error signing in user: ${error.message}`); // in case there are other errors
+      switch (error.code) {
+        case 'email_address_invalid':
+          setAuthError('Email address not supported.');
+          break;
+        case 'email_not_confirmed':
+          setAuthError('Email not confirmed.');
+          break;
+        default:
+          setAuthError('An unexpected error occurred, please try again later.');
       }
-    } else {
-      router.push('/');
+
+      return;
     }
+
+    setAuthError(null);
+    router.push('/');
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
-      <div className="flex w-106 flex-col rounded-2xl bg-gray-1">
-        <div className="px-8 py-7">
-          <div className="pb-2">
-            <p className="text-3xl font-medium">Log in</p>
-          </div>
+    <form
+      className="flex h-full w-full flex-col items-center justify-center"
+      onSubmit={handleSubmit(handleSignIn)}
+    >
+      <div className="flex w-106 flex-col gap-4 rounded-2xl bg-gray-1 p-8">
+        <p className="text-3xl font-medium">Log in</p>
 
-          <div className="flex flex-col py-5">
+        {authError && <p className="py-2 text-error">{authError}</p>}
+
+        <div className="flex flex-col">
+          <div className="flex flex-col">
+            {errors.root && <p className="text-error">{errors.root.message}</p>}
+
+            {/* This is the Email title and textbox */}
             <div className="flex flex-col">
-              {/* This is the Email title and textbox */}
-              <div className="flex flex-col">
-                <p className="text-base text-gray-9">Email</p>
-                <Textbox
-                  type="email"
-                  placeholder="jamie@example.com"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                />
-              </div>
-
-              {/* This is the password title and textbox */}
-              <div className="flex flex-col">
-                <div className="flex flex-row justify-between pt-4">
-                  <p className="text-base text-gray-9">Password</p>
-                  <CustomLink
-                    variant="secondary"
-                    className="text-sm"
-                    href="/reset-password"
-                  >
-                    Forgot password?
-                  </CustomLink>
-                </div>
-
-                <Textbox
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                />
-              </div>
+              <p className="text-base text-gray-9">Email</p>
+              <Textbox
+                type="email"
+                placeholder="jamie@example.com"
+                {...register('email', { required: true })}
+              />
             </div>
-            <Button variant="login" className="mt-7" onClick={handleSignIn}>
-              Login
-            </Button>
-          </div>
 
-          <div className="h-0.5 w-full border-t-2 border-gray-5" />
+            {/* This is the password title and textbox */}
+            <div className="flex flex-col">
+              <div className="flex flex-row justify-between pt-4">
+                <p className="text-base text-gray-9">Password</p>
+                <CustomLink
+                  variant="secondary"
+                  className="text-sm"
+                  href="/reset-password"
+                >
+                  Forgot password?
+                </CustomLink>
+              </div>
 
-          <div className="flex flex-row items-center justify-between pt-8">
-            <p className="text-sm font-medium text-gray-12">
-              Don&#39;t have an account?
-            </p>
-            <ButtonLink variant="secondary" href="/sign-up">
-              Sign Up
-            </ButtonLink>
+              <Textbox
+                type="password"
+                placeholder="Password"
+                {...register('password', { required: true })}
+              />
+              {errors.password && (
+                <p className="text-right text-error">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
           </div>
+          <Button variant="login" className="mt-7" type="submit">
+            Login
+          </Button>
+        </div>
+
+        <div className="h-0.5 w-full border-t-2 border-gray-5" />
+
+        <div className="flex flex-row items-center justify-between">
+          <p className="text-sm font-medium text-gray-12">
+            Don&#39;t have an account?
+          </p>
+          <ButtonLink variant="secondary" href="/sign-up">
+            Sign Up
+          </ButtonLink>
         </div>
       </div>
-    </div>
+    </form>
   );
 }

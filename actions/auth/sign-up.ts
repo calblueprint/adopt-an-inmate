@@ -15,8 +15,8 @@ export async function signUpWithEmailPassword({
   const { error } = await supabase.auth.signUp({ email, password });
 
   if (error) {
-    Logger.error(`Error attempting sign up: ${error.message}`);
-    return { error };
+    Logger.error(`Error attempting sign up: ${error.message} (${error.code})`);
+    return { error: JSON.parse(JSON.stringify(error)) };
   }
 
   revalidatePath('/');

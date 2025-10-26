@@ -1,4 +1,5 @@
 import { cva } from 'class-variance-authority';
+import ErrorMessage from './ErrorMessage';
 
 const textBoxStyle = cva('', {
   variants: {
@@ -14,12 +15,16 @@ const textBoxStyle = cva('', {
 
 export function Textbox({
   className,
+  error,
   ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) {
+}: React.InputHTMLAttributes<HTMLInputElement> & { error?: string }) {
   return (
-    <input
-      {...props}
-      className={textBoxStyle({ className, variant: 'default' })}
-    />
+    <div>
+      <input
+        {...props}
+        className={textBoxStyle({ className, variant: 'default' })}
+      />
+      <ErrorMessage error={error} />
+    </div>
   );
 }

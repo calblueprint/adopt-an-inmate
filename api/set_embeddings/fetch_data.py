@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 import requests
-import pandas as pd
+# import pandas as pd
 
 class MondayBoardFetcher:
   """
@@ -25,6 +25,7 @@ class MondayBoardFetcher:
     """
   
   def __init__(self):
+      # probably add to config later
       load_dotenv(".env.local")
       self.API_KEY = os.environ["MONDAY_API_KEY"]
       self.API_URL = "https://api.monday.com/v2"
@@ -88,12 +89,31 @@ class MondayBoardFetcher:
         full_bios.extend(next_page)
       except Exception:
         raise Exception(f"Error: unable to request next page at cursor: {curr_cursor}")
-
-    col_names = ["Inmate ID", "Gender", "State", "Offense", "Adoptee Bio", "Veteran Status", "Date Entered"]
-    data_dict = {}
-    for col in range(len(col_names)):
-      data_dict[col_names[col]] = [row[col] for row in full_bios]
     
-    return pd.DataFrame(data=data_dict)
+    # Organize data into a list of dictionary for upserting
+    adoptee_data_dict = {}    # Use dict to avoid duplicates
+    for row in full_bios:
+      record_id = row[0]
+      record = {
+        "id": record_id,
+        "bio": row[4] if row[4] != "NA" else "",
+        "first_name": "",                             # Not available in Monday data
+        "last_name": "",                              # Not available in Monday data
+        "gender": row[1] if row[1] != "NA" else "",
+        "age": None,                                  # Default to NULL (or 0)
+        "veteran_status": row[5] if row[5] != "NA" else "",
+        "offense": row[3] if row[3] != "NA" else "",
+        "state": row[2] if row[2] != "NA" else ""
+      }
+      adoptee_data_dict[record_id] = record   
 
-
+    adoptee_table_data = list(adoptee_data_dict.values())
+    
+    return adoptee_table_data
+    
+    # col_names = ["Inmate ID", "Gender", "State", "Offense", "Adoptee Bio", "Veteran Status", "Date Entered"]
+    # data_dict = {}
+    # for col in range(len(col_names)):
+    #   data_dict[col_names[col]] = [row[col] for row in full_bios]
+    
+    # return pd.DataFrame(data=data_dict)

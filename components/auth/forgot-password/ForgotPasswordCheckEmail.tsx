@@ -35,14 +35,21 @@ export default function ForgotPasswordCheckEmail() {
       redirectTo: `${siteUrl}forgot-password?status=loading`,
     });
 
-    if (error)
-      Logger.error(
-        `Error occurred while resending forgot password email: ${error?.message}`,
-      );
-
-    setError(
-      error ? 'An unexpected error occurred, please try again later.' : '',
-    );
+    if (error) {
+      switch (error.code) {
+        case 'email_address_invalid':
+          setError('Invalid email');
+          break;
+        default:
+          setError('An unexpected error occurred, please try again later.');
+          Logger.error(
+            `Unexpected error occurred while sending forgot password email: ${error.message}`,
+          );
+          break;
+      }
+    } else {
+      setError('');
+    }
   };
 
   return (

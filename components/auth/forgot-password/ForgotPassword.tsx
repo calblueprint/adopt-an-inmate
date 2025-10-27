@@ -50,15 +50,17 @@ export default function ForgotPassword() {
     if (error) {
       switch (error.code) {
         case 'email_address_invalid':
-          setError('email', { message: 'Invalid email' });
+          setError('email', { message: 'Invalid email.' });
           break;
         default:
-          setError('email', { message: 'An unexpected error occurred' });
+          setError('email', {
+            message: 'An unexpected error occurred, please try again later.',
+          });
+          Logger.error(
+            `Unexpected error occurred while sending forgot password email: ${error.message}`,
+          );
+          break;
       }
-
-      Logger.error(
-        `Error occurred while sending forgot password email: ${error.message}`,
-      );
 
       return;
     }

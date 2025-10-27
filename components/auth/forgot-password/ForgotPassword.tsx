@@ -1,12 +1,15 @@
 'use client';
 
+import { useCallback, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import Logger from '@/actions/logging';
+import { Button } from '@/components/Button';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import { Textbox } from '@/components/Textbox';
 import { useForgotPasswordContext } from '@/contexts/ForgotPasswordContext';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { getSiteUrl } from '@/lib/utils';
-import { Button } from '../../Button';
-import { Textbox } from '../../Textbox';
 
 interface ForgotPasswordForm {
   email: string;
@@ -14,6 +17,11 @@ interface ForgotPasswordForm {
 
 export default function ForgotPassword() {
   const { email, setEmail } = useForgotPasswordContext();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
+  const bufferTimer = useRef<NodeJS.Timeout>(null);
+  const cooldownSecondsRef = useRef(0);
+  const numTries = useRef(0);
 
   const {
     register,
@@ -24,15 +32,35 @@ export default function ForgotPassword() {
 
   const router = useRouter();
 
-  const onSubmit = ({ email }: ForgotPasswordForm) => {
-    const sendResetEmail = async () => {
-      const supabase = getSupabaseBrowserClient();
+  // function for buffer timer
+  const bufferTimerFunction = useCallback(() => {
+    cooldownSecondsRef.current = Math.max(cooldownSecondsRef.current - 1, 0);
+    setCooldownSeconds(cooldownSecondsRef.current);
 
+    // clear timer
+    if (cooldownSecondsRef.current === 0) {
+      if (bufferTimer.current) clearInterval(bufferTimer.current);
+      bufferTimer.current = null;
+
+      // make button available
+      setIsProcessing(false);
+    }
+  }, []);
+
+  // send email
+  const sendResetEmail = useCallback(
+    async (email: string) => {
+      // brute force check
+      if (cooldownSecondsRef.current > 0) return;
+
+      // send email
+      const supabase = getSupabaseBrowserClient();
       const siteUrl = getSiteUrl();
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${siteUrl}forgot-password?status=loading`,
       });
 
+      // handle error cases
       if (error) {
         switch (error.code) {
           case 'email_address_invalid':
@@ -42,14 +70,32 @@ export default function ForgotPassword() {
             setError('email', { message: 'An unexpected error occurred' });
         }
 
+        Logger.error(
+          `Error occurred while sending forgot password email: ${error.message}`,
+        );
+
         return;
       }
 
       setEmail(email);
       router.push('?status=check-email');
-    };
+    },
+    [router, setEmail, setError],
+  );
 
-    sendResetEmail();
+  const onSubmit = async ({ email }: ForgotPasswordForm) => {
+    // set is processing
+    setIsProcessing(true);
+
+    // send email
+    await sendResetEmail(email);
+
+    // set buffer timer
+    const bufferCooldown = 10;
+    cooldownSecondsRef.current = bufferCooldown;
+    setCooldownSeconds(cooldownSecondsRef.current);
+    bufferTimer.current = setInterval(bufferTimerFunction, 1000);
+    numTries.current++;
   };
 
   return (
@@ -69,8 +115,15 @@ export default function ForgotPassword() {
             {...register('email')}
           />
         </div>
-        <Button variant="login" type="submit" className="mt-7">
+        <Button
+          variant="login"
+          type="submit"
+          className="mt-7 flex items-center justify-center gap-2"
+          disabled={isProcessing}
+        >
           Reset password
+          {cooldownSeconds > 0 && ` (${cooldownSeconds} s)`}
+          {isProcessing && <LoadingSpinner className="text-gray-1" />}
         </Button>
       </div>
     </form>

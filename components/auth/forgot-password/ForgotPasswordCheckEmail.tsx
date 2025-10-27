@@ -12,14 +12,21 @@ const incrementalCooldowns = [30, 45, 60, 90, 120];
 
 export default function ForgotPasswordCheckEmail() {
   const { email } = useForgotPasswordContext();
-  const [cooldownSeconds, setCooldownSeconds] = useState(1);
+  const [cooldownSeconds, setCooldownSeconds] = useState(20);
   const [error, setError] = useState('');
+  const cooldownSecondsRef = useRef(20);
   const cooldownTimer = useRef<NodeJS.Timeout>(null);
   const numResends = useRef(0);
 
   // count down function
   const timerFunction = useCallback(() => {
-    setCooldownSeconds(prev => Math.max(0, prev - 1));
+    cooldownSecondsRef.current = Math.max(0, cooldownSecondsRef.current - 1);
+    setCooldownSeconds(cooldownSecondsRef.current);
+
+    if (cooldownSecondsRef.current === 0) {
+      if (cooldownTimer.current) clearInterval(cooldownTimer.current);
+      cooldownTimer.current = null;
+    }
   }, []);
 
   // initialize timer
@@ -32,13 +39,18 @@ export default function ForgotPasswordCheckEmail() {
   }, [timerFunction]);
 
   const handleResendEmail = async () => {
+    // brute force check
+    if (cooldownSecondsRef.current > 0) return;
+
     // start cooldown
     const cooldown =
       incrementalCooldowns[
         Math.min(numResends.current, incrementalCooldowns.length - 1)
       ];
+    cooldownSecondsRef.current = cooldown;
     setCooldownSeconds(cooldown);
     numResends.current++;
+    cooldownTimer.current = setInterval(timerFunction, 1000);
 
     // resend email
     const supabase = getSupabaseBrowserClient();

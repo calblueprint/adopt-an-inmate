@@ -1,31 +1,33 @@
 'use client';
 
-import { Resolver, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import z from 'zod';
 import Logger from '@/actions/logging';
+import { Button } from '@/components/Button';
+import { Textbox } from '@/components/Textbox';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
-import { Button } from '../../Button';
-import { Textbox } from '../../Textbox';
 
-interface ResetPasswordForm {
-  password: string;
-  confirmPassword: string;
-}
-
-const resolver: Resolver<ResetPasswordForm> = async values => {
-  return {
-    values: values.password !== values.confirmPassword ? {} : values,
-    errors:
-      values.password !== values.confirmPassword
-        ? {
-            confirmPassword: {
-              type: 'pattern',
-              message: 'Passwords do not match',
-            },
-          }
-        : {},
-  };
-};
+const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(6, 'Passwords must be at least 6 characters')
+      .nonoptional(),
+    confirmPassword: z
+      .string()
+      .min(6, 'Passwords must be at least 6 characters')
+      .nonoptional(),
+  })
+  .superRefine((vals, ctx) => {
+    if (vals.confirmPassword !== vals.password)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['confirmPassword'],
+        message: 'Passwords do not match',
+      });
+  });
 
 export default function ResetPassword() {
   const {
@@ -33,11 +35,15 @@ export default function ResetPassword() {
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm<ResetPasswordForm>({ resolver });
+  } = useForm<z.infer<typeof resetPasswordSchema>>({
+    resolver: zodResolver(resetPasswordSchema),
+  });
 
   const router = useRouter();
 
-  const onSubmit = async ({ password }: ResetPasswordForm) => {
+  const onSubmit = async ({
+    password,
+  }: z.infer<typeof resetPasswordSchema>) => {
     const supabase = getSupabaseBrowserClient();
     const { data, error } = await supabase.auth.updateUser({ password });
 
@@ -81,6 +87,7 @@ export default function ResetPassword() {
             <Textbox
               type="password"
               placeholder="Password"
+              error={errors.password?.message}
               {...register('password')}
             />
           </div>
@@ -89,13 +96,9 @@ export default function ResetPassword() {
             <Textbox
               type="password"
               placeholder="Confirm password"
+              error={errors.confirmPassword?.message}
               {...register('confirmPassword')}
             />
-            {errors.confirmPassword?.message && (
-              <p className="text-right text-error">
-                {errors.confirmPassword.message}
-              </p>
-            )}
           </div>
         </div>
         <Button variant="login" type="submit" className="mt-7">

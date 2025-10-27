@@ -112,7 +112,7 @@ export default function ForgotPassword() {
             type="email"
             placeholder="jamie@example.com"
             error={errors.email?.message}
-            {...register('email')}
+            {...register('email', { required: true })}
           />
         </div>
         <Button

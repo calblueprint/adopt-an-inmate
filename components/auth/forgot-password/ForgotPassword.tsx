@@ -2,8 +2,8 @@
 
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import Logger from '@/actions/logging';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { getSiteUrl } from '@/lib/utils';
 import { Button } from '../../Button';
 import { Textbox } from '../../Textbox';
 
@@ -12,7 +12,12 @@ interface ForgotPasswordForm {
 }
 
 export default function ForgotPassword() {
-  const { register, handleSubmit } = useForm<ForgotPasswordForm>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm<ForgotPasswordForm>();
 
   const router = useRouter();
 
@@ -20,15 +25,19 @@ export default function ForgotPassword() {
     const sendResetEmail = async () => {
       const supabase = getSupabaseBrowserClient();
 
+      const siteUrl = getSiteUrl();
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'http://localhost:3000/reset-password',
+        redirectTo: `${siteUrl}forgot-password?status=loading`,
       });
 
       if (error) {
-        Logger.error(
-          `An error occurred while sending reset password email: ${error.message}`,
-        );
-        router.push('?status=error');
+        switch (error.code) {
+          case 'email_address_invalid':
+            setError('email', { message: 'Invalid email' });
+            break;
+          default:
+            setError('email', { message: 'An unexpected error occurred' });
+        }
       } else {
         router.push('?status=check-email');
       }
@@ -50,6 +59,7 @@ export default function ForgotPassword() {
           <Textbox
             type="email"
             placeholder="jamie@example.com"
+            error={errors.email?.message}
             {...register('email')}
           />
         </div>

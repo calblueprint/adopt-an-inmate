@@ -78,7 +78,7 @@ export default function ResetPassword() {
         <p className="text-gray-9">
           Remembered your password?{' '}
           <CustomLink href="/login" className="text-link">
-            Sign in instead.
+            Return to applications.
           </CustomLink>
         </p>
       </div>

@@ -6,7 +6,7 @@ import Logger from '@/actions/logging';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 
-export default function ResetPasswordLoading() {
+export default function ForgotPasswordLoading() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const timeout = useRef<NodeJS.Timeout>(null);
@@ -26,15 +26,19 @@ export default function ResetPasswordLoading() {
 
     // listen for password recovery event, then redirect to password reset form
     const supabase = getSupabaseBrowserClient();
-    const { data: listener } = supabase.auth.onAuthStateChange(event => {
-      if (
-        ['INITIAL_SESSION', 'SIGNED_IN', 'PASSWORD_RECOVERY'].includes(event)
-      ) {
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
         const params = new URLSearchParams(searchParams.toString());
-        params.set('status', 'resetting');
-        router.replace(`?${params.toString()}`);
-      }
-    });
+
+        if (event === 'SIGNED_IN') {
+          params.set('status', 'resetting');
+          router.replace('/reset-password');
+        } else if (event === 'INITIAL_SESSION' && session === null) {
+          params.set('status', 'error');
+          router.replace(`?${params.toString()}`);
+        }
+      },
+    );
 
     return () => {
       listener.subscription.unsubscribe();

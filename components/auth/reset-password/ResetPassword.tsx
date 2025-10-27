@@ -3,7 +3,6 @@
 import { Resolver, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import Logger from '@/actions/logging';
-import CustomLink from '@/components/CustomLink';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { Button } from '../../Button';
 import { Textbox } from '../../Textbox';
@@ -73,15 +72,7 @@ export default function ResetPassword() {
       className="flex w-106 flex-col gap-7 rounded-2xl bg-gray-1 p-8"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div>
-        <p className="text-3xl font-medium">Reset password</p>
-        <p className="text-gray-9">
-          Remembered your password?{' '}
-          <CustomLink href="/login" className="text-link">
-            Return to applications.
-          </CustomLink>
-        </p>
-      </div>
+      <h1 className="text-3xl font-medium">Reset password</h1>
 
       <div className="flex flex-col gap-2">
         <div className="space-y-6">

@@ -1,6 +1,5 @@
 import ForgotPasswordFlowDecider from '@/components/auth/forgot-password/ForgotPasswordFlowDecider';
 import Logo from '@/components/Logo';
-import { ForgotPasswordContextProvider } from '@/contexts/ForgotPasswordContext';
 
 export default function ForgotPasswordPage() {
   // TODO: add context to share email context between check email and forgot password
@@ -11,9 +10,7 @@ export default function ForgotPasswordPage() {
       <Logo />
 
       <div className="flex size-full flex-col items-center justify-center">
-        <ForgotPasswordContextProvider>
-          <ForgotPasswordFlowDecider />
-        </ForgotPasswordContextProvider>
+        <ForgotPasswordFlowDecider />
       </div>
 
       {/* spacer */}

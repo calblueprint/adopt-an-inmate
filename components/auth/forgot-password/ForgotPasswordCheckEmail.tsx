@@ -1,22 +1,24 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Logger from '@/actions/logging';
 import { Button } from '@/components/Button';
 import ErrorMessage from '@/components/ErrorMessage';
-import { useForgotPasswordContext } from '@/contexts/ForgotPasswordContext';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { getSiteUrl } from '@/lib/utils';
 
 const incrementalCooldowns = [30, 45, 60, 90, 120];
 
 export default function ForgotPasswordCheckEmail() {
-  const { email } = useForgotPasswordContext();
   const [cooldownSeconds, setCooldownSeconds] = useState(20);
   const [error, setError] = useState('');
   const cooldownSecondsRef = useRef(20);
   const cooldownTimer = useRef<NodeJS.Timeout>(null);
   const numResends = useRef(0);
+
+  const searchParams = useSearchParams();
+  const email = useMemo(() => searchParams.get('email') ?? '', [searchParams]);
 
   // count down function
   const timerFunction = useCallback(() => {

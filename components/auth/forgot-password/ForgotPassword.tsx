@@ -1,13 +1,12 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Logger from '@/actions/logging';
 import { Button } from '@/components/Button';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { Textbox } from '@/components/Textbox';
-import { useForgotPasswordContext } from '@/contexts/ForgotPasswordContext';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { getSiteUrl } from '@/lib/utils';
 
@@ -16,12 +15,14 @@ interface ForgotPasswordForm {
 }
 
 export default function ForgotPassword() {
-  const { email, setEmail } = useForgotPasswordContext();
   const [isProcessing, setIsProcessing] = useState(false);
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const bufferTimer = useRef<NodeJS.Timeout>(null);
   const cooldownSecondsRef = useRef(0);
   const numTries = useRef(0);
+
+  const searchParams = useSearchParams();
+  const email = useMemo(() => searchParams.get('email') ?? '', [searchParams]);
 
   const {
     register,
@@ -77,10 +78,9 @@ export default function ForgotPassword() {
         return;
       }
 
-      setEmail(email);
-      router.push('?status=check-email');
+      router.push(`?status=check-email&email=${email}`);
     },
-    [router, setEmail, setError],
+    [router, setError],
   );
 
   const onSubmit = async ({ email }: ForgotPasswordForm) => {

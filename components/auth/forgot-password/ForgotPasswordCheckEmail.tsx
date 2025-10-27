@@ -1,58 +1,32 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Logger from '@/actions/logging';
 import { Button } from '@/components/Button';
 import ErrorMessage from '@/components/ErrorMessage';
+import { useTimer } from '@/hooks/useTimer';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { getSiteUrl } from '@/lib/utils';
 
 const incrementalCooldowns = [30, 45, 60, 90, 120];
 
 export default function ForgotPasswordCheckEmail() {
-  const [cooldownSeconds, setCooldownSeconds] = useState(20);
-  const [error, setError] = useState('');
-  const cooldownSecondsRef = useRef(20);
-  const cooldownTimer = useRef<NodeJS.Timeout>(null);
-  const numResends = useRef(0);
-
   const searchParams = useSearchParams();
   const email = useMemo(() => searchParams.get('email') ?? '', [searchParams]);
 
-  // count down function
-  const timerFunction = useCallback(() => {
-    cooldownSecondsRef.current = Math.max(0, cooldownSecondsRef.current - 1);
-    setCooldownSeconds(cooldownSecondsRef.current);
-
-    if (cooldownSecondsRef.current === 0) {
-      if (cooldownTimer.current) clearInterval(cooldownTimer.current);
-      cooldownTimer.current = null;
-    }
-  }, []);
-
-  // initialize timer
-  useEffect(() => {
-    cooldownTimer.current = setInterval(timerFunction, 1000);
-
-    return () => {
-      if (cooldownTimer.current) clearInterval(cooldownTimer.current);
-    };
-  }, [timerFunction]);
+  const [error, setError] = useState('');
+  const { cooldownSeconds, startTimer } = useTimer({
+    initialCooldown: 25,
+    cooldowns: incrementalCooldowns,
+  });
 
   const handleResendEmail = async () => {
     // brute force check
-    if (cooldownSecondsRef.current > 0) return;
+    if (cooldownSeconds > 0) return;
 
     // start cooldown
-    const cooldown =
-      incrementalCooldowns[
-        Math.min(numResends.current, incrementalCooldowns.length - 1)
-      ];
-    cooldownSecondsRef.current = cooldown;
-    setCooldownSeconds(cooldown);
-    numResends.current++;
-    cooldownTimer.current = setInterval(timerFunction, 1000);
+    startTimer();
 
     // resend email
     const supabase = getSupabaseBrowserClient();

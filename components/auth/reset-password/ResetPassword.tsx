@@ -1,12 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import Logger from '@/actions/logging';
 import { Button } from '@/components/Button';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { Textbox } from '@/components/Textbox';
+import { useTimer } from '@/hooks/useTimer';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 
 const resetPasswordSchema = z
@@ -41,9 +44,15 @@ export default function ResetPassword() {
 
   const router = useRouter();
 
-  const onSubmit = async ({
-    password,
-  }: z.infer<typeof resetPasswordSchema>) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { cooldownSeconds, startTimer } = useTimer({
+    cooldowns: [10],
+    onFinish: () => setIsProcessing(false),
+  });
+
+  const handleResetPassword = async (password: string) => {
+    if (cooldownSeconds > 0) return;
+
     const supabase = getSupabaseBrowserClient();
     const { data, error } = await supabase.auth.updateUser({ password });
 
@@ -73,6 +82,14 @@ export default function ResetPassword() {
     }
   };
 
+  const onSubmit = async ({
+    password,
+  }: z.infer<typeof resetPasswordSchema>) => {
+    setIsProcessing(true);
+    await handleResetPassword(password);
+    startTimer();
+  };
+
   return (
     <form
       className="flex w-106 flex-col gap-7 rounded-2xl bg-gray-1 p-8"
@@ -80,7 +97,7 @@ export default function ResetPassword() {
     >
       <h1 className="text-3xl font-medium">Reset password</h1>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         <div className="space-y-6">
           <div className="flex flex-col">
             <p className="text-gray-9">Password</p>
@@ -101,8 +118,15 @@ export default function ResetPassword() {
             />
           </div>
         </div>
-        <Button variant="login" type="submit" className="mt-7">
+        <Button
+          variant="login"
+          type="submit"
+          className="mt-7"
+          disabled={isProcessing}
+        >
           Reset password
+          {cooldownSeconds > 0 && ` (${cooldownSeconds} s)`}
+          {isProcessing && <LoadingSpinner className="text-gray-1" />}
         </Button>
       </div>
     </form>

@@ -52,3 +52,10 @@ export const getSiteUrl = () => {
 
   return url;
 };
+
+/**
+ * Async function to wait for a set number of milliseconds.
+ */
+export const sleep = async (ms: number) => {
+  await new Promise(resolve => setTimeout(() => resolve(0), ms));
+};

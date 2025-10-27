@@ -1,2 +1,7 @@
+supabase
+vecs
+python-dotenv
 requests
 pandas
+tqdm
+huggingface_hub

@@ -13,9 +13,14 @@ const buttonStyle = cva('cursor-pointer block text-center', {
       primary:
         'bg-cyan-12 hover:bg-cyan-10 rounded-lg transition-colors px-2.5 py-2.5 cursor-pointer text-gray-1',
     },
+    disabled: {
+      true: 'opacity-50 cursor-not-allowed!',
+      false: '',
+    },
   },
   defaultVariants: {
     variant: 'default',
+    disabled: false,
   },
 });
 
@@ -26,11 +31,11 @@ export const Button = forwardRef<
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     variant?: ButtonVariant;
   }
->(({ children, className, variant = 'default', ...props }, ref) => {
+>(({ children, className, variant = 'default', disabled, ...props }, ref) => {
   return (
     <button
       ref={ref}
-      className={buttonStyle({ variant, className })}
+      className={buttonStyle({ variant, className, disabled })}
       {...props}
     >
       {children}

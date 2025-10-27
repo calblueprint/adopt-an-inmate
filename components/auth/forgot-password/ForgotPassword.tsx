@@ -2,6 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useForgotPasswordContext } from '@/contexts/ForgotPasswordContext';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { getSiteUrl } from '@/lib/utils';
 import { Button } from '../../Button';
@@ -12,12 +13,14 @@ interface ForgotPasswordForm {
 }
 
 export default function ForgotPassword() {
+  const { email, setEmail } = useForgotPasswordContext();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm<ForgotPasswordForm>();
+  } = useForm<ForgotPasswordForm>({ defaultValues: { email } });
 
   const router = useRouter();
 
@@ -38,9 +41,12 @@ export default function ForgotPassword() {
           default:
             setError('email', { message: 'An unexpected error occurred' });
         }
-      } else {
-        router.push('?status=check-email');
+
+        return;
       }
+
+      setEmail(email);
+      router.push('?status=check-email');
     };
 
     sendResetEmail();

@@ -1,12 +1,80 @@
+'use client';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import Logger from '@/actions/logging';
+import { Button } from '@/components/Button';
+import ErrorMessage from '@/components/ErrorMessage';
+import { useForgotPasswordContext } from '@/contexts/ForgotPasswordContext';
+import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { getSiteUrl } from '@/lib/utils';
+
+const incrementalCooldowns = [30, 45, 60, 90, 120];
+
 export default function ForgotPasswordCheckEmail() {
+  const { email } = useForgotPasswordContext();
+  const [cooldownSeconds, setCooldownSeconds] = useState(1);
+  const [error, setError] = useState('');
+  const cooldownTimer = useRef<NodeJS.Timeout>(null);
+  const numResends = useRef(0);
+
+  // count down function
+  const timerFunction = useCallback(() => {
+    setCooldownSeconds(prev => Math.max(0, prev - 1));
+  }, []);
+
+  // initialize timer
+  useEffect(() => {
+    cooldownTimer.current = setInterval(timerFunction, 1000);
+
+    return () => {
+      if (cooldownTimer.current) clearInterval(cooldownTimer.current);
+    };
+  }, [timerFunction]);
+
+  const handleResendEmail = async () => {
+    // start cooldown
+    const cooldown =
+      incrementalCooldowns[
+        Math.min(numResends.current, incrementalCooldowns.length - 1)
+      ];
+    setCooldownSeconds(cooldown);
+    numResends.current++;
+
+    // resend email
+    const supabase = getSupabaseBrowserClient();
+    const siteUrl = getSiteUrl();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${siteUrl}forgot-password?status=loading`,
+    });
+
+    if (error)
+      Logger.error(
+        `Error occurred while resending forgot password email: ${error?.message}`,
+      );
+
+    setError(
+      error ? 'An unexpected error occurred, please try again later.' : '',
+    );
+  };
+
   return (
-    <div className="flex w-106 flex-col gap-2 rounded-2xl bg-gray-1 p-8">
+    <div className="flex w-106 flex-col gap-4 rounded-2xl bg-gray-1 p-8">
       <p className="text-3xl font-medium">Check your email.</p>
 
       <p className="text-gray-11">
-        If the email you entered exists, you will receive a link to proceed with
-        resetting your password. You may now close this tab.
+        If {email} exists, you will receive a link to proceed with resetting
+        your password.
       </p>
+
+      <Button
+        variant="login"
+        className="mt-2"
+        disabled={cooldownSeconds > 0}
+        onClick={handleResendEmail}
+      >
+        Resend email {cooldownSeconds > 0 && `(${cooldownSeconds} s)`}
+      </Button>
+      <ErrorMessage error={error} />
     </div>
   );
 }

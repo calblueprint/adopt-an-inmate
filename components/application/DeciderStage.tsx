@@ -1,13 +1,22 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { notFound, useSearchParams } from 'next/navigation';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import StageMain from './stages/StageMain';
+import StageMatching from './stages/StageMatching';
+import StagePre from './stages/StagePre';
+import StageSubmitted from './stages/StageSubmitted';
 
-export const useApplicationStageRecorder = () => {
+export default function DeciderStage() {
   const searchParams = useSearchParams();
+  const stage = useMemo(
+    () => searchParams.get('stage') || 'pre',
+    [searchParams],
+  );
   const { appState, setAppState } = useApplicationContext();
 
+  // listen for search param changes and update the stage state
   useEffect(() => {
     const stages = ['pre', 'main', 'matches', 'submitted'] as const;
     const currentStage = searchParams.get('stage') || 'pre';
@@ -30,4 +39,11 @@ export const useApplicationStageRecorder = () => {
       }));
     }
   }, [searchParams, appState, setAppState]);
-};
+
+  if (stage === 'pre') return <StagePre />;
+  if (stage === 'main') return <StageMain />;
+  if (stage === 'matches') return <StageMatching />;
+  if (stage === 'submitted') return <StageSubmitted />;
+
+  throw notFound();
+}

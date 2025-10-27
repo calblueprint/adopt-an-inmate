@@ -101,7 +101,7 @@ export default function LoginPage() {
               )}
             </div>
           </div>
-          <Button variant="login" className="mt-7" type="submit">
+          <Button variant="primary" className="mt-7" type="submit">
             Login
           </Button>
         </div>

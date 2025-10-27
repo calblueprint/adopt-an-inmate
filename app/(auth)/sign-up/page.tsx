@@ -158,7 +158,7 @@ export default function SignUpPage() {
             <ErrorMessage error={errors.tos?.message} />
           </div>
 
-          <Button variant="login" className="mt-7" type="submit">
+          <Button variant="primary" className="mt-7" type="submit">
             Sign Up
           </Button>
         </div>

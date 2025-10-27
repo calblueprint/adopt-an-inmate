@@ -55,7 +55,7 @@ export default function ForgotPasswordCheckEmail() {
       </p>
 
       <Button
-        variant="login"
+        variant="primary"
         className="mt-2"
         disabled={cooldownSeconds > 0}
         onClick={handleResendEmail}

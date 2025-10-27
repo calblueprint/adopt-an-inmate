@@ -95,7 +95,7 @@ export default function ForgotPassword() {
           />
         </div>
 
-        <Button variant="login" type="submit" disabled={isProcessing}>
+        <Button variant="primary" type="submit" disabled={isProcessing}>
           Reset password
           {cooldownSeconds > 0 && `(${cooldownSeconds} s)`}
           {isProcessing && <LoadingSpinner className="text-gray-1" />}

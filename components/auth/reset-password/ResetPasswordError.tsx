@@ -10,7 +10,7 @@ export default function ResetPasswordError() {
         please contact us via email. Sorry for the inconvenience!
       </p>
 
-      <ButtonLink href="/forgot-password" variant="login" className="mt-2">
+      <ButtonLink href="/forgot-password" variant="primary" className="mt-2">
         Try again
       </ButtonLink>
     </div>

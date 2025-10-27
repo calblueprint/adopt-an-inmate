@@ -119,7 +119,7 @@ export default function ResetPassword() {
           </div>
         </div>
         <Button
-          variant="login"
+          variant="primary"
           type="submit"
           className="mt-7"
           disabled={isProcessing}

@@ -22,7 +22,7 @@ export default function ForgotPasswordError() {
 
       <p className="text-gray-11">{error}</p>
 
-      <ButtonLink href="/forgot-password" variant="login" className="mt-2">
+      <ButtonLink href="/forgot-password" variant="primary" className="mt-2">
         Try again
       </ButtonLink>
     </div>

@@ -7,7 +7,7 @@ export default function ResetPasswordSuccess() {
 
       <p className="text-gray-11">Your password has been successfully reset.</p>
 
-      <ButtonLink href="/login" variant="login" className="mt-2">
+      <ButtonLink href="/login" variant="primary" className="mt-2">
         Go to Login
       </ButtonLink>
     </div>

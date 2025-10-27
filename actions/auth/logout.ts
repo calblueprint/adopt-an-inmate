@@ -11,7 +11,7 @@ export async function signOut() {
 
   if (error) {
     Logger.error(`Error signing out: ${error.message}`);
-    return { error };
+    return { error: JSON.parse(JSON.stringify(error)) };
   }
 
   revalidatePath('/');

@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 import os
 import requests
-# import pandas as pd
 
 class MondayBoardFetcher:
   """
@@ -42,12 +41,15 @@ class MondayBoardFetcher:
             id 
             name
             group {{ id title }} 
-            column_values(ids: ["gender__1", 
-                                "offense__1", 
+            column_values(ids: ["fname__1",
+                                "lname__1",
                                 "notes_for_matching__1", 
-                                "dropdown9__1", 
+                                "gender__1", 
+                                "formula__1",
                                 "color1__1",
-                                "last_modified_date__1"]) {{ id value text }}
+                                "offense__1", 
+                                "dropdown9__1", 
+                                "last_modified_date__1",]) {{ id value text }}
                   }} }} }} }}"""
 
   def _fetch_page(self, query):
@@ -96,24 +98,18 @@ class MondayBoardFetcher:
       record_id = row[0]
       record = {
         "id": record_id,
-        "bio": row[4] if row[4] != "NA" else "",
-        "first_name": "",                             # Not available in Monday data
-        "last_name": "",                              # Not available in Monday data
-        "gender": row[1] if row[1] != "NA" else "",
-        "age": None,                                  # Default to NULL (or 0)
-        "veteran_status": row[5] if row[5] != "NA" else "",
-        "offense": row[3] if row[3] != "NA" else "",
-        "state": row[2] if row[2] != "NA" else ""
+        "first_name": row[1] if row[1] != "NA" else "", 
+        "last_name": row[2] if row[2] != "NA" else "",
+        "bio": row[7] if row[7] != "NA" else "",
+        "gender": row[3] if row[3] != "NA" else "",
+        "age": row[4] if row[4] != "NA" else None,    # Not working
+        "veteran_status": row[8] if row[8] != "NA" else "",
+        "offense": row[6] if row[6] != "NA" else "",
+        "state": row[5] if row[5] != "NA" else "",
+        "adopted": False    # Default to False
       }
       adoptee_data_dict[record_id] = record   
 
     adoptee_table_data = list(adoptee_data_dict.values())
     
     return adoptee_table_data
-    
-    # col_names = ["Inmate ID", "Gender", "State", "Offense", "Adoptee Bio", "Veteran Status", "Date Entered"]
-    # data_dict = {}
-    # for col in range(len(col_names)):
-    #   data_dict[col_names[col]] = [row[col] for row in full_bios]
-    
-    # return pd.DataFrame(data=data_dict)

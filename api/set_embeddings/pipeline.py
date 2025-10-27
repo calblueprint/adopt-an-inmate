@@ -1,9 +1,9 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-from fetch_data import MondayBoardFetcher
-from _data_operations import save_to_supabase, fetch_from_supabase, upsert_embeddings
+from _fetch_data import MondayBoardFetcher
+from _embed import upsert_embeddings
 from _clients import vx
-from _config import SUPABASE_TABLE_NAME, MODEL_DIMENSION
+from _config import MODEL_DIMENSION
 
 class handler(BaseHTTPRequestHandler):
 
@@ -14,16 +14,8 @@ class handler(BaseHTTPRequestHandler):
         adoptee_data = fetcher.fetch_data()
         print(f"Fetched {len(adoptee_data)} records from Monday.com.")
 
-        print("Saving fetched data to Supabase...")
-        save_to_supabase(adoptee_data, SUPABASE_TABLE_NAME)
-        print("Data saved to Supabase.")
-
-        print("Fetching all data from Supabase...")
-        adoptee_table = fetch_from_supabase(SUPABASE_TABLE_NAME)
-        print(f"Fetched {len(adoptee_table)} records from Supabase.")
-
         print("Upserting embeddings to vector database...")
-        upsert_embeddings(adoptee_table, MODEL_DIMENSION)
+        upsert_embeddings(adoptee_data, MODEL_DIMENSION)
         print("Embeddings upserted.")
         
         vx.disconnect()

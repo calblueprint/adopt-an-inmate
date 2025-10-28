@@ -3,6 +3,7 @@ import { Golos_Text } from 'next/font/google';
 import localFont from 'next/font/local';
 import '@/styles/global.css';
 import { AuthProvider } from '@/contexts/AuthProvider';
+import ProfileProvider from '@/contexts/ProfileProvider';
 import { cn } from '@/lib/utils';
 
 // font definitions
@@ -43,7 +44,9 @@ export default function RootLayout({
       <body
         className={cn(bespoke.variable, golos.variable, 'h-svh w-full bg-bg')}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ProfileProvider>{children}</ProfileProvider>
+        </AuthProvider>
       </body>
     </html>
   );

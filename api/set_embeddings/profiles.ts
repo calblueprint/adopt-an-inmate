@@ -5,7 +5,7 @@ import { Profile } from '@/utils/schema';
 export async function upsertProfile(profile: Profile) {
   const supabaseClient = supabase();
   const { data, error } = await supabaseClient
-    .from('profiles')
+    .from('adopter_profiles')
     .upsert(profile)
     .select()
     .single();
@@ -18,7 +18,7 @@ export async function upsertProfile(profile: Profile) {
 export async function fetchProfileById(userId: UUID) {
   const supabaseClient = supabase();
   const { data, error } = await supabaseClient
-    .from('profiles')
+    .from('adopter_profiles')
     .select('*')
     .eq('user_id', userId)
     .maybeSingle();

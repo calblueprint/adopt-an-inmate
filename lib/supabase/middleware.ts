@@ -60,31 +60,26 @@ export async function updateSession(request: NextRequest) {
   return supabaseResponse;
 }
 
-//   const {
-//     data: { user },
-//   } = await supabase.auth.getUser();
+/** The actual middleware that Next.js runs */
+export async function middleware(request: NextRequest) {
+  // 1) Refresh/Sync Supabase cookies
+  const refreshed = await updateSession(request);
 
-//   // DEBUG: Log the current state
-//   console.log('🔍 Middleware check:', {
-//     path: request.nextUrl.pathname,
-//     isLoggedIn: !!user,
-//     userEmail: user?.email,
-//   });
+  const { pathname } = request.nextUrl;
 
-//   const isOnboardingPage = request.nextUrl.pathname.startsWith('/onboarding');
-//   const isLoginPage = request.nextUrl.pathname.startsWith('/login');
+  // 2) Public routes that should never redirect
+  // include your static paths and API routes here as needed
+  const isPublic =
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/signup') ||
+    pathname.startsWith('/public') ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/_next') ||
+    pathname === '/favicon.ico';
 
-//   if (!user && isOnboardingPage) {
-//     console.log('❌ Redirecting to /login - user not authenticated');
-//     const redirectUrl = new URL('/login', request.url);
-//     return NextResponse.redirect(redirectUrl);
-//   }
+  if (isPublic) {
+    return refreshed; // let them through
+  }
 
-//   if (user && isLoginPage) {
-//     console.log('✅ Redirecting to / - user already logged in');
-//     const redirectUrl = new URL('/', request.url);
-//     return NextResponse.redirect(redirectUrl);
-//   }
-
-//   return supabaseResponse;
-// }
+  // 3) Check if the user looks authenticated by presence
+}

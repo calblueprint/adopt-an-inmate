@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
-import { Profile } from '@/utils/schema';
+
+// import { Profile } from '@/utils/schema';
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function OnboardingPage() {
       }
 
       // Create the profile object
-      const profile: Omit<Profile, 'user_id'> & { user_id: string } = {
+      const profile = {
         user_id: user.id,
         first_name: firstName,
         last_name: lastName,
@@ -49,7 +50,7 @@ export default function OnboardingPage() {
 
       // Insert directly using client Supabase
       const { error: insertError } = await supabase
-        .from('profiles')
+        .from('adopter_profiles')
         .upsert(profile);
 
       if (insertError) {

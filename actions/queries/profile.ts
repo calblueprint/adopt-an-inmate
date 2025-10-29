@@ -8,7 +8,7 @@ const supabase = await getSupabaseServerClient();
 
 export async function upsertProfile(profile: Profile) {
   const { data, error } = await supabase
-    .from('profiles')
+    .from('adopter_profiles')
     .upsert(profile)
     .select()
     .single();
@@ -20,7 +20,7 @@ export async function upsertProfile(profile: Profile) {
 
 export async function fetchProfileById(userId: UUID) {
   const { data, error } = await supabase
-    .from('profiles')
+    .from('adopter_profiles')
     .select('*')
     .eq('user_id', userId)
     .maybeSingle();

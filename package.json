@@ -61,7 +61,6 @@
     "prettier-plugin-tailwindcss": "^0.6.14",
     "supabase": "^2.54.11",
     "tailwindcss": "^4.1.13",
-    "ts-node": "^10.9.2",
     "typescript": "^5",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"

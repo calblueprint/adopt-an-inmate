@@ -34,6 +34,8 @@ export default function OnboardingPage() {
         alert('You must be logged in to complete onboarding');
         router.push('/login');
         return;
+      } else {
+        console.log('you are logged on'); // Weird, I don't really see this being trigged?
       }
 
       // Create the profile object

@@ -2,6 +2,7 @@
 
 import CustomLink from '@/components/CustomLink';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import ApplicationCard from './ApplicationCard';
 
 export default function StageMain() {
   const { appState } = useApplicationContext();
@@ -15,6 +16,7 @@ export default function StageMain() {
       <CustomLink href={`/app/${appState.appId}?stage=matches`}>
         View matches
       </CustomLink>
+      <ApplicationCard />
     </div>
   );
 }

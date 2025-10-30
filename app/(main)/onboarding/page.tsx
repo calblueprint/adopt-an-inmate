@@ -11,14 +11,14 @@ import { getSupabaseBrowserClient } from '@/lib/supabase';
 export default function OnboardingPage() {
   const router = useRouter();
   const supabase = getSupabaseBrowserClient();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [pronouns, setPronouns] = useState('');
-  const [state, setState] = useState('');
-  const [veteranStatus, setVeteranStatus] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [dateOfBirth, setDateOfBirth] = useState<string>('');
+  const [pronouns, setPronouns] = useState<string>('');
+  const [state, setState] = useState<string>('');
+  const [veteranStatus, setVeteranStatus] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleSubmit = async () => {
     setIsSubmitting(true);

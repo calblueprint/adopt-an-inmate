@@ -59,27 +59,3 @@ export async function updateSession(request: NextRequest) {
 
   return supabaseResponse;
 }
-
-/** The actual middleware that Next.js runs */
-export async function middleware(request: NextRequest) {
-  // 1) Refresh/Sync Supabase cookies
-  const refreshed = await updateSession(request);
-
-  const { pathname } = request.nextUrl;
-
-  // 2) Public routes that should never redirect
-  // include your static paths and API routes here as needed
-  const isPublic =
-    pathname.startsWith('/login') ||
-    pathname.startsWith('/signup') ||
-    pathname.startsWith('/public') ||
-    pathname.startsWith('/api') ||
-    pathname.startsWith('/_next') ||
-    pathname === '/favicon.ico';
-
-  if (isPublic) {
-    return refreshed; // let them through
-  }
-
-  // 3) Check if the user looks authenticated by presence
-}

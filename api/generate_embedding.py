@@ -10,7 +10,7 @@ def embed_text(text: str, client) -> list[float]:
     """Generates an embedding for the given text using Hugging Face Inference API."""
     try:
         embedding = client.feature_extraction(text)
-        return embedding
+        return embedding.tolist()
 
     except Exception as e:
         raise Exception(f"Hugging Face Client Error: {str(e)}")

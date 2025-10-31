@@ -1,7 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 from _fetch_data import MondayBoardFetcher
-from _embed import upsert_embeddings
+from _embed_and_upsert import upsert_embeddings
 from _clients import vx
 from _config import MODEL_DIMENSION
 
@@ -15,7 +15,7 @@ class handler(BaseHTTPRequestHandler):
         print(f"Fetched {len(adoptee_data)} records from Monday.com.")
 
         print("Upserting embeddings to vector database...")
-        upsert_embeddings(adoptee_data, MODEL_DIMENSION)
+        upsert_embeddings(adoptee_data)
         print("Embeddings upserted.")
         
         vx.disconnect()

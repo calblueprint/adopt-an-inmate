@@ -2,7 +2,7 @@ from tqdm import tqdm
 import time
 from _clients import hf_client, adoptee_vector_collection
 
-def upsert_embeddings(data: list, model_dimension, batch_size=64):
+def upsert_embeddings(data: list, batch_size=64):
     """Encodes and upserts data to the vector database in batches."""
 
     if not data:

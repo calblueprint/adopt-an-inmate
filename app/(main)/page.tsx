@@ -43,6 +43,11 @@ export default function ApplicationsPage() {
         }
         throw new Error(`Server Error (${response.status}): ${errorBody}`);
       }
+      const resultText = await response.text();
+      console.log('Response text:', resultText);
+      if (resultText.includes('error')) {
+        throw new Error(`Server returned an error: ${resultText}`);
+      }
       const result = await response.json();
       console.log('Generated Embedding:', result.embedding);
     } catch (error) {

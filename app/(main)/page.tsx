@@ -1,7 +1,42 @@
+'use client';
+
+import { Button } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
 import ConfirmationDialog from '@/components/home/ConfirmationDialog';
+import { Textbox } from '@/components/Textbox';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useState } from 'react';
+
+type FormInputs = {
+  bio: string;
+};
 
 export default function ApplicationsPage() {
+  const [, setIsLoading] = useState(false);
+  const { register, handleSubmit, formState: { errors } } = useForm<FormInputs>();
+
+const onSubmit: SubmitHandler<FormInputs> = async (data) => {
+  setIsLoading(true);
+  try {
+    const response = await fetch('api/generate_embedding.py', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ text: data.bio }), 
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to generate embedding');
+    }
+    console.log('Generated Embedding:', result.embedding);
+  } catch (error: unknown) {
+    console.error(error);
+  } finally {
+    setIsLoading(false); 
+  }
+};
+
   return (
     <>
       {/* shows up only when search param confirmation=true */}
@@ -9,7 +44,28 @@ export default function ApplicationsPage() {
 
       {/* application page */}
       <main className="flex h-full w-full flex-col items-center justify-center">
-        <p>Applications page</p>
+        <form 
+          onSubmit={handleSubmit(onSubmit)} 
+          className="w-full max-w-sm"
+        >
+          <Textbox
+              type="text"
+              placeholder="enter bio"
+              {...register('bio', { required: 'Bio is required' })}
+              error={errors.bio?.message} 
+            />
+
+          <Button 
+            variant="primary" 
+            className="mt-7 w-full" 
+            type="submit"
+          >
+            Enter
+          </Button>
+          
+        </form>
+
+        <CustomLink href="/app/1234567890">Applications page</CustomLink>
         <CustomLink href="/app/1234567890">Sample app</CustomLink>
         <CustomLink href="/sign-up">Sign up</CustomLink>
         <CustomLink href="/login">Login</CustomLink>

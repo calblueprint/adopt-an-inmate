@@ -29,10 +29,13 @@ export default function ApplicationsPage() {
         },
         body: JSON.stringify({ text: data.bio }),
       });
+      console.log('Response received:', response);
       if (!response.ok) {
+        console.log('Response not ok:', response);
         let errorBody = 'An unknown server error occurred.';
         try {
           const errorJson = await response.json();
+          console.log('Error JSON:', errorJson);
           errorBody =
             errorJson.error || `Unknown Error: ${response.statusText}`;
         } catch {

@@ -1,4 +1,5 @@
 from tqdm import tqdm
+import time
 from _clients import hf_client, adoptee_vector_collection
 
 def upsert_embeddings(data: list, model_dimension, batch_size=64):
@@ -15,18 +16,27 @@ def upsert_embeddings(data: list, model_dimension, batch_size=64):
 
         embeddings = []
         for bio in bios:
-            try:
-                emb = hf_client.feature_extraction(bio) 
+            emb = None
+            max_retries = 3
+            for attempt in range(max_retries):
+                try:
+                    emb = hf_client.feature_extraction(bio) 
+                    break 
+                except Exception as e:
+                    print(f"Attempt {attempt+1} failed for: {bio[:50]}... Error: {e}")
+                    if attempt + 1 == max_retries:
+                        print(f"All retries failed for: {bio[:50]}. Using fallback.")
+                        embeddings.append([0.0] * model_dimension)
+                    else:
+                        time.sleep(1)
+            if emb is not None:
                 embeddings.append(emb)
-            except Exception as e:
-                print(f"Embedding failed for entry: {bio[:50]}... Error: {e}")
-                embeddings.append([0.0] * model_dimension) 
 
         records = []
         for j, row in enumerate(batch):
             metadata = {k: row.get(k, "") for k in [
                 "first_name", "last_name", "bio", "gender", 
-                "age", "veteran_status", "offense", "state", "adopted"
+                "dob", "veteran_status", "offense", "state", "adopted"
             ]}
             records.append((ids[j], embeddings[j], metadata))
 

@@ -1,6 +1,11 @@
-from dotenv import load_dotenv
-import os
 import requests
+from _config import (
+  MONDAY_API_KEY,
+  MONDAY_API_URL,
+  MONDAY_API_VERSION,
+  MONDAY_BOARD_ID,
+  MONDAY_GROUP_ID
+)
 
 class MondayBoardFetcher:
   """
@@ -24,12 +29,10 @@ class MondayBoardFetcher:
     """
   
   def __init__(self):
-      # probably add to config later
-      load_dotenv(".env.local")
-      self.API_KEY = os.environ["MONDAY_API_KEY"]
-      self.API_URL = "https://api.monday.com/v2"
-      self.HEADERS = {"Authorization": self.API_KEY, "API-Version": "2023-04"}
-      self.BOARD_ID = os.getenv("MONDAY_BOARD_ID")
+    self.API_KEY = MONDAY_API_KEY
+    self.API_URL = MONDAY_API_URL
+    self.HEADERS = {"Authorization": self.API_KEY, "API-Version": MONDAY_API_VERSION}
+    self.BOARD_ID = MONDAY_BOARD_ID
 
   def _build_query(self, is_initial=True, cursor=None):
     return f"""query {{
@@ -45,7 +48,7 @@ class MondayBoardFetcher:
                                 "lname__1",
                                 "notes_for_matching__1", 
                                 "gender__1", 
-                                "formula__1",
+                                "date_of_birth__1",
                                 "color1__1",
                                 "offense__1", 
                                 "dropdown9__1", 
@@ -71,7 +74,7 @@ class MondayBoardFetcher:
     adoptee_batch = []
     for item in items_page:
       if item and "group" in item and "id" in item["group"]:
-        if item["group"]["id"] == "1715196990_inmate_data_report___1":
+        if item["group"]["id"] == MONDAY_GROUP_ID:
           row_tuple = (item["name"],)
           for col in item["column_values"]:
             raw_val = col["text"]
@@ -97,12 +100,12 @@ class MondayBoardFetcher:
     for row in full_bios:
       record_id = row[0]
       record = {
-        "id": record_id,
+        "id": row[0],
         "first_name": row[1] if row[1] != "NA" else "", 
         "last_name": row[2] if row[2] != "NA" else "",
         "bio": row[7] if row[7] != "NA" else "",
         "gender": row[3] if row[3] != "NA" else "",
-        "age": row[4] if row[4] != "NA" else None,    # Not working
+        "dob": row[4] if row[4] != "NA" else None,
         "veteran_status": row[8] if row[8] != "NA" else "",
         "offense": row[6] if row[6] != "NA" else "",
         "state": row[5] if row[5] != "NA" else "",

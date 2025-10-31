@@ -34,7 +34,7 @@ export default function ApplicationsPage() {
         throw new Error(result.error || 'Failed to generate embedding');
       }
       console.log('Generated Embedding:', result.embedding);
-    } catch (error: unknown) {
+    } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);

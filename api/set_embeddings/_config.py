@@ -18,3 +18,14 @@ MONDAY_API_VERSION = "2023-04"
 MONDAY_API_KEY = os.getenv("MONDAY_API_KEY")
 MONDAY_BOARD_ID = os.getenv("MONDAY_BOARD_ID")
 MONDAY_GROUP_ID = "1715196990_inmate_data_report___1"
+
+MONDAY_COLUMN_IDS = {
+  "first_name": "fname__1",
+  "last_name": "lname__1",
+  "bio": "notes_for_matching__1",
+  "gender": "gender__1",
+  "dob": "date_of_birth__1",
+  "veteran_status": "color1__1",
+  "offense": "offense__1",
+  "state": "dropdown9__1",
+}

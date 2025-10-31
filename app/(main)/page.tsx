@@ -29,10 +29,17 @@ export default function ApplicationsPage() {
         },
         body: JSON.stringify({ text: data.bio }),
       });
-      const result = await response.json();
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to generate embedding');
+        let errorBody = 'An unknown server error occurred.';
+        try {
+          const errorJson = await response.json();
+          errorBody = errorJson.error || `Unknown Error: ${response.statusText}`;
+        } catch {
+          errorBody = await response.text();
+        }
+        throw new Error(`Server Error (${response.status}): ${errorBody}`);
       }
+      const result = await response.json();
       console.log('Generated Embedding:', result.embedding);
     } catch (error) {
       console.error(error);

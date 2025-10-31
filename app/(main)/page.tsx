@@ -33,7 +33,8 @@ export default function ApplicationsPage() {
         let errorBody = 'An unknown server error occurred.';
         try {
           const errorJson = await response.json();
-          errorBody = errorJson.error || `Unknown Error: ${response.statusText}`;
+          errorBody =
+            errorJson.error || `Unknown Error: ${response.statusText}`;
         } catch {
           errorBody = await response.text();
         }

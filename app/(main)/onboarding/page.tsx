@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { upsertProfile } from '@/actions/queries/profile';
 import { Button } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
@@ -27,15 +28,11 @@ export default function OnboardingPage() {
       // Get the current user
       const {
         data: { user },
-        error: userError,
       } = await supabase.auth.getUser(); // Here is where we get the user ID
 
-      if (userError || !user) {
-        alert('You must be logged in to complete onboarding');
-        router.push('/login');
+      if (user == null) {
+        alert("You shouldn't be here, Jinkang should redirect you.");
         return;
-      } else {
-        console.log('you are logged on'); // Weird, I don't really see this being trigged?
       }
 
       // Create the profile object
@@ -50,16 +47,8 @@ export default function OnboardingPage() {
         veteran_status: veteranStatus,
       };
 
-      // Insert directly using client Supabase
-      const { error: insertError } = await supabase
-        .from('adopter_profiles')
-        .upsert(profile);
-
-      if (insertError) {
-        console.error('Error inserting profile:', insertError);
-        alert(`Error saving profile: ${insertError.message}`);
-        return;
-      }
+      // Insert directly
+      upsertProfile(profile);
 
       // Success! Redirect to home or dashboard
       alert('Profile saved successfully!');

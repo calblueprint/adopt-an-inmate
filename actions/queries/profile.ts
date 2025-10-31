@@ -1,12 +1,10 @@
 'use server';
 
-import { UUID } from 'crypto';
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { Profile } from '@/utils/schema';
 
-const supabase = await getSupabaseServerClient();
-
 export async function upsertProfile(profile: Profile) {
+  const supabase = await getSupabaseServerClient();
   const { data, error } = await supabase
     .from('adopter_profiles')
     .upsert(profile)
@@ -18,7 +16,8 @@ export async function upsertProfile(profile: Profile) {
   return data;
 }
 
-export async function fetchProfileById(userId: UUID) {
+export async function fetchProfileById(userId: string) {
+  const supabase = await getSupabaseServerClient();
   const { data, error } = await supabase
     .from('adopter_profiles')
     .select('*')

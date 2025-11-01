@@ -1,6 +1,9 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useOnboardingContext } from '@/contexts/OnboardingContext';
+import { useQuestionsContext } from '@/contexts/QuestionsContext';
 import { Button } from '../Button';
 import { Textbox } from '../Textbox';
 
@@ -11,9 +14,18 @@ interface NameForm {
 
 export default function OnboardingQuestionName() {
   const { register, handleSubmit } = useForm<NameForm>();
+  const { setOnboardingInfo } = useOnboardingContext();
+  const { setQuestionsCompleted } = useQuestionsContext();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  const onSubmit = (values: NameForm) => {
-    console.log(values);
+  const onSubmit = ({ firstName, lastName }: NameForm) => {
+    setOnboardingInfo(prev => ({ ...prev, firstName, lastName }));
+    setQuestionsCompleted(prev => (prev >= 1 ? prev : 1));
+
+    const params = new URLSearchParams(searchParams);
+    params.set('q', '1');
+    router.push(`?${params.toString()}`);
   };
 
   return (

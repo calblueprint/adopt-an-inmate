@@ -33,11 +33,6 @@ export default function ApplicationsPage() {
       if (!response.ok) {
         throw new Error(result.error || 'Failed to generate embedding');
       }
-      const resultText = await response.text();
-      console.log('Response text:', resultText);
-      if (resultText.includes('error')) {
-        throw new Error(`Server returned an error: ${resultText}`);
-      }
       console.log('Generated Embedding:', result.embedding);
     } catch (error) {
       console.error(error);

@@ -14,3 +14,12 @@ export interface EmailPasswordCredentials {
   email: string;
   password: string;
 }
+
+export interface OnboardingInfo {
+  firstName: string;
+  lastName: string;
+  dob: Date; // date of birth
+  pronouns: string;
+  gender: string;
+  state: string;
+}

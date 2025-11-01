@@ -1,6 +1,7 @@
 'use client';
 
 import { createBrowserClient as createBrowserClientSB } from '@supabase/ssr';
+import { Database } from '@/types/database.types';
 
 export function getSupabaseBrowserClient() {
   if (
@@ -12,7 +13,7 @@ export function getSupabaseBrowserClient() {
     );
   }
 
-  return createBrowserClientSB(
+  return createBrowserClientSB<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   );

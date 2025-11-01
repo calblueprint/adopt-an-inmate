@@ -5,6 +5,7 @@ import { Profile } from '@/types/schema';
 
 export async function upsertProfile(profile: Profile) {
   const supabase = await getSupabaseServerClient();
+
   const { data, error } = await supabase
     .from('adopter_profiles')
     .upsert(profile)

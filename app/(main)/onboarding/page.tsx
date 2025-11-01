@@ -37,7 +37,7 @@ export default function OnboardingPage() {
         user_id: user.id,
         first_name: firstName,
         last_name: lastName,
-        date_of_birth: new Date(dateOfBirth),
+        date_of_birth: new Date(dateOfBirth).toUTCString(),
         pronouns: pronouns,
         state: state,
         veteran_status: veteranStatus,

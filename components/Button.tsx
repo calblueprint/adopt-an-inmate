@@ -13,7 +13,7 @@ const buttonStyle = cva(
         secondary:
           'border border-gray-8 bg-gray-1 rounded-lg hover:bg-cyan-12 hover:text-gray-1 transition-colors px-2 py-1 text-cyan-12',
         primary:
-          'bg-cyan-12 hover:bg-cyan-10 rounded-lg transition-colors px-2.5 py-2.5 text-gray-1',
+          'bg-cyan-12 hover:bg-cyan-10 rounded-lg transition-colors px-3 py-2 text-gray-1',
       },
       disabled: {
         true: 'opacity-50 cursor-not-allowed!',

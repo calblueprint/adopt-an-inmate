@@ -29,6 +29,11 @@ export default function ApplicationsPage() {
         },
         body: JSON.stringify({ text: data.bio }),
       });
+      const responseClone = response.clone();
+      const resultText = await responseClone.text();
+      if (resultText.includes('error')) {
+        throw new Error(`Server returned an error: ${resultText}`);
+      }
       const result = await response.json();
       if (!response.ok) {
         throw new Error(result.error || 'Failed to generate embedding');

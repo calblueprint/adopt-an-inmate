@@ -4,8 +4,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
+import { useSubmitOnboarding } from '@/hooks/onboarding';
 import { useQuestionNavigaton } from '@/hooks/questions';
-import { Button } from '../Button';
+import AsyncButton from '../AsyncButton';
 import ErrorMessage from '../ErrorMessage';
 import QuestionBack from '../questions/QuestionBack';
 import RadioCard from '../RadioCard';
@@ -18,18 +19,22 @@ export default function OnboardingQuestionVeteran() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof veteranFormSchema>>({
     resolver: zodResolver(veteranFormSchema),
   });
 
   const { setOnboardingInfo } = useOnboardingContext();
-  const { advanceToQuestion } = useQuestionNavigaton();
+  const { submitOnboardingInfo } = useSubmitOnboarding();
+  const { nextQuestion } = useQuestionNavigaton();
 
-  const onSubmit = ({ veteran }: z.infer<typeof veteranFormSchema>) => {
+  const onSubmit = async ({ veteran }: z.infer<typeof veteranFormSchema>) => {
     const isVeteran = veteran === 'yes';
     setOnboardingInfo(prev => ({ ...prev, isVeteran }));
-    advanceToQuestion(6);
+    await submitOnboardingInfo();
+
+    // this would navigate to the success screen
+    nextQuestion();
   };
 
   return (
@@ -55,9 +60,14 @@ export default function OnboardingQuestionVeteran() {
 
       <div className="flex items-center justify-between">
         <QuestionBack />
-        <Button variant="primary" type="submit">
+        <AsyncButton
+          variant="primary"
+          type="submit"
+          loadingClassName="text-white"
+          loading={isSubmitting}
+        >
           Submit
-        </Button>
+        </AsyncButton>
       </div>
     </form>
   );

@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
 import { useQuestionNavigaton } from '@/hooks/questions';
-import { Button } from '../Button';
+import { Button, ButtonLink } from '../Button';
 import { Textbox } from '../Textbox';
 
 interface NameForm {
@@ -49,7 +49,9 @@ export default function OnboardingQuestionName() {
       </div>
 
       <div className="flex items-center justify-between">
-        <div />
+        <ButtonLink variant="secondary" href="/">
+          Back
+        </ButtonLink>
         <Button variant="primary" type="submit">
           Next
         </Button>

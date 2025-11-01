@@ -8,7 +8,7 @@ import QuestionBack from '../questions/QuestionBack';
 import { Textbox } from '../Textbox';
 
 interface PronounsForm {
-  dob: Date;
+  dob: string;
 }
 
 export default function OnboardingQuestionDOB() {
@@ -16,7 +16,8 @@ export default function OnboardingQuestionDOB() {
   const { setOnboardingInfo } = useOnboardingContext();
   const { nextQuestion } = useQuestionNavigaton();
 
-  const onSubmit = ({ dob }: PronounsForm) => {
+  const onSubmit = ({ dob: dobString }: PronounsForm) => {
+    const dob = new Date(dobString);
     setOnboardingInfo(prev => ({ ...prev, dob }));
     nextQuestion();
   };

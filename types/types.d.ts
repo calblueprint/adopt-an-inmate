@@ -20,7 +20,6 @@ export interface OnboardingInfo {
   lastName: string;
   dob: Date; // date of birth
   pronouns: string;
-  gender: string;
   state: string;
   isVeteran: boolean;
 }

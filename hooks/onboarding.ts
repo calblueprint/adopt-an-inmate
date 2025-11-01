@@ -8,16 +8,21 @@ import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { Profile } from '@/types/schema';
 import { OnboardingInfo } from '@/types/types';
 
+// schema used by useSubmitOnboarding for data validation
 const onboardingSchema = z.object({
   firstName: z.string().nonoptional(),
   lastName: z.string().nonoptional(),
   dob: z.date().nonoptional(),
   pronouns: z.string().nonoptional(),
-  gender: z.string().nonoptional(),
   state: z.string().nonoptional(),
   isVeteran: z.boolean().nonoptional(),
 });
 
+/**
+ * Provides a helper function to submit
+ * currently stored onboarding information
+ * to Supabase.
+ */
 export const useSubmitOnboarding = () => {
   const { onboardingInfoRef } = useOnboardingContext();
 

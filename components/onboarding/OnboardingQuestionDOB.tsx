@@ -12,9 +12,14 @@ interface PronounsForm {
 }
 
 export default function OnboardingQuestionDOB() {
-  const { register, handleSubmit } = useForm<PronounsForm>();
-  const { setOnboardingInfo } = useOnboardingContext();
+  const { onboardingInfo, setOnboardingInfo } = useOnboardingContext();
   const { nextQuestion } = useQuestionNavigaton();
+
+  const { register, handleSubmit } = useForm<PronounsForm>({
+    defaultValues: {
+      dob: onboardingInfo.dob?.toISOString().split('T')[0],
+    },
+  });
 
   const onSubmit = ({ dob: dobString }: PronounsForm) => {
     const dob = new Date(dobString);

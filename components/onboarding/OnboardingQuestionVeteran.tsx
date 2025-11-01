@@ -16,17 +16,36 @@ const veteranFormSchema = z.object({
 });
 
 export default function OnboardingQuestionVeteran() {
+  const { onboardingInfo, setOnboardingInfo } = useOnboardingContext();
+  const { submitOnboardingInfo } = useSubmitOnboarding();
+  const { nextQuestion } = useQuestionNavigaton();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    subscribe,
   } = useForm<z.infer<typeof veteranFormSchema>>({
     resolver: zodResolver(veteranFormSchema),
+    defaultValues: {
+      veteran:
+        onboardingInfo.isVeteran !== undefined
+          ? onboardingInfo.isVeteran
+            ? 'yes'
+            : 'no'
+          : undefined,
+    },
   });
 
-  const { setOnboardingInfo } = useOnboardingContext();
-  const { submitOnboardingInfo } = useSubmitOnboarding();
-  const { nextQuestion } = useQuestionNavigaton();
+  subscribe({
+    formState: {
+      isDirty: true,
+    },
+    callback: ({ values: { veteran } }) => {
+      const isVeteran = veteran === 'yes';
+      setOnboardingInfo(prev => ({ ...prev, isVeteran }));
+    },
+  });
 
   const onSubmit = async ({ veteran }: z.infer<typeof veteranFormSchema>) => {
     const isVeteran = veteran === 'yes';

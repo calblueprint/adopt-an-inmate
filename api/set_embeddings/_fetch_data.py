@@ -1,7 +1,13 @@
-from dotenv import load_dotenv
-import os
 import requests
-import pandas as pd
+import json
+from _config import (
+  MONDAY_API_KEY,
+  MONDAY_API_URL,
+  MONDAY_API_VERSION,
+  MONDAY_BOARD_ID,
+  MONDAY_GROUP_ID,
+  MONDAY_COLUMN_IDS
+)
 
 class MondayBoardFetcher:
   """
@@ -25,13 +31,13 @@ class MondayBoardFetcher:
     """
   
   def __init__(self):
-      load_dotenv(".env.local")
-      self.API_KEY = os.environ["MONDAY_API_KEY"]
-      self.API_URL = "https://api.monday.com/v2"
-      self.HEADERS = {"Authorization": self.API_KEY, "API-Version": "2023-04"}
-      self.BOARD_ID = os.getenv("MONDAY_BOARD_ID")
+    self.API_KEY = MONDAY_API_KEY
+    self.API_URL = MONDAY_API_URL
+    self.HEADERS = {"Authorization": self.API_KEY, "API-Version": MONDAY_API_VERSION}
+    self.BOARD_ID = MONDAY_BOARD_ID
 
   def _build_query(self, is_initial=True, cursor=None):
+    column_ids_list = list(MONDAY_COLUMN_IDS.values())
     return f"""query {{
       boards(ids: {self.BOARD_ID}) {{
         name
@@ -41,13 +47,11 @@ class MondayBoardFetcher:
             id 
             name
             group {{ id title }} 
-            column_values(ids: ["gender__1", 
-                                "offense__1", 
-                                "notes_for_matching__1", 
-                                "dropdown9__1", 
-                                "color1__1",
-                                "last_modified_date__1"]) {{ id value text }}
-                  }} }} }} }}"""
+            column_values(ids: {json.dumps(column_ids_list)}) {{ 
+              id 
+              text 
+            }}
+          }} }} }} }}"""
 
   def _fetch_page(self, query):
     data = {"query": query}
@@ -68,12 +72,16 @@ class MondayBoardFetcher:
     adoptee_batch = []
     for item in items_page:
       if item and "group" in item and "id" in item["group"]:
-        if item["group"]["id"] == "1715196990_inmate_data_report___1":
-          row_tuple = (item["name"],)
+        if item["group"]["id"] == MONDAY_GROUP_ID:
+          column_data = {}
           for col in item["column_values"]:
-            raw_val = col["text"]
-            row_tuple += (raw_val if raw_val else "NA",)
-          adoptee_batch.append(row_tuple)
+            column_data[col["id"]] = col["text"]
+          item_data = {
+            "id": item["name"],
+            "columns": column_data
+          }
+          adoptee_batch.append(item_data)
+
     return cursor, adoptee_batch
 
   def fetch_data(self):
@@ -88,12 +96,31 @@ class MondayBoardFetcher:
         full_bios.extend(next_page)
       except Exception:
         raise Exception(f"Error: unable to request next page at cursor: {curr_cursor}")
-
-    col_names = ["Inmate ID", "Gender", "State", "Offense", "Adoptee Bio", "Veteran Status", "Date Entered"]
-    data_dict = {}
-    for col in range(len(col_names)):
-      data_dict[col_names[col]] = [row[col] for row in full_bios]
     
-    return pd.DataFrame(data=data_dict)
+    # Helper function to get column value with default handling
+    def get_col_val(columns_dict, col_id, default=""):
+      val = columns_dict.get(col_id)
+      return default if (val is None or val == "NA" or val == "") else val
+    
+    # Organize data into a list of dictionary for upserting
+    adoptee_data_dict = {}    # Use dict to avoid duplicates
+    for item in full_bios:
+      record_id = item["id"]
+      columns = item["columns"]
+      record = {
+        "id": record_id,
+        "first_name": get_col_val(columns, MONDAY_COLUMN_IDS["first_name"]),
+        "last_name": get_col_val(columns, MONDAY_COLUMN_IDS["last_name"]),
+        "bio": get_col_val(columns, MONDAY_COLUMN_IDS["bio"]),
+        "gender": get_col_val(columns, MONDAY_COLUMN_IDS["gender"]),
+        "dob": get_col_val(columns, MONDAY_COLUMN_IDS["dob"]),
+        "veteran_status": get_col_val(columns, MONDAY_COLUMN_IDS["veteran_status"]),
+        "offense": get_col_val(columns, MONDAY_COLUMN_IDS["offense"]),
+        "state": get_col_val(columns, MONDAY_COLUMN_IDS["state"]),
+        "adopted": "false"
+      }
+      adoptee_data_dict[record_id] = record   
 
-
+    adoptee_table_data = list(adoptee_data_dict.values())
+    
+    return adoptee_table_data

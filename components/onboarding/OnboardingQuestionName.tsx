@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
-import { useQuestionAdvancer } from '@/hooks/questions';
+import { useQuestionNavigaton } from '@/hooks/questions';
 import { Button } from '../Button';
 import { Textbox } from '../Textbox';
 
@@ -14,11 +14,11 @@ interface NameForm {
 export default function OnboardingQuestionName() {
   const { register, handleSubmit } = useForm<NameForm>();
   const { setOnboardingInfo } = useOnboardingContext();
-  const { advanceToQuestion } = useQuestionAdvancer();
+  const { nextQuestion } = useQuestionNavigaton();
 
   const onSubmit = ({ firstName, lastName }: NameForm) => {
     setOnboardingInfo(prev => ({ ...prev, firstName, lastName }));
-    advanceToQuestion(1);
+    nextQuestion();
   };
 
   return (
@@ -48,9 +48,12 @@ export default function OnboardingQuestionName() {
         </div>
       </div>
 
-      <Button variant="primary" type="submit">
-        Next
-      </Button>
+      <div className="flex items-center justify-between">
+        <div />
+        <Button variant="primary" type="submit">
+          Next
+        </Button>
+      </div>
     </form>
   );
 }

@@ -22,4 +22,5 @@ export interface OnboardingInfo {
   pronouns: string;
   gender: string;
   state: string;
+  isVeteran: boolean;
 }

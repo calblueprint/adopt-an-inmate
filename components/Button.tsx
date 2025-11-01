@@ -9,7 +9,7 @@ const buttonStyle = cva('cursor-pointer block text-center', {
       default:
         'border border-gray-700 rounded-lg hover:bg-gray-50 transition-colors px-2 py-1 cursor-pointer',
       secondary:
-        'border border-gray-8 bg-gray-1 rounded-lg hover:bg-cyan-12 hover:text-gray-1 transition-colors px-2 py-1 cursor-pointer text-cyan-12',
+        'border border-gray-8 bg-gray-1 rounded-lg hover:bg-gray-3 transition-colors px-2 py-1 cursor-pointer text-cyan-12',
       primary:
         'bg-cyan-12 hover:bg-cyan-10 rounded-lg transition-colors px-3 py-2 cursor-pointer text-gray-1',
     },

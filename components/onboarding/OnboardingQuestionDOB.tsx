@@ -2,8 +2,9 @@
 
 import { useForm } from 'react-hook-form';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
-import { useQuestionAdvancer } from '@/hooks/questions';
+import { useQuestionNavigaton } from '@/hooks/questions';
 import { Button } from '../Button';
+import QuestionBack from '../questions/QuestionBack';
 import { Textbox } from '../Textbox';
 
 interface PronounsForm {
@@ -13,11 +14,11 @@ interface PronounsForm {
 export default function OnboardingQuestionDOB() {
   const { register, handleSubmit } = useForm<PronounsForm>();
   const { setOnboardingInfo } = useOnboardingContext();
-  const { advanceToQuestion } = useQuestionAdvancer();
+  const { nextQuestion } = useQuestionNavigaton();
 
   const onSubmit = ({ dob }: PronounsForm) => {
     setOnboardingInfo(prev => ({ ...prev, dob }));
-    advanceToQuestion(2);
+    nextQuestion();
   };
 
   return (
@@ -39,9 +40,12 @@ export default function OnboardingQuestionDOB() {
         </div>
       </div>
 
-      <Button variant="primary" type="submit">
-        Next
-      </Button>
+      <div className="flex items-center justify-between">
+        <QuestionBack />
+        <Button variant="primary" type="submit">
+          Next
+        </Button>
+      </div>
     </form>
   );
 }

@@ -14,6 +14,7 @@ def upsert_embeddings(data: list, batch_size=64):
         ids = [row['id'] for row in batch]
         bios = [row['bio'] for row in batch]
 
+        # Batch embedding with max retries of 3 if model endpoint fails
         embeddings = None
         max_retries = 3
         for attempt in range(max_retries):

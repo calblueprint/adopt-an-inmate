@@ -3,21 +3,44 @@ import { forwardRef } from 'react';
 import Link from 'next/link';
 import { cva } from 'class-variance-authority';
 
-const buttonStyle = cva('cursor-pointer block text-center', {
-  variants: {
-    variant: {
-      default:
-        'border border-gray-700 rounded-lg hover:bg-gray-50 transition-colors px-2 py-1 cursor-pointer',
-      secondary:
-        'border border-gray-8 bg-gray-1 rounded-lg hover:bg-cyan-12 hover:text-gray-1 transition-colors px-2 py-1 cursor-pointer text-cyan-12',
-      primary:
-        'bg-cyan-12 hover:bg-cyan-10 rounded-lg transition-colors px-2.5 py-2.5 cursor-pointer text-gray-1',
+const buttonStyle = cva(
+  'cursor-pointer flex items-center gap-2 justify-center text-center px-3 py-1',
+  {
+    variants: {
+      variant: {
+        default: 'border border-gray-700 rounded-lg transition-colors',
+        secondary:
+          'border border-gray-8 bg-gray-1 rounded-lg transition-colors text-cyan-12',
+        primary: 'bg-cyan-12 rounded-lg transition-colors text-gray-1',
+      },
+      disabled: {
+        true: 'opacity-60 cursor-not-allowed!',
+        false: '',
+      },
+    },
+    compoundVariants: [
+      {
+        variant: 'default',
+        disabled: false,
+        className: 'hover:bg-gray-50',
+      },
+      {
+        variant: 'secondary',
+        disabled: false,
+        className: 'hover:bg-gray-3',
+      },
+      {
+        variant: 'primary',
+        disabled: false,
+        className: 'hover:bg-cyan-10',
+      },
+    ],
+    defaultVariants: {
+      variant: 'default',
+      disabled: false,
     },
   },
-  defaultVariants: {
-    variant: 'default',
-  },
-});
+);
 
 type ButtonVariant = VariantProps<typeof buttonStyle>['variant'];
 
@@ -26,11 +49,12 @@ export const Button = forwardRef<
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     variant?: ButtonVariant;
   }
->(({ children, className, variant = 'default', ...props }, ref) => {
+>(({ children, className, disabled, variant = 'default', ...props }, ref) => {
   return (
     <button
       ref={ref}
-      className={buttonStyle({ variant, className })}
+      className={buttonStyle({ variant, disabled, className })}
+      disabled={disabled}
       {...props}
     >
       {children}

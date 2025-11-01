@@ -87,26 +87,35 @@ export const useCurrentQuestionElement = () => {
 };
 
 /**
- * Provides a helper function that abstracts logic
- * to advance to the next question.
+ * Provides helper functions to abstract the logic
+ * of navigating between question stages.
  */
-export const useQuestionAdvancer = () => {
+export const useQuestionNavigaton = () => {
   const { setQuestionsCompleted } = useQuestionsContext();
+  const currentQuestion = useCurrentQuestion();
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const advanceToQuestion = useCallback(
-    (currentQuestion: number) => {
-      setQuestionsCompleted(prev =>
-        prev >= currentQuestion ? prev : currentQuestion,
-      );
+    (question: number) => {
+      setQuestionsCompleted(prev => (prev >= question ? prev : question));
 
       const params = new URLSearchParams(searchParams);
-      params.set('q', `${currentQuestion}`);
+      params.set('q', `${question}`);
       router.push(`?${params.toString()}`);
     },
     [searchParams, router, setQuestionsCompleted],
   );
 
-  return { advanceToQuestion };
+  const nextQuestion = useCallback(() => {
+    const nextQ = currentQuestion + 1;
+    advanceToQuestion(nextQ);
+  }, [currentQuestion, advanceToQuestion]);
+
+  const prevQuestion = useCallback(() => {
+    const prevQ = currentQuestion - 1;
+    advanceToQuestion(prevQ);
+  }, [currentQuestion, advanceToQuestion]);
+
+  return { advanceToQuestion, nextQuestion, prevQuestion };
 };

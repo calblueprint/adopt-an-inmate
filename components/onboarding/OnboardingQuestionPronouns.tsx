@@ -4,9 +4,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
-import { useQuestionAdvancer } from '@/hooks/questions';
+import { useQuestionNavigaton } from '@/hooks/questions';
 import { Button } from '../Button';
 import ErrorMessage from '../ErrorMessage';
+import QuestionBack from '../questions/QuestionBack';
 import RadioCard from '../RadioCard';
 import { Textbox } from '../Textbox';
 
@@ -38,7 +39,7 @@ export default function OnboardingQuestionPronouns() {
   });
 
   const { setOnboardingInfo } = useOnboardingContext();
-  const { advanceToQuestion } = useQuestionAdvancer();
+  const { nextQuestion } = useQuestionNavigaton();
 
   const onSubmit = ({
     other,
@@ -50,7 +51,7 @@ export default function OnboardingQuestionPronouns() {
     const pronouns = pronounsChoice.toLowerCase();
 
     setOnboardingInfo(prev => ({ ...prev, pronouns }));
-    advanceToQuestion(3);
+    nextQuestion();
   };
 
   const selectedPronoun = watch('pronounOption');
@@ -94,9 +95,12 @@ export default function OnboardingQuestionPronouns() {
         </div>
       </div>
 
-      <Button variant="primary" type="submit">
-        Next
-      </Button>
+      <div className="flex items-center justify-between">
+        <QuestionBack />
+        <Button variant="primary" type="submit">
+          Next
+        </Button>
+      </div>
     </form>
   );
 }

@@ -10,9 +10,9 @@ export default function StagePre() {
     <div className="flex max-w-120 flex-col gap-6 rounded-lg bg-gray-1 p-8">
       <QuestionsContextProvider
         questions={[
-          QuestionSeekingRomance,
-          QuestionIncarcerated,
-          QuestionSuccess,
+          <QuestionSeekingRomance key="seekingRomance" />,
+          <QuestionIncarcerated key="incarcerated" />,
+          <QuestionSuccess key="success" />,
         ]}
       >
         <ProgressBar />

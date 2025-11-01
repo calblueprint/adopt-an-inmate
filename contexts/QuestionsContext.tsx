@@ -5,7 +5,7 @@ import { createContext, useContext, useState } from 'react';
 interface QuestionsContextProps {
   questionsCompleted: number;
   setQuestionsCompleted: React.Dispatch<React.SetStateAction<number>>;
-  questions: React.FunctionComponent[];
+  questions: React.ReactNode[];
 }
 
 const QuestionsContext = createContext<QuestionsContextProps | null>(null);
@@ -24,7 +24,7 @@ export function QuestionsContextProvider({
   questions,
 }: {
   children: React.ReactNode;
-  questions: React.FunctionComponent[];
+  questions: React.ReactNode[];
 }) {
   const [questionsCompleted, setQuestionsCompleted] = useState<number>(0);
 

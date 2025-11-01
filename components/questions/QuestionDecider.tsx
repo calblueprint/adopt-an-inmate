@@ -8,7 +8,7 @@ import {
 export default function QuestionDecider() {
   useSequenceSkipBlocker();
 
-  const Question = useCurrentQuestionElement();
+  const question = useCurrentQuestionElement();
 
-  return <Question />;
+  return <>{question}</>;
 }

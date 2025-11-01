@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useEffect, useMemo } from 'react';
+import { Fragment, useCallback, useEffect, useMemo } from 'react';
 import { notFound, useRouter, useSearchParams } from 'next/navigation';
 import { useQuestionsContext } from '@/contexts/QuestionsContext';
 
@@ -84,4 +84,29 @@ export const useCurrentQuestionElement = () => {
   if (currentQuestion < questions.length) return questions[currentQuestion];
 
   throw notFound();
+};
+
+/**
+ * Provides a helper function that abstracts logic
+ * to advance to the next question.
+ */
+export const useQuestionAdvancer = () => {
+  const { setQuestionsCompleted } = useQuestionsContext();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const advanceToQuestion = useCallback(
+    (currentQuestion: number) => {
+      setQuestionsCompleted(prev =>
+        prev >= currentQuestion ? prev : currentQuestion,
+      );
+
+      const params = new URLSearchParams(searchParams);
+      params.set('q', `${currentQuestion}`);
+      router.push(`?${params.toString()}`);
+    },
+    [searchParams, router, setQuestionsCompleted],
+  );
+
+  return { advanceToQuestion };
 };

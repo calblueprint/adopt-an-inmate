@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 import OnboardingQuestionDOB from '@/components/onboarding/OnboardingQuestionDOB';
+import OnboardingQuestionGender from '@/components/onboarding/OnboardingQuestionGender';
 import OnboardingQuestionName from '@/components/onboarding/OnboardingQuestionName';
+import OnboardingQuestionPronouns from '@/components/onboarding/OnboardingQuestionPronouns';
 import ProgressBar from '@/components/questions/ProgressBar';
 import QuestionDecider from '@/components/questions/QuestionDecider';
 import { OnboardingProvider } from '@/contexts/OnboardingContext';
@@ -21,6 +23,8 @@ export default function OnboardingPage() {
               questions={[
                 <OnboardingQuestionName key="name" />,
                 <OnboardingQuestionDOB key="dob" />,
+                <OnboardingQuestionPronouns key="pronouns" />,
+                <OnboardingQuestionGender key="gender" />,
               ]}
             >
               <ProgressBar />

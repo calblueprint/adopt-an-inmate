@@ -37,7 +37,7 @@ export default function OnboardingQuestionGender() {
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <header className="flex flex-col gap-2">
-        <h1>What are your preferred pronouns?</h1>
+        <h1>What is your gender?</h1>
       </header>
 
       <div className="flex flex-col gap-4">

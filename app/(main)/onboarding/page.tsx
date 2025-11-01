@@ -4,6 +4,7 @@ import OnboardingQuestionDOB from '@/components/onboarding/OnboardingQuestionDOB
 import OnboardingQuestionGender from '@/components/onboarding/OnboardingQuestionGender';
 import OnboardingQuestionName from '@/components/onboarding/OnboardingQuestionName';
 import OnboardingQuestionPronouns from '@/components/onboarding/OnboardingQuestionPronouns';
+import OnboardingQuestionState from '@/components/onboarding/OnboardingQuestionState';
 import ProgressBar from '@/components/questions/ProgressBar';
 import QuestionDecider from '@/components/questions/QuestionDecider';
 import { OnboardingProvider } from '@/contexts/OnboardingContext';
@@ -17,7 +18,7 @@ export default function OnboardingPage() {
       </Link>
 
       <div className="flex size-full flex-col items-center justify-center">
-        <div className="flex max-w-120 flex-col gap-6 rounded-lg bg-gray-1 p-8">
+        <div className="flex w-9/10 flex-col gap-6 rounded-lg bg-gray-1 p-8 sm:w-[clamp(400px,50%,500px)]">
           <OnboardingProvider>
             <QuestionsContextProvider
               questions={[
@@ -25,6 +26,7 @@ export default function OnboardingPage() {
                 <OnboardingQuestionDOB key="dob" />,
                 <OnboardingQuestionPronouns key="pronouns" />,
                 <OnboardingQuestionGender key="gender" />,
+                <OnboardingQuestionState key="state" />,
               ]}
             >
               <ProgressBar />

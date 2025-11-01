@@ -1,13 +1,22 @@
+import QuestionDecider from '@/components/questions/QuestionDecider';
 import { QuestionsContextProvider } from '@/contexts/QuestionsContext';
-import PreAppQuestionDecider from '../pre/PreAppQuestionDecider';
-import ProgressBar from '../ProgressBar';
+import ProgressBar from '../../questions/ProgressBar';
+import QuestionIncarcerated from '../pre/QuestionIncarcerated';
+import QuestionSeekingRomance from '../pre/QuestionSeekingRomance';
+import QuestionSuccess from '../pre/QuestionSuccess';
 
 export default function StagePre() {
   return (
     <div className="flex max-w-120 flex-col gap-6 rounded-lg bg-gray-1 p-8">
-      <QuestionsContextProvider numQuestions={2}>
+      <QuestionsContextProvider
+        questions={[
+          QuestionSeekingRomance,
+          QuestionIncarcerated,
+          QuestionSuccess,
+        ]}
+      >
         <ProgressBar />
-        <PreAppQuestionDecider />
+        <QuestionDecider />
       </QuestionsContextProvider>
     </div>
   );

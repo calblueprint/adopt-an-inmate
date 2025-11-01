@@ -7,8 +7,6 @@ import { Button } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 
-// import { Profile } from '@/utils/schema';
-
 export default function OnboardingPage() {
   const router = useRouter();
   const supabase = getSupabaseBrowserClient();

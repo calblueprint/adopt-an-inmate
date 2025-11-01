@@ -12,7 +12,6 @@ export default function OnboardingPage() {
   const supabase = getSupabaseBrowserClient();
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
   const [dateOfBirth, setDateOfBirth] = useState<string>('');
   const [pronouns, setPronouns] = useState<string>('');
   const [state, setState] = useState<string>('');
@@ -38,7 +37,6 @@ export default function OnboardingPage() {
         user_id: user.id,
         first_name: firstName,
         last_name: lastName,
-        email: email,
         date_of_birth: new Date(dateOfBirth),
         pronouns: pronouns,
         state: state,
@@ -76,13 +74,6 @@ export default function OnboardingPage() {
           placeholder="Last name"
           value={lastName}
           onChange={e => setLastName(e.target.value)}
-        />
-
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
         />
 
         <input

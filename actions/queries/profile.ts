@@ -1,7 +1,7 @@
 'use server';
 
 import { getSupabaseServerClient } from '@/lib/supabase';
-import { Profile } from '@/utils/schema';
+import { Profile } from '@/types/schema';
 
 export async function upsertProfile(profile: Profile) {
   const supabase = await getSupabaseServerClient();

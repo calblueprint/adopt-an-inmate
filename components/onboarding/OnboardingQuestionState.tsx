@@ -13,9 +13,16 @@ interface StateForm {
 }
 
 export default function OnboardingQuestionState() {
-  const { control, handleSubmit } = useForm<StateForm>();
-  const { setOnboardingInfo } = useOnboardingContext();
+  const { onboardingInfo, setOnboardingInfo } = useOnboardingContext();
   const { nextQuestion } = useQuestionNavigaton();
+
+  const { control, handleSubmit } = useForm<StateForm>({
+    defaultValues: {
+      state: onboardingInfo.state
+        ? statesDropdownOptions.find(d => d.value === onboardingInfo.state)
+        : undefined,
+    },
+  });
 
   const onSubmit = ({ state: stateOption }: StateForm) => {
     const state = stateOption.value;

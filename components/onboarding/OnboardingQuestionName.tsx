@@ -12,9 +12,15 @@ interface NameForm {
 }
 
 export default function OnboardingQuestionName() {
-  const { register, handleSubmit } = useForm<NameForm>();
-  const { setOnboardingInfo } = useOnboardingContext();
+  const { onboardingInfo, setOnboardingInfo } = useOnboardingContext();
   const { nextQuestion } = useQuestionNavigaton();
+
+  const { register, handleSubmit } = useForm<NameForm>({
+    defaultValues: {
+      firstName: onboardingInfo.firstName,
+      lastName: onboardingInfo.lastName,
+    },
+  });
 
   const onSubmit = ({ firstName, lastName }: NameForm) => {
     setOnboardingInfo(prev => ({ ...prev, firstName, lastName }));

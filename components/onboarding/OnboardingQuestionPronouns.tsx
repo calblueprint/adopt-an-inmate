@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
 import { useQuestionNavigaton } from '@/hooks/questions';
+import { OnboardingInfo } from '@/types/types';
 import { Button } from '../Button';
 import ErrorMessage from '../ErrorMessage';
 import QuestionBack from '../questions/QuestionBack';
@@ -28,7 +29,26 @@ const pronounsFormSchema = z
       });
   });
 
+const getDefaultValues = (
+  info: Partial<OnboardingInfo>,
+): z.infer<typeof pronounsFormSchema> | undefined => {
+  const pronouns = info.pronouns;
+  if (!pronouns) return undefined;
+
+  if (
+    pronouns === 'he/him' ||
+    pronouns === 'she/her' ||
+    pronouns === 'they/them'
+  )
+    return { pronounOption: pronouns, other: undefined };
+
+  return { pronounOption: 'other', other: pronouns };
+};
+
 export default function OnboardingQuestionPronouns() {
+  const { onboardingInfo, setOnboardingInfo } = useOnboardingContext();
+  const { nextQuestion } = useQuestionNavigaton();
+
   const {
     register,
     handleSubmit,
@@ -36,10 +56,8 @@ export default function OnboardingQuestionPronouns() {
     formState: { errors },
   } = useForm<z.infer<typeof pronounsFormSchema>>({
     resolver: zodResolver(pronounsFormSchema),
+    defaultValues: getDefaultValues(onboardingInfo),
   });
-
-  const { setOnboardingInfo } = useOnboardingContext();
-  const { nextQuestion } = useQuestionNavigaton();
 
   const onSubmit = ({
     other,

@@ -22,7 +22,7 @@ def fetch_top_k(embedding: list[float], supabase_client: Client, k: int = 5) -> 
     """Query Supabase for similar bios using vector similarity."""
     try: 
         response = supabase_client.rpc(
-            'get_top_k',
+            'find_top_k',
             {
                 'query_embedding': embedding,
                 'k': k

@@ -13,14 +13,14 @@ export const createRow = async (profile: Profile) => {
   const groupId = process.env.GROUP_ID ?? '';
 
   const columnIdTranslation = {
-    email: 'email_mkxaa4nv',
-    first_name: 'text_mkxajc44',
-    last_name: 'text_mkxagj75',
-    date_of_birth: 'date_mkxayxeq',
-    pronouns: 'color_mkxakj3m',
-    state: 'location_mkxazjsm',
-    veteran_status: 'dropdown_mkxajqkr',
-    user_id: '',
+    email: 'email_mkxah5b2',
+    first_name: 'text_mkxaz93r',
+    last_name: 'text_mkxa4ctx',
+    date_of_birth: 'date_mkxagkrj',
+    pronouns: 'color_mkxag5bm',
+    state: 'location_mkxage9t',
+    veteran_status: 'dropdown_mkxa18jg',
+    user_id: '', // blank on purpose
   };
 
   // process veteran status from boolean to "yes" or "no"

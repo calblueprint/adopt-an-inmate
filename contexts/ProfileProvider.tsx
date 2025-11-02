@@ -59,6 +59,7 @@ export default function ProfileProvider({ children }: ProfileProviderProps) {
   }, [userId]);
 
   useEffect(() => {
+    console.log('Loading user:', userId);
     loadProfile();
   }, [loadProfile]);
 

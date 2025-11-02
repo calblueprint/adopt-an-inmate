@@ -39,6 +39,7 @@ export default function ApplicationsPage() {
         throw new Error(result.error || 'Failed to generate embedding');
       }
       console.log('Generated Embedding:', result.embedding);
+      console.log('Similar bios:', result.similar_bios);
     } catch (error) {
       console.error(error);
     } finally {

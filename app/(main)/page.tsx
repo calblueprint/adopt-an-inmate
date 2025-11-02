@@ -22,7 +22,7 @@ export default function ApplicationsPage() {
   const onSubmit: SubmitHandler<FormInputs> = async data => {
     setIsLoading(true);
     try {
-      const response = await fetch('api/generate_embedding.py', {
+      const response = await fetch('api/embed_and_fetch.py', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,6 +39,7 @@ export default function ApplicationsPage() {
         throw new Error(result.error || 'Failed to generate embedding');
       }
       console.log('Generated Embedding:', result.embedding);
+      console.log('Similar bios:', result.similar_bios);
     } catch (error) {
       console.error(error);
     } finally {

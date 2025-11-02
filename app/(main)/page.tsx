@@ -66,7 +66,7 @@ export default function ApplicationsPage() {
           </Button>
         </form>
 
-        <CustomLink href="/app/1234567890">Applications page</CustomLink>
+        <p>Applications page</p>
         <CustomLink href="/app/1234567890">Sample app</CustomLink>
         <CustomLink href="/sign-up">Sign up</CustomLink>
         <CustomLink href="/login">Login</CustomLink>

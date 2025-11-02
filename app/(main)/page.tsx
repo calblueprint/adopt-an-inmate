@@ -22,7 +22,7 @@ export default function ApplicationsPage() {
   const onSubmit: SubmitHandler<FormInputs> = async data => {
     setIsLoading(true);
     try {
-      const response = await fetch('api/generate_embedding.py', {
+      const response = await fetch('api/embed_and_fetch.py', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

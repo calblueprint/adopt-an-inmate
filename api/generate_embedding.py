@@ -18,7 +18,7 @@ def embed_text(text: str, client) -> list[float]:
     except Exception as e:
         raise Exception(f"Hugging Face Client Error: {str(e)}")
     
-def fetch_top_k(embedding: list[float], supabase_client: Client, k: int = 5) -> list[float]:
+def fetch_top_k(embedding: list[float], supabase_client: Client, k: int = 4) -> list[float]:
     """Query Supabase for similar bios using vector similarity."""
     try: 
         response = supabase_client.rpc(
@@ -47,7 +47,7 @@ class handler(BaseHTTPRequestHandler):
             
             data = json.loads(body_string)
             bio = data.get('text')
-            k = data.get('k', 5)
+            k = data.get('k', 4)
 
             if not bio:
                 self.send_response(400)

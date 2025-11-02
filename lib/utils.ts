@@ -32,3 +32,30 @@ export function random(min: number, max: number): number {
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+/**
+ * Returns the site URL depending on environment.
+ */
+export const getSiteUrl = () => {
+  // environment variables set by Vercel when deployed
+  // if they don't exist, assume local testing environment
+  let url =
+    process?.env?.NEXT_PUBLIC_VERCEL_URL ??
+    process?.env?.NEXT_PUBLIC_SITE_URL ??
+    'http://localhost:3000/';
+
+  // prepend with https if it's not localhost
+  url = url.startsWith('http') ? url : `https://${url}`;
+
+  // ensure trailing /
+  url = url.endsWith('/') ? url : `${url}/`;
+
+  return url;
+};
+
+/**
+ * Async function to wait for a set number of milliseconds.
+ */
+export const sleep = async (ms: number) => {
+  await new Promise(resolve => setTimeout(() => resolve(0), ms));
+};

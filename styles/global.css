@@ -1,5 +1,103 @@
 @import 'tailwindcss';
 
 @theme default {
-  --color-primary: #0078e8; /* BP-Blue */
+  /* semantic colors */
+  --color-link: #1d69b3;
+  --color-error: #e94444;
+  --color-bg: #edebe9;
+
+  /* gray series */
+  --color-gray-1: #fcfcfd;
+  --color-gray-2: #f9f9fb;
+  --color-gray-3: #f0f0f3;
+  --color-gray-4: #e7e8ec;
+  --color-gray-5: #e0e1e7;
+  --color-gray-6: #d9dae1;
+  --color-gray-7: #cdced7;
+  --color-gray-8: #babbc7;
+  --color-gray-9: #8c8d99;
+  --color-gray-10: #81838d;
+  --color-gray-11: #62646d;
+  --color-gray-12: #1e1f24;
+
+  /* cyan series */
+  --color-cyan-1: #fafefe;
+  --color-cyan-2: #f4fbfb;
+  --color-cyan-3: #e1f8f6;
+  --color-cyan-4: #cdf2f0;
+  --color-cyan-5: #b8e9e8;
+  --color-cyan-6: #a3dddb;
+  --color-cyan-7: #87ccca;
+  --color-cyan-8: #5cb7b5;
+  --color-cyan-9: #126d6b;
+  --color-cyan-10: #005e5d;
+  --color-cyan-11: #217574;
+  --color-cyan-12: #1e4240;
+
+  /* red series */
+  --color-red-1: #fffdfc;
+  --color-red-2: #fff8f7;
+  --color-red-3: #fdebea;
+  --color-red-4: #ffdeda;
+  --color-red-5: #fed0cc;
+  --color-red-6: #f8c1bb;
+  --color-red-7: #eeada8;
+  --color-red-8: #e4948f;
+  --color-red-9: #af2028;
+  --color-red-10: #9d0119;
+  --color-red-11: #c5393a;
+  --color-red-12: #611d1e;
+
+  /* yellow series */
+  --color-yellow-1: #fefdfb;
+  --color-yellow-2: #fffbe8;
+  --color-yellow-3: #fff4bc;
+  --color-yellow-4: #ffea96;
+  --color-yellow-5: #ffdf70;
+  --color-yellow-6: #ffdf70;
+  --color-yellow-7: #eac364;
+  --color-yellow-8: #d8ab34;
+  --color-yellow-9: #ffd000;
+  --color-yellow-10: #ffc703;
+  --color-yellow-11: #9d7000;
+  --color-yellow-12: #473b1e;
+}
+
+@theme inline {
+  --font-bespoke: var(--font-bespoke);
+  --font-golos: var(--font-golos);
+}
+
+@layer base {
+  * {
+    @apply font-bespoke;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 500;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+  }
+
+  p,
+  div,
+  b,
+  i,
+  strong,
+  em,
+  span {
+    font-size: 1rem;
+  }
 }

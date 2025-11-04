@@ -20,6 +20,7 @@ export default function ProfilePage() {
       <CustomLink href="/">← Go back</CustomLink>
       <p>Profile page</p>
       <ProfileTest />
+      <button onClick={() => router.push('/profile/edit')}>Edit Profile</button>
       <button onClick={() => handleSignOut()}>Sign out</button>
     </div>
   );

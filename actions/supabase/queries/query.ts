@@ -23,3 +23,14 @@ export async function fetchTopK(embedding: number[], k_value: number) {
 
   return data;
 }
+
+export async function fetchApplication() {
+  //app_UUID: string
+  const { data, error } = await supabase.from('your_table_name').select('*');
+
+  if (error) {
+    throw new Error(`Error fetching data: ${error.message}`);
+  }
+
+  return data;
+}

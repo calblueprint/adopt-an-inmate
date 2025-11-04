@@ -18,6 +18,7 @@ export async function fetchTopK(embedding: number[], k_value: number) {
 }
 
 export async function fetchApplication(app_UUID: string) {
+  const supabase = await getSupabaseServerClient();
   const { data, error } = await supabase
     .from('adopter_applications_dummy')
     .select('*')
@@ -32,6 +33,7 @@ export async function fetchApplication(app_UUID: string) {
 }
 
 export async function fetchUserApplicationUUIDs(adopter_UUID: string) {
+  const supabase = await getSupabaseServerClient();
   const { data, error } = await supabase
     .from('adopter_applications_dummy')
     .select('*')

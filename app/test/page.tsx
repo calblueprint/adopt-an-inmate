@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import {
   fetchApplication,
   fetchUserApplicationUUIDs,
-} from '@/actions/supabase/queries/query';
+} from '@/actions/queries/query';
 
 export default function TestApplicationPage() {
   useEffect(() => {

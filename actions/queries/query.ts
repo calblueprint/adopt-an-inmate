@@ -8,7 +8,7 @@ export async function fetchTopK(
   k_value: number,
   gender: string | null = null,
   age: number | null = null,
-  veteran_status: boolean | null = false,
+  veteran_status: string | null = null,
   offense: string | null = null,
   state: string,
 ) {

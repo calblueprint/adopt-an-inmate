@@ -4,8 +4,8 @@ import { createContext, useContext, useState } from 'react';
 
 interface QuestionsContextProps {
   questionsCompleted: number;
-  numQuestions: number;
   setQuestionsCompleted: React.Dispatch<React.SetStateAction<number>>;
+  questions: React.ReactNode[];
 }
 
 const QuestionsContext = createContext<QuestionsContextProps | null>(null);
@@ -21,16 +21,16 @@ export const useQuestionsContext = () => {
 
 export function QuestionsContextProvider({
   children,
-  numQuestions,
+  questions,
 }: {
   children: React.ReactNode;
-  numQuestions: number;
+  questions: React.ReactNode[];
 }) {
   const [questionsCompleted, setQuestionsCompleted] = useState<number>(0);
 
   return (
     <QuestionsContext.Provider
-      value={{ questionsCompleted, numQuestions, setQuestionsCompleted }}
+      value={{ questionsCompleted, questions, setQuestionsCompleted }}
     >
       {children}
     </QuestionsContext.Provider>

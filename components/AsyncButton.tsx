@@ -8,12 +8,23 @@ export default function AsyncButton({
   onClick,
   disabled,
   children,
+  loading = false,
+  loadingClassName,
   ...props
-}: React.ComponentProps<typeof Button>) {
-  const [isProcessing, setIsProcessing] = useState(false);
+}: React.ComponentProps<typeof Button> & {
+  loading?: boolean;
+  loadingClassName?: string | undefined;
+}) {
+  const [isProcessing, setIsProcessing] = useState(loading);
 
   const handleClick = (fn?: React.MouseEventHandler<HTMLButtonElement>) => {
     return async (e: React.MouseEvent<HTMLButtonElement>) => {
+      // if loading is controlled, just call the function
+      if (loading) {
+        await fn?.(e);
+        return;
+      }
+
       setIsProcessing(true);
       await fn?.(e);
       setIsProcessing(false);
@@ -23,11 +34,13 @@ export default function AsyncButton({
   return (
     <Button
       onClick={handleClick(onClick)}
-      disabled={disabled || isProcessing}
+      disabled={loading || disabled || isProcessing}
       {...props}
     >
       {children}
-      {isProcessing && <LoadingSpinner className="ml-2" />}
+      {(loading || isProcessing) && (
+        <LoadingSpinner className={loadingClassName} />
+      )}
     </Button>
   );
 }

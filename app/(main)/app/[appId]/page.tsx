@@ -22,7 +22,7 @@ export default async function ApplicationDetailPage({
             appId,
             highestStageAchieved: 'pre',
             form: {},
-            draft: {},
+            matchId: null,
           }}
         >
           <DeciderStage />

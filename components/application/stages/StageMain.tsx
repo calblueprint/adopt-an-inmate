@@ -1,20 +1,21 @@
-'use client';
-
-import CustomLink from '@/components/CustomLink';
-import { useApplicationContext } from '@/contexts/ApplicationContext';
+import QuestionDecider from '@/components/questions/QuestionDecider';
+import { QuestionsContextProvider } from '@/contexts/QuestionsContext';
+import ProgressBar from '../../questions/ProgressBar';
+import MainQuestionBio from '../main/MainQuestionBio';
+import MainQuestionGender from '../main/MainQuestionGender';
 
 export default function StageMain() {
-  const { appState } = useApplicationContext();
-
   return (
-    <div className="flex flex-col pt-10">
-      <CustomLink href={`/app/${appState.appId}`}>
-        Back to pre application
-      </CustomLink>
-      <p>Main Application</p>
-      <CustomLink href={`/app/${appState.appId}?stage=matches`}>
-        View matches
-      </CustomLink>
+    <div className="flex w-9/10 flex-col gap-6 rounded-lg bg-gray-1 p-8 sm:w-[clamp(400px,50%,500px)]">
+      <QuestionsContextProvider
+        questions={[
+          <MainQuestionBio key="bio" />,
+          <MainQuestionGender key="genderPreference" />,
+        ]}
+      >
+        <ProgressBar />
+        <QuestionDecider />
+      </QuestionsContextProvider>
     </div>
   );
 }

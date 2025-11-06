@@ -1,13 +1,15 @@
 export interface ApplicationState {
   appId: string;
   highestStageAchieved: 'pre' | 'main' | 'matches' | 'submitted';
-  form: FormState;
-  draft: FormState;
+  form: Partial<FormState>;
+  matchId: string | null;
 }
 
 export interface FormState {
-  mainApp?: never;
-  matchId?: never;
+  bio: string;
+  genderPreference: 'male' | 'female' | 'no_preference';
+  whyAdopting?: string;
+  whyEnded?: string;
 }
 
 export interface EmailPasswordCredentials {

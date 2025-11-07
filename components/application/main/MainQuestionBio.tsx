@@ -2,7 +2,6 @@
 
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/Button';
-import QuestionBack from '@/components/questions/QuestionBack';
 import { TextArea } from '@/components/TextArea';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useQuestionNavigaton } from '@/hooks/questions';
@@ -35,14 +34,14 @@ export default function MainQuestionBio() {
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
           <label htmlFor="bio" className="text-sm text-gray-11">
-            Personal Bio
+            Personal bio
           </label>
           <TextArea id="bio" {...register('bio', { required: true })} />
         </div>
       </div>
 
       <div className="flex items-center justify-between">
-        <QuestionBack />
+        <div />
         <Button variant="primary" type="submit">
           Next
         </Button>

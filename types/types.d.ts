@@ -3,6 +3,7 @@ export interface ApplicationState {
   highestStageAchieved: 'pre' | 'main' | 'matches' | 'submitted';
   form: Partial<FormState>;
   matchId: string | null;
+  stillInCorrespondence: boolean;
 }
 
 export interface FormState {

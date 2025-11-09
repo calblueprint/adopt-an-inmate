@@ -2,7 +2,6 @@
 
 import { getSupabaseServerClient } from '@/lib/supabase';
 
-// Example query to fetch all rows from your_table_name
 export async function fetchTopK(
   embedding: number[],
   k_value: number,

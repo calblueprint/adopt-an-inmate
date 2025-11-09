@@ -16,7 +16,7 @@ export async function fetchTopK(
     query_embedding: embedding,
     k: k_value,
     adopter_gender: gender,
-    adopter_age: age,
+    adopter_age: age, //still need?
     adopter_veteran_status: veteran_status,
     adopter_offense: offense,
     adopter_state: state,

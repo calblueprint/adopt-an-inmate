@@ -2,7 +2,6 @@
 
 import CustomLink from '@/components/CustomLink';
 import ConfirmationDialog from '@/components/home/ConfirmationDialog';
-import LogoutButton from '@/components/LogoutButton';
 import StageMainDashboard from '@/components/StageMainDashboard';
 
 export default function ApplicationsPage() {

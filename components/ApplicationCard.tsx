@@ -1,13 +1,4 @@
-import Image from 'next/image';
-import CoolIconImg from '@/assets/images/coolicon.png';
-import UserIconImg from '@/assets/images/User_02.png';
 import { Button } from '@/components/Button';
-import CustomLink from '@/components/CustomLink';
-
-const applicationCardProps = {
-  name: 'Jane Doe',
-  status: 'Pending',
-};
 
 export default function ApplicationCard() {
   return (

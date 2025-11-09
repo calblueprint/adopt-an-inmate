@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import CoolIconImg from '@/assets/images/coolicon.png';
 import UserIconImg from '@/assets/images/User_02.png';
+import { Button } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
 
 const applicationCardProps = {
@@ -10,21 +11,16 @@ const applicationCardProps = {
 
 export default function ApplicationCard() {
   return (
-    <div className="flex flex-col rounded-2xl bg-gray-5 px-2 pt-2 pb-1">
-      <div className="flex flex-col gap-y-22 rounded-2xl bg-white py-2 pr-50 pl-5">
-        <Image src={UserIconImg} height={24} alt="Logo" priority />
-
-        <div>
-          <p className="text-sm font-medium">Jane Doe</p>
-          <p className="text-xs font-medium">Status: Pending</p>
+    <div className="flex w-55 flex-col rounded-2xl border-2 border-[#1E4240] bg-white">
+      <div className="flex flex-col gap-y-30">
+        <div className="flex flex-row justify-end pt-3 pr-3">
+          <Button variant="applicationCard">...</Button>
         </div>
-      </div>
 
-      <div className="flex flex-row justify-end gap-x-1 pt-1 pr-4 pb-1">
-        <CustomLink href="/app" variant="tertiary">
-          Go to app
-        </CustomLink>
-        <Image src={CoolIconImg} width={14} height={10} alt="Logo" priority />
+        <div className="flex flex-col pb-3 pl-3">
+          <p className="text-base text-red-12">10/10/2025</p>
+          <p className="text-xs text-gray-10">Status: Pending</p>
+        </div>
       </div>
     </div>
   );

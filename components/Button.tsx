@@ -12,6 +12,8 @@ const buttonStyle = cva('cursor-pointer block text-center', {
         'border border-gray-8 bg-gray-1 rounded-lg hover:bg-cyan-12 hover:text-gray-1 transition-colors px-2 py-1 cursor-pointer text-cyan-12',
       primary:
         'bg-cyan-12 hover:bg-cyan-10 rounded-lg transition-colors px-2.5 py-2.5 cursor-pointer text-gray-1',
+      applicationCard: 'bg-[#F7F7FA] rounded-lg text-black px-2 pt-1 pb-2',
+      applicationMainPage: 'bg-cyan-9 text-yellow-1 rounded-lg py-3 px-4',
     },
   },
   defaultVariants: {

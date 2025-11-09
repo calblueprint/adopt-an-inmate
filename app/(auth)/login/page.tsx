@@ -1,12 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { loginWithEmailPassword } from '@/actions/auth';
+import { fetchTopK } from '@/actions/queries/query'; //delete after testing
 import { Button, ButtonLink } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
 import { Textbox } from '@/components/Textbox';
+
+//delete after testing
 
 interface LoginForm {
   email: string;
@@ -14,6 +17,32 @@ interface LoginForm {
 }
 
 export default function LoginPage() {
+  // TESTING HIERARCHICAL FILTER
+  // -----------------------------
+  useEffect(() => {
+    const testHierarchicalFilter = async () => {
+      try {
+        const result = await fetchTopK(
+          [
+            /* example embedding array */
+          ],
+          3, // k value
+          'female', // gender
+          25, // age
+          null, // veteran_status
+          'theft', // offense
+          'CA', // state
+        );
+        console.log('Hierarchical filter result:', result);
+      } catch (err) {
+        console.error('Error testing hierarchical filter:', err);
+      }
+    };
+
+    testHierarchicalFilter();
+  }, []);
+  // -----------------------------
+
   const {
     register,
     handleSubmit,

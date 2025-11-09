@@ -23,7 +23,7 @@ export default function MainDashboard() {
           </div>
 
           <div>
-            <ButtonLink href="/app/1234567890" variant="applicationMainPage">
+            <ButtonLink href="/app/1234567890" variant="tertiary">
               New Application
             </ButtonLink>
           </div>

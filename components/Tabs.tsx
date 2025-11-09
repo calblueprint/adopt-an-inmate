@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Tabs } from 'radix-ui';
-import ApplicationCard from './application/stages/ApplicationCard';
+import ApplicationCard from './ApplicationCard';
 
 const TabsDemo = () => (
   <Tabs.Root className="flex flex-col" defaultValue="active">

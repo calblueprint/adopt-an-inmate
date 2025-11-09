@@ -12,7 +12,3 @@ export default function LogoutButton() {
     </div>
   );
 }
-
-// px-4
-// pt-4
-// pb-2

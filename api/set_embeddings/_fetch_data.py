@@ -1,5 +1,4 @@
-import datetime
-from pytz import timezone
+from datetime import datetime, timezone, timedelta
 import requests
 import json
 from _config import (
@@ -41,13 +40,17 @@ class MondayBoardFetcher:
 
   def _build_query(self, since_date_str: str, is_initial=True, cursor=None):
     column_ids_list = list(MONDAY_COLUMN_IDS.values())
-    query_params_str = f'query_params: {{ group_id: "{self.GROUP_ID}", rules: [{{ "column_id": "last_updated__1", "compare_value": ["{since_date_str}"], "operator": "greater_than" }}] }}'
-    cursor_str = '' if is_initial else f', cursor: "{cursor}"'
+    if is_initial:
+        query_params_str = f'query_params: {{ rules: [{{ column_id: "last_updated__1", compare_value: ["EXACT", "{since_date_str}"], operator: greater_than_or_equals, compare_attribute: "UPDATED_AT" }}] }}'
+        cursor_str = ''
+    else:
+        query_params_str = ''
+        cursor_str = f'cursor: "{cursor}"'
 
     return f"""query {{
       boards(ids: {self.BOARD_ID}) {{
         name
-        items_page (limit: 100, {query_params_str}{cursor_str}) {{
+        items_page (limit: 100, {query_params_str}{',' if query_params_str and cursor_str else ''}{cursor_str}) {{
           cursor
           items {{
             id 
@@ -91,16 +94,14 @@ class MondayBoardFetcher:
     return cursor, adoptee_batch
 
   def fetch_data(self):
-    one_month_ago = datetime.now(timezone.utc) - datetime.timedelta(days=31)
-    since_date_str = one_month_ago.strftime('%Y-%m-%dT%H:%M:%SZ')   # ISO 8601 format for Monday.com
+    one_month_ago = datetime.now(timezone.utc) - timedelta(days=31)
+    since_date_str = one_month_ago.strftime('%Y-%m-%d')
 
-    print(f"Fetching all items updated since: {since_date_str}")
-    
     initial_query = self._build_query(is_initial=True, since_date_str=since_date_str)
     curr_cursor, full_bios = self._fetch_page(query=initial_query)
 
     while curr_cursor:
-      next_query = self._build_query(is_initial=False, cursor=curr_cursor)
+      next_query = self._build_query(is_initial=False, cursor=curr_cursor, since_date_str=since_date_str)
       try:
         next_cursor, next_page = self._fetch_page(next_query)
         curr_cursor = next_cursor
@@ -133,6 +134,5 @@ class MondayBoardFetcher:
       adoptee_data_dict[record_id] = record   
 
     adoptee_table_data = list(adoptee_data_dict.values())
-    print(adoptee_table_data)
     
     return adoptee_table_data

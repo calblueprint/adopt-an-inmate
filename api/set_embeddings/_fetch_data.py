@@ -1,3 +1,4 @@
+from datetime import datetime, timezone, timedelta
 import requests
 import json
 from _config import (
@@ -34,14 +35,22 @@ class MondayBoardFetcher:
     self.API_KEY = MONDAY_API_KEY
     self.API_URL = MONDAY_API_URL
     self.HEADERS = {"Authorization": self.API_KEY, "API-Version": MONDAY_API_VERSION}
+    self.GROUP_ID = MONDAY_GROUP_ID
     self.BOARD_ID = MONDAY_BOARD_ID
 
-  def _build_query(self, is_initial=True, cursor=None):
+  def _build_query(self, since_date_str: str, is_initial=True, cursor=None):
     column_ids_list = list(MONDAY_COLUMN_IDS.values())
+    if is_initial:
+        query_params_str = f'query_params: {{ rules: [{{ column_id: "last_updated__1", compare_value: ["EXACT", "{since_date_str}"], operator: greater_than_or_equals, compare_attribute: "UPDATED_AT" }}] }}'
+        cursor_str = ''
+    else:
+        query_params_str = ''
+        cursor_str = f'cursor: "{cursor}"'
+
     return f"""query {{
       boards(ids: {self.BOARD_ID}) {{
         name
-        items_page (limit: 100{'' if is_initial else f', cursor: "{cursor}"'}) {{
+        items_page (limit: 100, {query_params_str}{',' if query_params_str and cursor_str else ''}{cursor_str}) {{
           cursor
           items {{
             id 
@@ -85,11 +94,14 @@ class MondayBoardFetcher:
     return cursor, adoptee_batch
 
   def fetch_data(self):
-    initial_query = self._build_query(is_initial=True)
+    one_month_ago = datetime.now(timezone.utc) - timedelta(days=31)
+    since_date_str = one_month_ago.strftime('%Y-%m-%d')
+
+    initial_query = self._build_query(is_initial=True, since_date_str=since_date_str)
     curr_cursor, full_bios = self._fetch_page(query=initial_query)
 
     while curr_cursor:
-      next_query = self._build_query(is_initial=False, cursor=curr_cursor)
+      next_query = self._build_query(is_initial=False, cursor=curr_cursor, since_date_str=since_date_str)
       try:
         next_cursor, next_page = self._fetch_page(next_query)
         curr_cursor = next_cursor

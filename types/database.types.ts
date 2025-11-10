@@ -229,18 +229,27 @@ export type Database = {
       };
       find_top_k_filtered: {
         Args: {
-          adopter_age: number;
-          adopter_gender: string;
-          adopter_offense: string;
-          adopter_state: string;
-          adopter_veteran_status: boolean;
+          query_embedding: number[];
           k: number;
-          query_embedding: string;
+          adopter_gender: string | null;
+          adopter_age: number | null;
+          adopter_veteran_status: string | null;
+          adopter_offense: string | null;
+          adopter_state: string | null;
         };
         Returns: {
-          bio: string;
-          embedding: string;
           id: string;
+          embedding: number[];
+          bio: string;
+          gender: string;
+          veteran_status: string;
+          offense: string;
+          state: string;
+          first_name: string;
+          last_name: string;
+          facility: string;
+          adopted: boolean;
+          dob: string | null; // Postgres date comes as string
           similarity: number;
         }[];
       };

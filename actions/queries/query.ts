@@ -2,12 +2,24 @@
 
 import { getSupabaseServerClient } from '@/lib/supabase';
 
-// Example query to fetch all rows from your_table_name
-export async function fetchTopK(embedding: number[], k_value: number) {
+export async function fetchTopK(
+  embedding: number[],
+  k_value: number,
+  gender: string | null = null,
+  age: number | null = null,
+  veteran_status: string | null = null,
+  offense: string | null = null,
+  state: string,
+) {
   const supabase = await getSupabaseServerClient();
-  const { data, error } = await supabase.rpc('find_top_k', {
-    query_embedding: JSON.stringify(embedding),
+  const { data, error } = await supabase.rpc('find_top_k_filtered', {
+    query_embedding: embedding,
     k: k_value,
+    adopter_gender: gender,
+    adopter_age: age,
+    adopter_veteran_status: veteran_status,
+    adopter_offense: offense,
+    adopter_state: state,
   });
 
   if (error) {

@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, ButtonLink } from './Button';
+import { ButtonLink } from './Button';
 import LogoutButton from './LogoutButton';
 import TabsDemo from './Tabs';
 
@@ -20,7 +20,7 @@ export default function MainDashboard() {
             </p>
           </div>
 
-          <ButtonLink href="/pre-application" variant="applicationMainPage">
+          <ButtonLink href="/app/" variant="applicationMainPage">
             New Application
           </ButtonLink>
         </div>

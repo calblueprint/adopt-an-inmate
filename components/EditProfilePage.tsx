@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { UUID } from 'crypto';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 import { Profile } from '@/utils/schema';
 

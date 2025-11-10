@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { fetchProfileById } from '@/actions/queries/profile';
 import EditProfileForm from '@/components/EditProfilePage';
 import { getSupabaseServerClient } from '@/lib/supabase/server';
@@ -9,13 +10,13 @@ export default async function EditProfilePage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return <div>Please log in to edit your profile.</div>;
+    redirect('/login');
   }
 
   const profile = await fetchProfileById(user.id);
 
   if (!profile) {
-    return <div>No profile found for this user. Please create one first.</div>;
+    redirect('/login');
   }
 
   return (

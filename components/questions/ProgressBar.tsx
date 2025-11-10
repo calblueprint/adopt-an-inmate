@@ -11,7 +11,7 @@ export default function ProgressBar({
   stepsToSkip?: number;
 }) {
   const currentQuestion = useCurrentQuestion();
-  const { questionsCompleted, questions } = useQuestionsContext();
+  const { questions } = useQuestionsContext();
   const numQuestions = useMemo(
     () => Math.max(0, questions.length - stepsToSkip),
     [questions, stepsToSkip],
@@ -22,7 +22,7 @@ export default function ProgressBar({
       className={cn('flex gap-1', currentQuestion >= numQuestions && 'hidden')}
     >
       {[...Array(numQuestions).keys()].map((k, idx) => (
-        <ProgressBarNode key={k} highlighted={idx < questionsCompleted} />
+        <ProgressBarNode key={k} highlighted={idx < currentQuestion} />
       ))}
     </div>
   );

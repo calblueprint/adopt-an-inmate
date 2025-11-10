@@ -6,12 +6,11 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
-import { UUID } from 'crypto';
-import { fetchProfileById, upsertProfile } from '@/api/set_embeddings/profiles';
-import { Profile } from '@/utils/schema';
+import Logger from '@/actions/logging';
+import { fetchProfileById, upsertProfile } from '@/actions/queries/profile';
+import { Profile } from '@/types/schema';
 import { useAuth } from './AuthProvider';
 
 type ProfileContextType = {
@@ -49,10 +48,10 @@ export default function ProfileProvider({ children }: ProfileProviderProps) {
 
     try {
       setProfileReady(false);
-      const fetchedProfile = await fetchProfileById(userId as UUID);
+      const fetchedProfile = await fetchProfileById(userId);
       setProfileData(fetchedProfile);
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      Logger.error(`Error fetching profile: ${error}`);
     } finally {
       setProfileReady(true);
     }
@@ -67,21 +66,20 @@ export default function ProfileProvider({ children }: ProfileProviderProps) {
       const updatedProfile = await upsertProfile(profile);
       setProfileData(updatedProfile);
     } catch (error) {
-      console.error('Error updating profile:', error);
+      Logger.error(`Error updating profile ${error}`);
     }
   }, []);
 
-  const value = useMemo(
-    () => ({
-      profileData,
-      profileReady,
-      loadProfile,
-      setProfile,
-    }),
-    [profileData, profileReady, loadProfile, setProfile],
-  );
-
   return (
-    <ProfileContext.Provider value={value}>{children}</ProfileContext.Provider>
+    <ProfileContext.Provider
+      value={{
+        profileData,
+        profileReady,
+        loadProfile,
+        setProfile,
+      }}
+    >
+      {children}
+    </ProfileContext.Provider>
   );
 }

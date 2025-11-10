@@ -6,25 +6,63 @@ export async function fetchTopK(
   embedding: number[],
   k_value: number,
   gender: string | null = null,
-  age: number | null = null,
   veteran_status: string | null = null,
   offense: string | null = null,
   state: string,
 ) {
-  const supabase = await getSupabaseServerClient();
-  const { data, error } = await supabase.rpc('find_top_k_filtered', {
-    query_embedding: embedding,
-    k: k_value,
-    adopter_gender: gender,
-    adopter_age: age, //still need?
-    adopter_veteran_status: veteran_status,
-    adopter_offense: offense,
-    adopter_state: state,
-  });
+  async function filterHelper(
+    embedding: number[],
+    k_value: number,
+    gender: string | null = null,
+    veteran_status: string | null = null,
+    offense: string | null = null,
+    state: string,
+    num_filters: number,
+  ) {
+    const supabase = await getSupabaseServerClient();
+    const { data, error } = await supabase.rpc('find_top_k_filtered', {
+      query_embedding: embedding,
+      k: k_value,
+      adopter_gender: gender,
+      adopter_veteran_status: veteran_status,
+      adopter_offense: offense,
+      adopter_state: state,
+      num_filters: num_filters,
+    });
 
-  if (error) {
-    throw new Error(`Error fetching top k vectors: ${error.message}`);
+    if (error) {
+      throw new Error(`Error fetching top k vectors: ${error.message}`);
+    }
+
+    return data;
   }
+
+  let num_filters = 4; // offense, gender, veteran_status, state
+  let data = await filterHelper(
+    embedding,
+    k_value,
+    gender,
+    veteran_status,
+    offense,
+    state,
+    num_filters,
+  );
+  while (num_filters == 4 || data.length == 0) {
+    data = await filterHelper(
+      embedding,
+      k_value,
+      gender,
+      veteran_status,
+      offense,
+      state,
+      num_filters,
+    );
+    num_filters--;
+  }
+
+  // if (error) {
+  //   throw new Error(`Error fetching top k vectors: ${error.message}`);
+  // }
 
   return data;
 }

@@ -103,7 +103,6 @@ export default function LoginPage() {
           ],
           3, // k value
           'lorem ipsum', // gender
-          null, // age
           null, // veteran_status
           'Murder', // offense
           'lorem ipsum', // state, none for wyoming

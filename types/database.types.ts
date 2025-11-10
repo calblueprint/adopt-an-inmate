@@ -232,10 +232,10 @@ export type Database = {
           query_embedding: number[];
           k: number;
           adopter_gender: string | null;
-          adopter_age: number | null;
           adopter_veteran_status: string | null;
           adopter_offense: string | null;
           adopter_state: string | null;
+          num_filters: number;
         };
         Returns: {
           id: string;

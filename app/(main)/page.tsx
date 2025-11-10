@@ -1,6 +1,5 @@
 'use client';
 
-import CustomLink from '@/components/CustomLink';
 import ConfirmationDialog from '@/components/home/ConfirmationDialog';
 import StageMainDashboard from '@/components/StageMainDashboard';
 
@@ -11,7 +10,7 @@ export default function ApplicationsPage() {
       <ConfirmationDialog />
 
       {/* application page */}
-      <main className="flex h-full w-full flex-col items-center pt-7">
+      <main className="flex py-7">
         <StageMainDashboard />
       </main>
     </>

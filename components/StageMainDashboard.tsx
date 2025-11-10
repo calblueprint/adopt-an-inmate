@@ -6,7 +6,7 @@ import TabsDemo from './Tabs';
 
 export default function StageMainDashboard() {
   return (
-    <div className="bg-grey-3 flex flex-row gap-7">
+    <div className="bg-grey-3 flex flex-row gap-7 border-2 pl-3">
       <div>
         <LogoutButton />
       </div>
@@ -20,10 +20,14 @@ export default function StageMainDashboard() {
             </p>
           </div>
 
-          <Button variant="applicationMainPage">New Application</Button>
+          <div>
+            <Button variant="applicationMainPage">New Application</Button>
+          </div>
         </div>
 
-        <TabsDemo />
+        <div className="flex border-2">
+          <TabsDemo />
+        </div>
       </div>
     </div>
   );

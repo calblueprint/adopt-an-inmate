@@ -54,7 +54,7 @@ export default function MainQuestionGender() {
           error={errors.genderPreference?.message}
         />
         <div className="flex flex-col gap-1">
-          <p className="text-sm text-gray-11">Veteran status</p>
+          <p className="text-sm text-gray-11">Gender preference</p>
           <div className="flex flex-col gap-2">
             <RadioCard value="male" {...register('genderPreference')}>
               <p>Male</p>

@@ -42,9 +42,10 @@ export async function fetchTopK(
   let curr_filters = 4; // offense, gender, veteran_status, state
   let data: AdopteeRow[] = [];
 
-  while (curr_filters == 4 || data.length == 0) {
-    // if first run or no results
-    data = await filterHelper(curr_filters); // call helper
+  while (curr_filters == 4 || data.length < k_value) {
+    // run if first call or less than k rows total
+    const new_data = await filterHelper(curr_filters); // call helper
+    data = data.concat(new_data); // append new data
     curr_filters--; // decrement num of filters in case no rows return
   }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useProfile } from '@/contexts/ProfileProvider'; // adjust path if needed
+import { useProfile } from '@/contexts/ProfileProvider';
 
 export default function ProfileTest() {
   const { profileData, profileReady } = useProfile();

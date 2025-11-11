@@ -1,29 +1,16 @@
-import autoEmailSender from '@/actions/emails/email';
+import { createRow } from '@/actions/monday/mutation';
 
 export async function GET() {
-  if (typeof process.env.TESTING_EMAIL_ADDRESS === 'undefined') {
-    throw new Error('Sender address is undefined');
-  }
-
-  if (typeof process.env.TESTING_EMAIL_APP_PASSWORD === 'undefined') {
-    throw new Error('Sender app password is undefined');
-  }
-
-  if (typeof process.env.TESTING_EMAIL_RECIPIENT === 'undefined') {
-    throw new Error('Recipient is undefined');
-  }
-
-  await autoEmailSender(
-    process.env.TESTING_EMAIL_ADDRESS,
-    process.env.TESTING_EMAIL_APP_PASSWORD,
-    'NAME',
-    'TEXT',
-    'SUBJECT',
-    process.env.TESTING_EMAIL_RECIPIENT,
-  ).catch(err => {
-    console.error('Error sending email:', err);
-    process.exit(1);
+  const { success, error } = await createRow({
+    date_of_birth: new Date().toISOString().split('T')[0],
+    first_name: 'First',
+    last_name: 'Last',
+    pronouns: 'he/him',
+    state: 'California',
+    user_id: 'asd',
+    veteran_status: false,
   });
 
-  return new Response('hello');
+  if (success) return new Response('Row inserted successfully.');
+  return new Response(`${new String(error)}`);
 }

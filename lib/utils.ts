@@ -59,3 +59,10 @@ export const getSiteUrl = () => {
 export const sleep = async (ms: number) => {
   await new Promise(resolve => setTimeout(() => resolve(0), ms));
 };
+
+/**
+ * Asserts that an environment variable exists.
+ */
+export const assertEnvVarExists = (key: string) => {
+  if (!process.env[key]) throw new Error(`Could not find ${key}, is it set?`);
+};

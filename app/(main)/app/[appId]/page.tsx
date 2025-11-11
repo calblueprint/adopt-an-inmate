@@ -17,12 +17,14 @@ export default async function ApplicationDetailPage({
       </Link>
 
       <div className="flex size-full flex-col items-center justify-center">
+        {/* TODO: fetch app state from db and pass to context */}
         <ApplicationContextProvider
           defaultAppState={{
             appId,
             highestStageAchieved: 'pre',
             form: {},
-            draft: {},
+            matchId: null,
+            stillInCorrespondence: false,
           }}
         >
           <DeciderStage />

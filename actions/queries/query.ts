@@ -6,6 +6,10 @@ import { Database } from '@/types/database.types';
 type AdopteeRow =
   Database['public']['Functions']['find_top_k_filtered']['Returns'][number];
 
+/* Fetch top k (by simliaity) adoptee rows with hierarchical filtering:
+ * Start with all filters applied. If no results, progressively drop filters
+ * starting with state, then veteran_status, and finally gender.
+ */
 export async function fetchTopK(
   embedding: number[],
   k_value: number,
@@ -16,6 +20,7 @@ export async function fetchTopK(
 ) {
   const supabase = await getSupabaseServerClient();
 
+  // helper function that makes call to supabase, takes in num of filters to use
   async function filterHelper(num_filters: number): Promise<AdopteeRow[]> {
     const { data, error } = await supabase.rpc('find_top_k_filtered', {
       query_embedding: embedding,
@@ -36,9 +41,11 @@ export async function fetchTopK(
 
   let curr_filters = 4; // offense, gender, veteran_status, state
   let data: AdopteeRow[] = [];
+
   while (curr_filters == 4 || data.length == 0) {
-    data = await filterHelper(curr_filters);
-    curr_filters--;
+    // if first run or no results
+    data = await filterHelper(curr_filters); // call helper
+    curr_filters--; // decrement num of filters in case no rows return
   }
 
   return data;

@@ -13,13 +13,17 @@ interface LoginForm {
   email: string;
   password: string;
 }
-
 export default function LoginPage() {
   // TESTING HIERARCHICAL FILTER
   // -----------------------------
   useEffect(() => {
     const testHierarchicalFilter = async () => {
       try {
+        const k_value = 3;
+        const gender = 'lorem ipsum';
+        const veteran_status = null;
+        const offense = null;
+        const state = 'Florida';
         const result = await fetchTopK(
           [
             0.003245466, -0.13506275, 0.101707876, 0.060479958, 0.0260059,
@@ -101,11 +105,19 @@ export default function LoginPage() {
             0.080274835, -0.01720372, 0.02334949, 0.05575293, -0.031834275,
             -0.072909355, -0.025316536,
           ],
-          3, // k value
-          'lorem ipsum', // gender
-          null, // veteran_status
-          'Murder', // offense
-          'lorem ipsum', // state, none for wyoming
+          k_value,
+          gender,
+          veteran_status,
+          offense,
+          state,
+        );
+        console.log(
+          'Passed: ',
+          k_value,
+          gender,
+          veteran_status,
+          offense,
+          state,
         );
         console.log('Hierarchical filter result:', result);
       } catch (err) {

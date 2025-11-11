@@ -249,7 +249,7 @@ export type Database = {
           last_name: string;
           facility: string;
           adopted: boolean;
-          dob: string | null; // Postgres date comes as string
+          age: number;
           similarity: number;
         }[];
       };

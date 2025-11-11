@@ -1,6 +1,10 @@
 'use server';
 
 import { getSupabaseServerClient } from '@/lib/supabase';
+import { Database } from '@/types/database.types';
+
+type AdopteeRow =
+  Database['public']['Functions']['find_top_k_filtered']['Returns'][number];
 
 export async function fetchTopK(
   embedding: number[],
@@ -10,16 +14,9 @@ export async function fetchTopK(
   offense: string | null = null,
   state: string,
 ) {
-  async function filterHelper(
-    embedding: number[],
-    k_value: number,
-    gender: string | null = null,
-    veteran_status: string | null = null,
-    offense: string | null = null,
-    state: string,
-    num_filters: number,
-  ) {
-    const supabase = await getSupabaseServerClient();
+  const supabase = await getSupabaseServerClient();
+
+  async function filterHelper(num_filters: number): Promise<AdopteeRow[]> {
     const { data, error } = await supabase.rpc('find_top_k_filtered', {
       query_embedding: embedding,
       k: k_value,
@@ -27,7 +24,7 @@ export async function fetchTopK(
       adopter_veteran_status: veteran_status,
       adopter_offense: offense,
       adopter_state: state,
-      num_filters: num_filters,
+      num_filters,
     });
 
     if (error) {
@@ -37,32 +34,13 @@ export async function fetchTopK(
     return data;
   }
 
-  let num_filters = 4; // offense, gender, veteran_status, state
-  let data = await filterHelper(
-    embedding,
-    k_value,
-    gender,
-    veteran_status,
-    offense,
-    state,
-    num_filters,
-  );
-  while (num_filters == 4 || data.length == 0) {
-    data = await filterHelper(
-      embedding,
-      k_value,
-      gender,
-      veteran_status,
-      offense,
-      state,
-      num_filters,
-    );
-    num_filters--;
+  let curr_filters = 4; // offense, gender, veteran_status, state
+  let data: AdopteeRow[] = [];
+  while (curr_filters == 4 || data.length == 0) {
+    console.log('running w filters: ', curr_filters);
+    data = await filterHelper(curr_filters);
+    curr_filters--;
   }
-
-  // if (error) {
-  //   throw new Error(`Error fetching top k vectors: ${error.message}`);
-  // }
 
   return data;
 }

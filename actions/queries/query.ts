@@ -37,7 +37,6 @@ export async function fetchTopK(
   let curr_filters = 4; // offense, gender, veteran_status, state
   let data: AdopteeRow[] = [];
   while (curr_filters == 4 || data.length == 0) {
-    console.log('running w filters: ', curr_filters);
     data = await filterHelper(curr_filters);
     curr_filters--;
   }

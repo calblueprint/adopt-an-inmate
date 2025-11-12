@@ -20,7 +20,11 @@ export default function MainDashboard() {
             </p>
           </div>
 
-          <ButtonLink href="/app/" variant="applicationMainPage">
+          <ButtonLink
+            href="/"
+            // href={`/app/${appState.appId}`}
+            variant="applicationMainPage"
+          >
             New Application
           </ButtonLink>
         </div>

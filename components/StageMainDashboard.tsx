@@ -1,10 +1,13 @@
 'use client';
 
+import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { ButtonLink } from './Button';
 import LogoutButton from './LogoutButton';
 import TabsDemo from './Tabs';
 
 export default function StageMainDashboard() {
+  const { appState } = useApplicationContext();
+
   return (
     <div className="bg-grey-3 flex flex-row gap-7 pl-3">
       <div>
@@ -20,7 +23,10 @@ export default function StageMainDashboard() {
             </p>
           </div>
 
-          <ButtonLink href="/app/" variant="applicationMainPage">
+          <ButtonLink
+            href={`/app/${appState.appId}`}
+            variant="applicationMainPage"
+          >
             New Application
           </ButtonLink>
         </div>

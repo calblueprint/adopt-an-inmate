@@ -23,7 +23,7 @@ export default async function ApplicationDetailPage({
           defaultAppState={{
             appId,
             form: {},
-            matches: [],
+            matches: null,
             selectedMatch: null,
             stillInCorrespondence: false,
           }}

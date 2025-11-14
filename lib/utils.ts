@@ -1,5 +1,6 @@
 import clsx, { ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { stateNameAbbv } from '@/data/states';
 
 /**
  * Random number generator built on top of Math.random().
@@ -65,4 +66,13 @@ export const sleep = async (ms: number) => {
  */
 export const assertEnvVarExists = (key: string) => {
   if (!process.env[key]) throw new Error(`Could not find ${key}, is it set?`);
+};
+
+/**
+ * Get the abbreviation of a state from its name.
+ * ex: getStateAbbv("California") => "CA"
+ */
+export const getStateAbbv = (state: string) => {
+  const loweredState = state.toLowerCase();
+  return stateNameAbbv[loweredState] ?? 'N/A';
 };

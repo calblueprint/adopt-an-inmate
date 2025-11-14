@@ -1,12 +1,13 @@
 export interface ApplicationState {
   appId: string;
   form: Partial<FormState>;
-  matches: AdopteeMatch[];
+  matches: AdopteeMatch[] | null;
   selectedMatch: string | null;
   stillInCorrespondence: boolean;
 }
 
 export interface AdopteeMatch {
+  id: string;
   name: string;
   age: number;
   state: string;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { notFound, useRouter, useSearchParams } from 'next/navigation';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { ApplicationStage } from '@/types/enums';
@@ -17,11 +17,14 @@ export default function DeciderStage() {
   );
   const { appStage } = useApplicationContext();
   const router = useRouter();
+  const [isConsistent, setIsConsistent] = useState(false);
 
   // intercept brute force attempts to skip stages
   useEffect(() => {
     const currentStage = parseInt(searchParams.get('stage') ?? '0', 10);
     const lastRecordedStage = appStage.current;
+
+    setIsConsistent(currentStage === lastRecordedStage);
 
     if (currentStage !== lastRecordedStage) {
       const params = new URLSearchParams(searchParams.toString());
@@ -29,6 +32,9 @@ export default function DeciderStage() {
       router.replace(`?${params.toString()}`);
     }
   }, [searchParams, appStage, router]);
+
+  // prevent processing until consistency stabilizes
+  if (!isConsistent) return null;
 
   // render stages
   if (stage === ApplicationStage.PRE) return <StagePre />;

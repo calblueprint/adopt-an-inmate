@@ -3,6 +3,7 @@
 import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import MatchingCard from './MatchingCard';
+import MatchingDialog from './MatchingDialog';
 
 export default function MatchingSelectScreen() {
   const { appState } = useApplicationContext();
@@ -18,8 +19,12 @@ export default function MatchingSelectScreen() {
       </div>
 
       <div className="flex w-full gap-8 px-12">
-        {appState.matches?.map(m => <MatchingCard match={m} key={m.id} />)}
+        {appState.matches?.map((m, idx) => (
+          <MatchingCard match={m} matchIndex={idx} key={m.id} />
+        ))}
       </div>
+
+      <MatchingDialog />
 
       <div className="flex w-full justify-center">
         <Button

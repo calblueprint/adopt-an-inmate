@@ -36,7 +36,16 @@ export default function MainQuestionBio() {
           <label htmlFor="bio" className="text-sm text-gray-11">
             Personal bio
           </label>
-          <TextArea id="bio" {...register('bio', { required: true })} />
+          <TextArea
+            id="bio"
+            {...register('bio', {
+              required: true,
+              minLength: {
+                value: 300,
+                message: 'Must be at least 300 characters',
+              },
+            })}
+          />
         </div>
       </div>
 

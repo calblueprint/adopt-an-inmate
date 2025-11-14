@@ -235,7 +235,6 @@ export type Database = {
           adopter_veteran_status: string | null;
           adopter_offense: string | null;
           adopter_state: string | null;
-          num_filters: number;
         };
         Returns: {
           id: string;

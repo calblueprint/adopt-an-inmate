@@ -1,9 +1,17 @@
 export interface ApplicationState {
   appId: string;
-  highestStageAchieved: 'pre' | 'main' | 'matches' | 'submitted';
   form: Partial<FormState>;
-  matchId: string | null;
+  matches: AdopteeMatch[];
+  selectedMatch: string | null;
   stillInCorrespondence: boolean;
+}
+
+export interface AdopteeMatch {
+  name: string;
+  age: number;
+  state: string;
+  gender: string;
+  bio: string;
 }
 
 export interface FormState {

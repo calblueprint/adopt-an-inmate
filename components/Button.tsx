@@ -11,6 +11,9 @@ const buttonStyle = cva(
         default: 'border border-gray-700 rounded-lg',
         secondary: 'border border-gray-8 bg-gray-1 rounded-lg text-cyan-12',
         primary: 'bg-cyan-12 rounded-lg text-gray-1',
+        rounded: 'rounded-full px-6 bg-red-12 text-gray-1',
+        ghost:
+          'p-2! rounded-lg after:content-[""] relative z-2 after:absolute after:top-1/2 after:left-1/2 after:size-full after:-translate-1/2 after:rounded-lg after:bg-white/50 after:opacity-0 after:z-1 after:transition-opacity',
       },
       disabled: {
         true: 'opacity-60 cursor-not-allowed!',
@@ -32,6 +35,16 @@ const buttonStyle = cva(
         variant: 'primary',
         disabled: false,
         className: 'hover:bg-cyan-10',
+      },
+      {
+        variant: 'rounded',
+        disabled: false,
+        className: 'hover:bg-[#782b2c]',
+      },
+      {
+        variant: 'ghost',
+        disabled: false,
+        className: 'hover:after:opacity-100',
       },
     ],
     defaultVariants: {

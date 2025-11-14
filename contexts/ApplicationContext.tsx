@@ -1,11 +1,13 @@
 'use client';
 
 import type { ApplicationState } from '@/types/types';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useRef, useState } from 'react';
+import { ApplicationStage } from '@/types/enums';
 
 interface ApplicationContextValues {
   appState: ApplicationState;
   setAppState: React.Dispatch<React.SetStateAction<ApplicationState>>;
+  appStage: React.RefObject<ApplicationStage>;
 }
 
 const ApplicationContext = createContext<ApplicationContextValues | null>(null);
@@ -22,14 +24,17 @@ export function useApplicationContext() {
 export function ApplicationContextProvider({
   children,
   defaultAppState,
+  defaultStage,
 }: {
   children: React.ReactNode;
   defaultAppState: ApplicationState;
+  defaultStage: ApplicationStage;
 }) {
   const [appState, setAppState] = useState(defaultAppState);
+  const appStage = useRef(defaultStage);
 
   return (
-    <ApplicationContext.Provider value={{ appState, setAppState }}>
+    <ApplicationContext.Provider value={{ appState, setAppState, appStage }}>
       {children}
     </ApplicationContext.Provider>
   );

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import DeciderStage from '@/components/application/DeciderStage';
 import Logo from '@/components/Logo';
 import { ApplicationContextProvider } from '@/contexts/ApplicationContext';
+import { ApplicationStage } from '@/types/enums';
 
 export default async function ApplicationDetailPage({
   params,
@@ -21,11 +22,12 @@ export default async function ApplicationDetailPage({
         <ApplicationContextProvider
           defaultAppState={{
             appId,
-            highestStageAchieved: 'pre',
             form: {},
-            matchId: null,
+            matches: null,
+            selectedMatch: null,
             stillInCorrespondence: false,
           }}
+          defaultStage={ApplicationStage.PRE}
         >
           <DeciderStage />
         </ApplicationContextProvider>

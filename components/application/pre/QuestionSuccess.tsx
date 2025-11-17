@@ -1,7 +1,17 @@
+'use client';
+
 import { MdOutlineCheckCircle } from 'react-icons/md';
-import { ButtonLink } from '@/components/Button';
+import { Button } from '@/components/Button';
+import { useApplicationNavigation } from '@/hooks/app-process';
+import { ApplicationStage } from '@/types/enums';
 
 export default function QuestionSuccess() {
+  const { advanceToStage } = useApplicationNavigation();
+
+  const nextStage = () => {
+    advanceToStage(ApplicationStage.MAIN);
+  };
+
   return (
     <div className="space-y-2">
       <div className="grid w-full place-items-center">
@@ -13,13 +23,9 @@ export default function QuestionSuccess() {
         Adopt an Inmate. Press continue to finish your application.
       </p>
       <div className="mt-6">
-        <ButtonLink
-          href="?stage=main"
-          variant="primary"
-          className="w-full py-2"
-        >
+        <Button variant="primary" className="w-full py-2" onClick={nextStage}>
           Continue
-        </ButtonLink>
+        </Button>
       </div>
     </div>
   );

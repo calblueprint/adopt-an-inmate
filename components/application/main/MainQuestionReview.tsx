@@ -1,18 +1,18 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/Button';
 import QuestionBack from '@/components/questions/QuestionBack';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import { useApplicationNavigation } from '@/hooks/app-process';
 import { formatGenderPreference } from '@/lib/formatters';
+import { ApplicationStage } from '@/types/enums';
 
 export default function MainQuestionReview() {
-  const { appState, setAppState } = useApplicationContext();
-  const router = useRouter();
+  const { appState } = useApplicationContext();
+  const { advanceToStage } = useApplicationNavigation();
 
   const handleContinue = () => {
-    setAppState(prev => ({ ...prev, highestStageAchieved: 'main' }));
-    router.push('?stage=matches');
+    advanceToStage(ApplicationStage.MATCHING);
   };
 
   return (
@@ -37,9 +37,9 @@ export default function MainQuestionReview() {
               : 'Why it ended'}
           </p>
           <p>
-            {appState.stillInCorrespondence
+            {(appState.stillInCorrespondence
               ? appState.form.whyAdopting
-              : appState.form.whyEnded}
+              : appState.form.whyEnded) || 'N/A'}
           </p>
         </div>
       </div>

@@ -158,8 +158,7 @@ export default function SignUpPage() {
                   href="#"
                   onClick={e => {
                     e.preventDefault(); // stop navigation
-                    setOpen(true); // 👈 open modal
-                    console.log('open modal');
+                    setOpen(true); // open modal
                   }}
                 >
                   Terms of Service

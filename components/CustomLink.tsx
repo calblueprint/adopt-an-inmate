@@ -25,14 +25,6 @@ interface CustomLinkProps {
   onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
 }
 
-// export default function CustomLink({
-//   className,
-//   variant,
-//   ...props
-// }: React.ComponentProps<typeof Link> & { variant?: LinkVariantProp }) {
-//   return <Link className={linkVariant({ variant, className })} {...props} />;
-// }
-
 export default function CustomLink({
   className,
   variant,

@@ -11,12 +11,7 @@ interface ModalProps {
   className?: string;
 }
 
-/**
- * Modal styled like the design:
- * - Centered box with scrollable text
- * - White rounded container
- * - “Close” button at the bottom
- */
+//pop-up modal component for scrollable text
 export default function Modal({
   isOpen,
   onClose,

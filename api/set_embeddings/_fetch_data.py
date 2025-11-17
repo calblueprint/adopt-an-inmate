@@ -1,7 +1,7 @@
 from datetime import datetime, timezone, timedelta
 import requests
 import json
-from _config import (
+from ._config import (
   MONDAY_API_KEY,
   MONDAY_API_URL,
   MONDAY_API_VERSION,

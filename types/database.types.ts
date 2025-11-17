@@ -232,7 +232,6 @@ export type Database = {
           query_embedding: number[];
           k: number;
           adopter_gender: string | null;
-          adopter_age: number | null;
           adopter_veteran_status: string | null;
           adopter_offense: string | null;
           adopter_state: string | null;
@@ -249,7 +248,7 @@ export type Database = {
           last_name: string;
           facility: string;
           adopted: boolean;
-          dob: string | null; // Postgres date comes as string
+          age: number;
           similarity: number;
         }[];
       };

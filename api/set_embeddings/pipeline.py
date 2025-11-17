@@ -1,9 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-from _fetch_data import MondayBoardFetcher
-from _embed_and_upsert import upsert_embeddings
-from _clients import vx
-from _config import MODEL_DIMENSION
+from ._fetch_data import MondayBoardFetcher
+from ._embed_and_upsert import upsert_embeddings
+from ._clients import vx
 
 class handler(BaseHTTPRequestHandler):
 
@@ -38,7 +37,7 @@ class handler(BaseHTTPRequestHandler):
   
 if __name__ == "__main__":
     # To run this locally (from the project's root directory):
-    # python api/set_embeddings/pipeline.py
+    # python -m api.set_embeddings.pipeline   
     #
     # Then, in another terminal, trigger it with:
     # curl http://localhost:8000/

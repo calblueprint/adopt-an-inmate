@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import vecs
-from _config import MODEL_NAME, MODEL_DIMENSION, VECS_COLLECTION_NAME
+from ._config import MODEL_NAME, MODEL_DIMENSION, VECS_COLLECTION_NAME
 from huggingface_hub import InferenceClient
 
 load_dotenv(os.path.join(os.path.dirname(__file__), "../../.env.local"))

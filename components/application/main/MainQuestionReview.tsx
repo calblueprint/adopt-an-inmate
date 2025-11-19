@@ -16,7 +16,7 @@ export default function MainQuestionReview() {
   const handleContinue = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('api/embed_and_fetch.py', {
+      const response = await fetch('/api/embed_and_fetch', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { loginWithEmailPassword } from '@/actions/auth';
 import { Button, ButtonLink } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { Textbox } from '@/components/Textbox';
 
 interface LoginForm {
@@ -22,34 +23,41 @@ export default function LoginPage() {
   const router = useRouter();
 
   const [authError, setAuthError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignIn = async ({ email, password }: LoginForm) => {
-    const { error } = await loginWithEmailPassword({
-      email,
-      password,
-    });
+    setIsLoading(true);
+    try {
+      const { error } = await loginWithEmailPassword({
+        email,
+        password,
+      });
 
-    // handle errors
-    if (error) {
-      switch (error.code) {
-        case 'email_address_invalid':
-          setAuthError('Email address not supported.');
-          break;
-        case 'email_not_confirmed':
-          setAuthError('Email not confirmed.');
-          break;
-        case 'invalid_credentials':
-          setAuthError('Either email or password is incorrect.');
-          break;
-        default:
-          setAuthError('An unexpected error occurred, please try again later.');
+      // handle errors
+      if (error) {
+        switch (error.code) {
+          case 'email_address_invalid':
+            setAuthError('Email address not supported.');
+            break;
+          case 'email_not_confirmed':
+            setAuthError('Email not confirmed.');
+            break;
+          case 'invalid_credentials':
+            setAuthError('Either email or password is incorrect.');
+            break;
+          default:
+            setAuthError(
+              'An unexpected error occurred, please try again later.',
+            );
+        }
+
+        return;
       }
-
-      return;
+      setAuthError(null);
+      router.push('/');
+    } finally {
+      setIsLoading(false);
     }
-
-    setAuthError(null);
-    router.push('/');
   };
 
   return (
@@ -101,8 +109,13 @@ export default function LoginPage() {
               )}
             </div>
           </div>
-          <Button variant="primary" className="mt-7" type="submit">
-            Login
+          <Button
+            variant="primary"
+            className="mt-7"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? <LoadingSpinner /> : 'Login'}
           </Button>
         </div>
 

@@ -35,6 +35,7 @@ export default function StageMatching() {
           );
         }
         const result = await response.json();
+        // Remove console logs in production
         console.log('Generated Embedding:', result.embedding);
         console.log('Similar bios:', result.similar_bios);
         setAppState(prev => ({ ...prev, matches: result.similar_bios }));

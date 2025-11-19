@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { LuCalendar, LuMapPin, LuUser } from 'react-icons/lu';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/Button';
-import { getStateAbbv } from '@/lib/utils';
+import { calculateAge, getStateAbbv } from '@/lib/utils';
 import { AdopteeMatch } from '@/types/types';
 
 export default function MatchingCard({
@@ -51,11 +51,13 @@ export default function MatchingCard({
     <div className="flex flex-1 cursor-pointer flex-col gap-6 rounded-lg border border-gray-6 bg-gray-1 p-8 shadow-md transition-colors hover:border-gray-12 has-[button:hover]:border-gray-6!">
       {/* name and metadata */}
       <div className="flex flex-col gap-1">
-        <h1>{match.name}</h1>
+        <h1>
+          {match.first_name} {match.last_name}
+        </h1>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
             <LuCalendar size={16} />
-            <p>{match.age}</p>
+            <p>{calculateAge(match.dob)}</p>
           </div>
           <div className="flex items-center gap-1">
             <LuUser size={16} />

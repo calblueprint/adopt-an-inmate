@@ -8,8 +8,9 @@ export interface ApplicationState {
 
 export interface AdopteeMatch {
   id: string;
-  name: string;
-  age: number;
+  first_name: string;
+  last_name: string;
+  dob: Date;
   state: string;
   gender: string;
   bio: string;

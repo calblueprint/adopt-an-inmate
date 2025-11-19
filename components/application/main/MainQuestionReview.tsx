@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/components/Button';
 import QuestionBack from '@/components/questions/QuestionBack';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
@@ -11,33 +10,9 @@ import { ApplicationStage } from '@/types/enums';
 export default function MainQuestionReview() {
   const { appState } = useApplicationContext();
   const { advanceToStage } = useApplicationNavigation();
-  const [, setIsLoading] = useState(false);
 
   const handleContinue = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/embed_and_fetch', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ text: appState.form.bio }),
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `API request failed with status ${response.status}: ${errorText}`,
-        );
-      }
-      const result = await response.json();
-      console.log('Generated Embedding:', result.embedding);
-      console.log('Similar bios:', result.similar_bios);
-      advanceToStage(ApplicationStage.MATCHING);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    advanceToStage(ApplicationStage.MATCHING);
   };
 
   return (

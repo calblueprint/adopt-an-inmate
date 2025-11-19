@@ -11,7 +11,7 @@ export default function MainQuestionReview() {
   const { appState } = useApplicationContext();
   const { advanceToStage } = useApplicationNavigation();
 
-  const handleContinue = async () => {
+  const handleContinue = () => {
     advanceToStage(ApplicationStage.MATCHING);
   };
 

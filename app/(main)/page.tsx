@@ -1,5 +1,5 @@
 import ConfirmationDialog from '@/components/home/ConfirmationDialog';
-import MainDashboard from '@/components/MainDashboard';
+import MainDashboard from '@/components/MainDashboard/MainDashboard';
 
 export default function ApplicationsPage() {
   return (

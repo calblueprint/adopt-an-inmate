@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from './Button';
+import { Button } from '../Button';
 import LogoutButton from './LogoutButton';
 import TabsDemo from './Tabs';
 

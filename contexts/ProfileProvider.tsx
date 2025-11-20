@@ -42,7 +42,7 @@ export default function ProfileProvider({ children }: ProfileProviderProps) {
   const loadProfile = useCallback(async () => {
     if (!userId) {
       setProfileData(null);
-      setProfileReady(true);
+      setProfileReady(false);
       return;
     }
 

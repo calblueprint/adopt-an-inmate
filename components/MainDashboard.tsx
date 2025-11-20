@@ -5,6 +5,8 @@ import LogoutButton from './LogoutButton';
 import TabsDemo from './Tabs';
 
 export default function MainDashboard() {
+  // const { appState } = useApplicationContext();
+
   return (
     <div className="bg-grey-3 flex flex-row gap-7 border-2 pl-3">
       <div>
@@ -20,13 +22,11 @@ export default function MainDashboard() {
             </p>
           </div>
 
-          <ButtonLink
-            href="/"
-            // href={`/app/${appState.appId}`}
-            variant="applicationMainPage"
-          >
-            New Application
-          </ButtonLink>
+          <div>
+            <ButtonLink href="/app/1234567890" variant="applicationMainPage">
+              New Application
+            </ButtonLink>
+          </div>
         </div>
 
         <div className="flex">

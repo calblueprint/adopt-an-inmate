@@ -1,7 +1,7 @@
 'use client';
 
 import ConfirmationDialog from '@/components/home/ConfirmationDialog';
-import StageMainDashboard from '@/components/StageMainDashboard';
+import MainDashboard from '@/components/MainDashboard';
 
 export default function ApplicationsPage() {
   return (
@@ -11,7 +11,7 @@ export default function ApplicationsPage() {
 
       {/* application page */}
       <main className="flex py-7">
-        <StageMainDashboard />
+        <MainDashboard />
       </main>
     </>
   );

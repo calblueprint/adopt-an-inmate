@@ -1,28 +1,55 @@
+'use client';
+
 import { redirect } from 'next/navigation';
-import { fetchProfileById } from '@/actions/queries/profile';
 import EditProfileForm from '@/components/EditProfilePage';
-import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { useProfile } from '@/contexts/ProfileProvider';
 
-export default async function EditProfilePage() {
-  const supabase = await getSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+export default function EditProfilePage() {
+  const { profileData, profileReady } = useProfile();
 
-  if (!user) {
-    redirect('/login');
-  }
+  // Wait until profile is loaded from provider
+  if (!profileReady) return null;
 
-  const profile = await fetchProfileById(user.id);
-
-  if (!profile) {
+  // If no profile, redirect to login
+  if (!profileData) {
     redirect('/login');
   }
 
   return (
     <div className="flex flex-col items-center justify-center p-6">
       <h1 className="mb-4 text-2xl font-semibold">Edit Profile</h1>
-      <EditProfileForm profile={profile} />
+
+      {/* Use the profile from useProfile — SAME PROP NAME */}
+      <EditProfileForm profile={profileData} />
     </div>
   );
 }
+
+// import { redirect } from 'next/navigation';
+// import { fetchProfileById } from '@/actions/queries/profile';
+// import EditProfileForm from '@/components/EditProfilePage';
+// import { getSupabaseServerClient } from '@/lib/supabase/server';
+
+// export default async function EditProfilePage() {
+//   const supabase = await getSupabaseServerClient();
+//   const {
+//     data: { user },
+//   } = await supabase.auth.getUser();
+
+//   if (!user) {
+//     redirect('/login');
+//   }
+
+//   const profile = await fetchProfileById(user.id);
+
+//   if (!profile) {
+//     redirect('/login');
+//   }
+
+//   return (
+//     <div className="flex flex-col items-center justify-center p-6">
+//       <h1 className="mb-4 text-2xl font-semibold">Edit Profile</h1>
+//       <EditProfileForm profile={profile} />
+//     </div>
+//   );
+// }

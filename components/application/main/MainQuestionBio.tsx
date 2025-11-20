@@ -14,11 +14,24 @@ export default function MainQuestionBio() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
 
-  const { register, handleSubmit } = useForm<BioForm>({
+  // const { register, handleSubmit } = useForm<BioForm>({
+  //   defaultValues: {
+  //     bio: appState.form.bio,
+  //   },
+  // });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    // watch
+  } = useForm<BioForm>({
     defaultValues: {
       bio: appState.form.bio,
     },
   });
+
+  // const bioValue = watch('bio');
+  // const charCount = bioValue?.length || 0;
 
   const onSubmit = ({ bio }: BioForm) => {
     setAppState(prev => ({ ...prev, form: { ...prev.form, bio } }));
@@ -28,7 +41,9 @@ export default function MainQuestionBio() {
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <header className="flex flex-col gap-2">
-        <h1>What is your story?</h1>
+        <h1>
+          What is your story? <span className="text-red-600">*</span>{' '}
+        </h1>
       </header>
 
       <div className="flex flex-col gap-4">
@@ -42,10 +57,17 @@ export default function MainQuestionBio() {
               required: true,
               minLength: {
                 value: 300,
-                message: 'Must be at least 300 characters',
+                message: 'Please write at least 300 characters.',
               },
             })}
           />
+          <div className="flex justify-between text-sm">
+            <span
+              className={`${errors.bio ? 'text-red-600' : 'text-gray-500'}`}
+            >
+              {errors.bio?.message}
+            </span>
+          </div>
         </div>
       </div>
 

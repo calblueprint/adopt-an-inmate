@@ -15,6 +15,7 @@ const hardcodedMatches: AdopteeMatch[] = [
     bio: 'I love food',
     gender: 'male',
     state: 'California',
+    rank: null,
   },
   {
     id: 'carolyn',
@@ -23,6 +24,7 @@ const hardcodedMatches: AdopteeMatch[] = [
     bio: 'I like pandas',
     gender: 'female',
     state: 'California',
+    rank: null,
   },
   {
     id: 'austin',
@@ -31,6 +33,7 @@ const hardcodedMatches: AdopteeMatch[] = [
     bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
     gender: 'male',
     state: 'Texas',
+    rank: null,
   },
   {
     id: 'sai',
@@ -39,6 +42,7 @@ const hardcodedMatches: AdopteeMatch[] = [
     bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
     gender: 'male',
     state: 'California',
+    rank: null,
   },
 ];
 

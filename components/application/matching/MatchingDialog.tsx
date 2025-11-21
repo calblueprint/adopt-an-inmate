@@ -47,9 +47,7 @@ export default function MatchingDialog() {
               </Dialog.Close>
             </div>
             <Dialog.Title asChild>
-              <h1>
-                {match?.first_name} {match?.last_name}
-              </h1>
+              <h1>{match?.first_name}</h1>
             </Dialog.Title>
             <Dialog.Description className="hidden">
               Match details pop-up

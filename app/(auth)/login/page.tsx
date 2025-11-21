@@ -115,7 +115,7 @@ export default function LoginPage() {
             type="submit"
             disabled={isLoading}
           >
-            {isLoading ? <LoadingSpinner /> : 'Login'}
+            {isLoading ? <LoadingSpinner variant="button" /> : 'Login'}
           </Button>
         </div>
 

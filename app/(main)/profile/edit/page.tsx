@@ -8,7 +8,9 @@ export default function EditProfilePage() {
   const { profileData, profileReady } = useProfile();
 
   // Wait until profile is loaded from provider
-  if (!profileReady) return null;
+  if (!profileReady) {
+    return <div>Loading...</div>;
+  }
 
   // If no profile, redirect to login
   if (!profileData) {

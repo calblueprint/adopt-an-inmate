@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Dialog } from 'radix-ui';
 import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
-import { getStateAbbv } from '@/lib/utils';
+import { calculateAge, getStateAbbv } from '@/lib/utils';
 
 export default function MatchingDialog() {
   const [adopteeIndex, setAdopteeIndex] = useState(-1);
@@ -47,7 +47,7 @@ export default function MatchingDialog() {
               </Dialog.Close>
             </div>
             <Dialog.Title asChild>
-              <h1>{match?.name}</h1>
+              <h1>{match?.first_name}</h1>
             </Dialog.Title>
             <Dialog.Description className="hidden">
               Match details pop-up
@@ -55,7 +55,7 @@ export default function MatchingDialog() {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <LuCalendar size={16} />
-                <p>{match?.age}</p>
+                <p>{calculateAge(match?.dob ?? '')}</p>
               </div>
               <div className="flex items-center gap-2">
                 <LuUser size={16} />

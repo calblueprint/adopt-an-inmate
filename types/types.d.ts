@@ -13,6 +13,7 @@ export interface AdopteeMatch {
   state: string;
   gender: string;
   bio: string;
+  rank: number | null;
 }
 
 export interface FormState {

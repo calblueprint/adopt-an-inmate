@@ -15,7 +15,7 @@ export default function MainDashboard() {
         <div className="flex flex-row justify-between py-14">
           <div className="flex flex-col">
             <p className="text-2xl font-semibold text-cyan-12">Applications</p>
-            <p className="text-base text-[#C9C9CF]">
+            <p className="text-gray-13">
               Welcome to your application dashboard
             </p>
           </div>

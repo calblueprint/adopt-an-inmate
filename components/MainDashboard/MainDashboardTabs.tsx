@@ -10,14 +10,14 @@ export default function MainDashBoardTabs() {
       >
         <div className="flex w-full">
           <Tabs.Trigger
-            className="-mb-[2px] flex-1 cursor-pointer border-b-2 border-b-transparent px-4 pb-2 text-gray-400 transition-colors data-[state=active]:border-b-cyan-9 data-[state=active]:text-cyan-9"
+            className="-mb-0.5 flex-1 cursor-pointer border-b-2 border-b-transparent px-4 pb-2 text-gray-400 transition-colors data-[state=active]:border-b-cyan-9 data-[state=active]:text-cyan-9"
             value="active"
           >
             Active Applications
           </Tabs.Trigger>
 
           <Tabs.Trigger
-            className="-mb-[2px] flex-1 cursor-pointer border-b-2 border-b-transparent px-4 pb-2 text-gray-400 transition-colors data-[state=active]:border-b-cyan-9 data-[state=active]:text-cyan-9"
+            className="-mb-0.5 flex-1 cursor-pointer border-b-2 border-b-transparent px-4 pb-2 text-gray-400 transition-colors data-[state=active]:border-b-cyan-9 data-[state=active]:text-cyan-9"
             value="inactive"
           >
             Inactive Applications

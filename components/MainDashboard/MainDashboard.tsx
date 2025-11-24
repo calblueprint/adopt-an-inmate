@@ -2,16 +2,16 @@
 
 import { Button } from '../Button';
 import LogoutButton from './LogoutButton';
-import TabsDemo from './Tabs';
+import TabsDemo from './MainDashboardTabs';
 
 export default function MainDashboard() {
   return (
-    <div className="flex flex-row justify-end gap-7 pl-3">
-      <div>
+    <div className="mx-auto flex w-full max-w-400 flex-row justify-end gap-7 px-7">
+      <div className="min-w-61">
         <LogoutButton />
       </div>
 
-      <div className="mr-7 w-300 max-w-300 rounded-2xl bg-white pr-24 pl-24">
+      <div className="w-full rounded-2xl bg-white px-24">
         <div className="flex flex-row justify-between py-14">
           <div className="flex flex-col">
             <p className="text-2xl font-semibold text-cyan-12">Applications</p>
@@ -21,7 +21,7 @@ export default function MainDashboard() {
           </div>
 
           <div>
-            <Button variant="applicationMainPage">New Application</Button>
+            <Button variant="tertiary">New Application</Button>
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { LuCalendar, LuMapPin, LuUser, LuX } from 'react-icons/lu';
+import { LuCalendar, LuMapPin, LuUser } from 'react-icons/lu';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Dialog } from 'radix-ui';
 import { Button } from '@/components/Button';
@@ -39,13 +39,6 @@ export default function MatchingDialog() {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 grid h-full w-full place-items-center bg-black/50">
           <Dialog.Content className="relative flex max-w-120 flex-col gap-2 rounded-lg bg-gray-1 p-8">
-            <div className="absolute top-4 right-4">
-              <Dialog.Close asChild>
-                <Button variant="ghost">
-                  <LuX size={16} />
-                </Button>
-              </Dialog.Close>
-            </div>
             <Dialog.Title asChild>
               <h1>{match?.first_name}</h1>
             </Dialog.Title>
@@ -54,15 +47,15 @@ export default function MatchingDialog() {
             </Dialog.Description>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <LuCalendar size={16} />
+                <LuCalendar size={16} className="text-red-12" />
                 <p>{calculateAge(match?.dob ?? '')}</p>
               </div>
               <div className="flex items-center gap-2">
-                <LuUser size={16} />
+                <LuUser size={16} className="text-red-12" />
                 <p className="capitalize">{match?.gender}</p>
               </div>
               <div className="flex items-center gap-2">
-                <LuMapPin size={16} />
+                <LuMapPin size={16} className="text-red-12" />
                 <p>{getStateAbbv(match?.state ?? '')}</p>
               </div>
             </div>
@@ -72,6 +65,13 @@ export default function MatchingDialog() {
                 Biography
               </p>
               <p>{match?.bio}</p>
+            </div>
+            <div className="px-4 pt-12">
+              <Dialog.Close asChild>
+                <Button variant="secondary" className="w-full py-2">
+                  <p>Close</p>
+                </Button>
+              </Dialog.Close>
             </div>
           </Dialog.Content>
         </Dialog.Overlay>

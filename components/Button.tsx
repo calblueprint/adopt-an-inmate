@@ -40,7 +40,7 @@ const buttonStyle = cva(
       {
         variant: 'rounded',
         disabled: false,
-        className: 'hover:bg-[#782b2c]',
+        className: 'hover:bg-gray-3',
       },
       {
         variant: 'ghost',

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { LuCalendar, LuMapPin, LuUser } from 'react-icons/lu';
+import { LuCake, LuMapPin, LuUser } from 'react-icons/lu';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/Button';
 import { calculateAge, getStateAbbv } from '@/lib/utils';
@@ -64,8 +64,8 @@ export default function MatchingCard({
       className={`relative flex flex-1 cursor-pointer flex-col gap-6 rounded-lg border p-8 shadow-md transition-all ${
         isSelected
           ? 'border-4 border-red-12'
-          : 'border-4 border-transparent hover:border-red-12'
-      } bg-gray-1 has-[button:hover]:border-gray-6!`}
+          : 'border-4 border-transparent hover:not-has-[button:hover]:border-gray-7'
+      } bg-gray-1`}
     >
       {/* rank badge */}
       {rank !== undefined && (
@@ -78,7 +78,7 @@ export default function MatchingCard({
         <h1>{match.first_name}</h1>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
-            <LuCalendar size={16} className="text-red-12" />
+            <LuCake size={16} className="text-red-12" />
             <p>{calculateAge(match.dob)}</p>
           </div>
           <div className="flex items-center gap-1">

@@ -1,5 +1,6 @@
 import { UUID } from 'crypto';
-import { getSupabaseBrowserClient } from './client';
+import Logger from '@/actions/logging';
+import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 
 export type AdopterApplication = {
   // Add all the columns from adopter_applications_dummy table
@@ -25,7 +26,7 @@ export async function createAdopterApplication(
     .single();
 
   if (error) {
-    console.error('Error creating application:', error);
+    Logger.error('Error creating application:');
     throw error;
   }
 

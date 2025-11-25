@@ -1,13 +1,39 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { fetchProfileById } from '@/actions/queries/profile';
 import EditProfileForm from '@/components/EditProfilePage';
-import { useProfile } from '@/contexts/ProfileProvider';
+import { useAuth } from '@/contexts/AuthProvider';
+import { Profile } from '@/types/schema';
 
 export default function EditProfilePage() {
-  const { profileData, profileReady } = useProfile();
+  const { userId } = useAuth();
+  const [profileData, setProfileData] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Wait until profile is loaded from provider
-  if (!(profileReady && profileData)) return null;
+  useEffect(() => {
+    async function loadProfile() {
+      if (!userId) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const profile = await fetchProfileById(userId);
+        setProfileData(profile);
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadProfile();
+  }, [userId]);
+
+  if (loading) return null; // or a loading spinner
+
+  if (!profileData) return null;
 
   return (
     <div className="flex flex-col items-center justify-center p-6">

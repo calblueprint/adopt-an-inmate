@@ -18,6 +18,7 @@ export default function ProfilePage() {
     <div className="flex h-full w-full flex-col items-center justify-center">
       <CustomLink href="/">← Go back</CustomLink>
       <p>Profile page</p>
+      <button onClick={() => router.push('/profile/edit')}>Edit Profile</button>
       <button onClick={() => handleSignOut()}>Sign out</button>
     </div>
   );

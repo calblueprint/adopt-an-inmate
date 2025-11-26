@@ -20,7 +20,7 @@ export default function CheckboxCard({
         id={id}
         className={cn(
           className,
-          'relative size-4 appearance-none rounded-full border-2 border-red-12 transition-colors after:absolute after:top-1/2 after:left-1/2 after:block after:size-2 after:-translate-1/2 after:rounded-full after:bg-red-12 after:opacity-0 after:transition-opacity after:content-[""] checked:after:opacity-100',
+          'relative size-4 appearance-none rounded border-2 border-red-12 transition-colors after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:text-red-12 after:opacity-0 after:transition-opacity after:content-["✓"] checked:after:opacity-100',
         )}
         {...props}
       />

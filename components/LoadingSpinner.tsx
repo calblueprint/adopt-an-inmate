@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 const spinnerStyles = cva('animate-spin', {
   variants: {
     variant: {
-      default: 'text-gray-11 w-4 h-4', //'animate-spin text-gray-11'
+      default: 'text-gray-11 w-4 h-4',
       button: 'text-gray-1 w-6 h-6',
     },
   },

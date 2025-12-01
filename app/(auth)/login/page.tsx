@@ -12,6 +12,7 @@ interface LoginForm {
   email: string;
   password: string;
 }
+
 export default function LoginPage() {
   const {
     register,

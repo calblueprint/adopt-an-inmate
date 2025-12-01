@@ -34,9 +34,7 @@ export default function Modal({
         )}
 
         {/* Scrollable Text Content */}
-        <div className="mt-4 flex-1 overflow-y-auto font-golos text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
-          {children}
-        </div>
+        <div className="mt-4 flex-1 overflow-y-auto font-golos">{children}</div>
 
         {/* Close Button */}
         <div className="mt-8 flex justify-center border-t border-gray-200 pt-6">

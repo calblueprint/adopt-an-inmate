@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/set_embeddings/pipeline",
-      "schedule": "0 6 * * *"
+      "schedule": "0 20 1 * *"
     }
   ]
 }

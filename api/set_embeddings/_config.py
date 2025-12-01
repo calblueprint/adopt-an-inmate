@@ -17,7 +17,7 @@ MONDAY_API_URL = "https://api.monday.com/v2"
 MONDAY_API_VERSION = "2023-04"
 MONDAY_API_KEY = os.getenv("MONDAY_API_KEY")
 MONDAY_BOARD_ID = os.getenv("MONDAY_BOARD_ID")
-MONDAY_GROUP_ID = "1715196990_inmate_data_report___1"
+MONDAY_GROUP_ID = os.getenv("MONDAY_GROUP_ID")
 
 MONDAY_COLUMN_IDS = {
   "first_name": "fname__1",

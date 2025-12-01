@@ -145,8 +145,8 @@ export type Database = {
       adopter_applications_dummy: {
         Row: {
           accepted: boolean | null;
-          adopter_UUID: string;
-          app_UUID: string;
+          adopter_uuid: string;
+          app_uuid: string;
           gender_pref: string;
           in_complete: boolean | null;
           personal_bio: string;
@@ -155,8 +155,8 @@ export type Database = {
         };
         Insert: {
           accepted?: boolean | null;
-          adopter_UUID: string;
-          app_UUID?: string;
+          adopter_uuid: string;
+          app_uuid?: string;
           gender_pref: string;
           in_complete?: boolean | null;
           personal_bio: string;
@@ -165,8 +165,8 @@ export type Database = {
         };
         Update: {
           accepted?: boolean | null;
-          adopter_UUID?: string;
-          app_UUID?: string;
+          adopter_uuid?: string;
+          app_uuid?: string;
           gender_pref?: string;
           in_complete?: boolean | null;
           personal_bio?: string;
@@ -175,8 +175,8 @@ export type Database = {
         };
         Relationships: [
           {
-            foreignKeyName: 'adopter_applications_dummy_adopter_UUID_fkey';
-            columns: ['adopter_UUID'];
+            foreignKeyName: 'adopter_applications_dummy_adopter_uuid_fkey';
+            columns: ['adopter_uuid'];
             isOneToOne: false;
             referencedRelation: 'adopter_profiles';
             referencedColumns: ['user_id'];
@@ -222,35 +222,39 @@ export type Database = {
         Args: { k: number; query_embedding: string };
         Returns: {
           bio: string;
+          dob: string;
           embedding: string;
+          first_name: string;
+          gender: string;
           id: string;
+          last_name: string;
           similarity: number;
+          state: string;
         }[];
       };
       find_top_k_filtered: {
         Args: {
-          query_embedding: number[];
+          adopter_gender?: string;
+          adopter_offense?: string[];
+          adopter_state?: string;
+          adopter_veteran_status?: string;
           k: number;
-          adopter_gender: string | null;
-          adopter_age: number | null;
-          adopter_veteran_status: string | null;
-          adopter_offense: string | null;
-          adopter_state: string | null;
+          query_embedding: string;
         };
         Returns: {
-          id: string;
-          embedding: number[];
-          bio: string;
-          gender: string;
-          veteran_status: string;
-          offense: string;
-          state: string;
-          first_name: string;
-          last_name: string;
-          facility: string;
           adopted: boolean;
-          dob: string | null; // Postgres date comes as string
+          age: number;
+          bio: string;
+          embedding: string;
+          facility: string;
+          first_name: string;
+          gender: string;
+          id: string;
+          last_name: string;
+          offense: string;
           similarity: number;
+          state: string;
+          veteran_status: string;
         }[];
       };
       transfer_tables: { Args: never; Returns: undefined };

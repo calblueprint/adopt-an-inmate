@@ -33,8 +33,12 @@ export const findMatches = async (appId: string) => {
     return { data: null, error: 'Application has no bio' };
 
   // return existing data
-  if (appData.ranked_cards)
-    return { data: appData.ranked_cards as RankedAdopteeMatch[], error: null };
+  if (appData.ranked_cards) {
+    const { matches } = appData.ranked_cards as {
+      matches: RankedAdopteeMatch[];
+    };
+    return { data: matches, error: null };
+  }
 
   // if we reached this point,
   // then we have not yet created a match

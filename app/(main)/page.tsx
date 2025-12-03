@@ -1,5 +1,3 @@
-'use client';
-
 import ConfirmationDialog from '@/components/home/ConfirmationDialog';
 import MainDashboard from '@/components/MainDashboard/MainDashboard';
 
@@ -10,7 +8,7 @@ export default function ApplicationsPage() {
       <ConfirmationDialog />
 
       {/* application page */}
-      <main className="flex py-7">
+      <main className="flex min-h-svh py-7">
         <MainDashboard />
       </main>
     </>

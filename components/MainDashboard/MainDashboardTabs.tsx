@@ -85,14 +85,14 @@ export default function MainDashBoardTabs() {
           </Tabs.Trigger>
         </div>
       </Tabs.List>
-      <Tabs.Content className="min-h-130 w-full pt-9" value="active">
+      <Tabs.Content className="w-full pt-9" value="active">
         <div className="flex flex-row flex-wrap gap-x-12 gap-y-14">
           {activeApplications.map(app => (
             <ApplicationCard key={app.app_uuid} app={app} />
           ))}
         </div>
       </Tabs.Content>
-      <Tabs.Content className="min-h-130 w-full pt-9" value="inactive">
+      <Tabs.Content className="w-full pt-9" value="inactive">
         <div className="flex flex-row flex-wrap gap-x-12 gap-y-14">
           {inactiveApplications.map(app => (
             <ApplicationCard key={app.app_uuid} app={app} />

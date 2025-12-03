@@ -1,5 +1,9 @@
 import { FormState } from '@/types/types';
 
+/**
+ * Formats a gender preference value into a
+ * display-appropriate string.
+ */
 export function formatGenderPreference(
   genderPreference?: FormState['genderPreference'],
 ) {
@@ -12,4 +16,17 @@ export function formatGenderPreference(
   };
 
   return mapper[genderPreference];
+}
+
+/**
+ * Formats a timestamp string or a date object
+ * into a American time notation (mm/dd/yyyy)
+ */
+export function formatAmericanTime(dateParam: Date | string) {
+  const date = new Date(dateParam);
+  return new Intl.DateTimeFormat('en-US', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(date);
 }

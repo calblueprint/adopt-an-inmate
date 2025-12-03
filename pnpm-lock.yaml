@@ -5328,6 +5328,15 @@ snapshots:
 
   '@huggingface/tasks@0.19.66': {}
 
+  '@huggingface/inference@4.13.4':
+    dependencies:
+      '@huggingface/jinja': 0.5.3
+      '@huggingface/tasks': 0.19.66
+
+  '@huggingface/jinja@0.5.3': {}
+
+  '@huggingface/tasks@0.19.66': {}
+
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.6':

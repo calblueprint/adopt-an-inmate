@@ -66,7 +66,7 @@ export default function MatchingDialog() {
               </p>
               <p>{match?.bio}</p>
             </div>
-            <div className="px-4 pt-12">
+            <div className="px-4 pt-8">
               <Dialog.Close asChild>
                 <Button variant="secondary" className="w-full py-2">
                   <p>Close</p>

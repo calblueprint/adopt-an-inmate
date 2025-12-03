@@ -33,8 +33,12 @@ export const findMatches = async (appId: string) => {
     return { data: null, error: 'Application has no bio' };
 
   // return existing data
-  if (appData.ranked_cards)
-    return { data: appData.ranked_cards as RankedAdopteeMatch[], error: null };
+  if (appData.ranked_cards) {
+    const { matches } = appData.ranked_cards as {
+      matches: RankedAdopteeMatch[];
+    };
+    return { data: matches, error: null };
+  }
 
   // if we reached this point,
   // then we have not yet created a match
@@ -69,7 +73,7 @@ export const findMatches = async (appId: string) => {
   // update application
   const { error: updateError } = await supabase
     .from('adopter_applications_dummy')
-    .update({ ranked_cards: JSON.stringify(matches) })
+    .update({ ranked_cards: { matches } })
     .eq('app_uuid', appId);
 
   if (updateError) {

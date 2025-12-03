@@ -1,6 +1,7 @@
 'use server';
 
 import { getSupabaseServerClient } from '@/lib/supabase';
+import { AdopteeMatch } from '@/types/schema';
 
 /* Fetch top k (by simliaity) adoptee rows with hierarchical filtering:
  * Start with all filters applied. If no results, progressively drop filters
@@ -9,11 +10,11 @@ import { getSupabaseServerClient } from '@/lib/supabase';
 export async function fetchTopK(
   embedding: number[],
   k_value: number,
-  gender: string,
-  veteran_status: string,
-  offense: string[],
-  state: string,
-) {
+  gender?: string,
+  veteran_status?: string,
+  offense?: string[],
+  state?: string,
+): Promise<AdopteeMatch[]> {
   const supabase = await getSupabaseServerClient();
 
   const { data, error } = await supabase.rpc('find_top_k_filtered', {

@@ -33,10 +33,8 @@ export const findMatches = async (appId: string) => {
     return { data: null, error: 'Application has no bio' };
 
   // return existing data
-  if (appData.ranked_cards) {
-    const matches = appData.ranked_cards as RankedAdopteeMatch[];
-    return { data: matches, error: null };
-  }
+  if (appData.ranked_cards)
+    return { data: appData.ranked_cards as RankedAdopteeMatch[], error: null };
 
   // if we reached this point,
   // then we have not yet created a match
@@ -56,7 +54,6 @@ export const findMatches = async (appId: string) => {
   const embedding = await hfClient.featureExtraction({
     model: 'sentence-transformers/all-MiniLM-L6-v2',
     inputs: appData.personal_bio,
-    provider: 'auto',
   });
 
   // assert embedding type
@@ -65,8 +62,6 @@ export const findMatches = async (appId: string) => {
     return { data: null, error: 'An unexpected error occurred' };
   }
 
-  // TODO: accurately map veteran status strings to boolean
-  // or alternatively handle nuanced veteran status
   const matches = await fetchTopK(
     embedding as number[],
     4,

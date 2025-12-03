@@ -45,9 +45,16 @@ export default function MainDashBoardTabs() {
       if (fetchApplicationsError)
         throw new Error(fetchApplicationsError.message);
 
+      // sort by newest first
+      const sortedApps = applicationsData.sort(
+        (a, b) =>
+          new Date(b.time_submitted).getTime() -
+          new Date(a.time_submitted).getTime(),
+      );
+
       // filter active and inactive applications
-      const activeApps = applicationsData.filter(app => appIsActive(app));
-      const inactiveApps = applicationsData.filter(app => !appIsActive(app));
+      const activeApps = sortedApps.filter(app => appIsActive(app));
+      const inactiveApps = sortedApps.filter(app => !appIsActive(app));
 
       setActiveApplications(activeApps);
       setInactiveApplications(inactiveApps);

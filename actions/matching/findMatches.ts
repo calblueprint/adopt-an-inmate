@@ -58,6 +58,7 @@ export const findMatches = async (appId: string) => {
   const embedding = await hfClient.featureExtraction({
     model: 'sentence-transformers/all-MiniLM-L6-v2',
     inputs: appData.personal_bio,
+    provider: 'auto',
   });
 
   // assert embedding type
@@ -66,6 +67,8 @@ export const findMatches = async (appId: string) => {
     return { data: null, error: 'An unexpected error occurred' };
   }
 
+  // TODO: accurately map veteran status strings to boolean
+  // or alternatively handle nuanced veteran status
   const matches = await fetchTopK(
     embedding as number[],
     4,

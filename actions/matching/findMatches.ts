@@ -43,11 +43,22 @@ export const findMatches = async (appId: string) => {
   // if we reached this point,
   // then we have not yet created a match
 
+  // find user
+  const { data: userProfile, error: fetchUserError } = await supabase
+    .from('adopter_profiles')
+    .select()
+    .eq('user_id', appData.adopter_uuid)
+    .maybeSingle();
+
+  if (fetchUserError) return { data: null, error: fetchUserError.message };
+  if (!userProfile) return { data: null, error: 'User profile not found' };
+
   // generate embedding
   const hfClient = new InferenceClient(process.env.HF_TOKEN);
   const embedding = await hfClient.featureExtraction({
     model: 'sentence-transformers/all-MiniLM-L6-v2',
     inputs: appData.personal_bio,
+    provider: 'auto',
   });
 
   // assert embedding type
@@ -56,13 +67,15 @@ export const findMatches = async (appId: string) => {
     return { data: null, error: 'An unexpected error occurred' };
   }
 
+  // TODO: accurately map veteran status strings to boolean
+  // or alternatively handle nuanced veteran status
   const matches = await fetchTopK(
     embedding as number[],
     4,
     appData.gender_pref ?? undefined,
+    userProfile.veteran_status ? 'Yes' : 'No',
     undefined,
-    undefined,
-    undefined,
+    userProfile.state,
   );
 
   const rankedMatches: RankedAdopteeMatch[] = matches.map(m => ({

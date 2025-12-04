@@ -147,31 +147,40 @@ export type Database = {
           accepted: boolean | null;
           adopter_uuid: string;
           app_uuid: string;
-          gender_pref: string;
-          in_complete: boolean | null;
-          personal_bio: string;
+          gender_pref: string | null;
+          incomplete: boolean | null;
+          personal_bio: string | null;
+          ranked_cards: Json | null;
+          reached_ranking: boolean;
           rejected: boolean | null;
           return_explanation: string | null;
+          time_submitted: string;
         };
         Insert: {
           accepted?: boolean | null;
           adopter_uuid: string;
           app_uuid?: string;
-          gender_pref: string;
-          in_complete?: boolean | null;
-          personal_bio: string;
+          gender_pref?: string | null;
+          incomplete?: boolean | null;
+          personal_bio?: string | null;
+          ranked_cards?: Json | null;
+          reached_ranking?: boolean;
           rejected?: boolean | null;
           return_explanation?: string | null;
+          time_submitted?: string;
         };
         Update: {
           accepted?: boolean | null;
           adopter_uuid?: string;
           app_uuid?: string;
-          gender_pref?: string;
-          in_complete?: boolean | null;
-          personal_bio?: string;
+          gender_pref?: string | null;
+          incomplete?: boolean | null;
+          personal_bio?: string | null;
+          ranked_cards?: Json | null;
+          reached_ranking?: boolean;
           rejected?: boolean | null;
           return_explanation?: string | null;
+          time_submitted?: string;
         };
         Relationships: [
           {

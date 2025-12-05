@@ -1,6 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
+import { Mina } from 'next/font/google';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
 import { useQuestionNavigaton } from '@/hooks/questions';
 import { Button } from '../Button';
@@ -14,6 +15,10 @@ interface PronounsForm {
 export default function OnboardingQuestionDOB() {
   const { onboardingInfo, setOnboardingInfo } = useOnboardingContext();
   const { nextQuestion } = useQuestionNavigaton();
+  const currentDate = new Date();
+  // const date = `${currentDate.getDate()}/${currentDate.getMonth()+1}/${currentDate.getFullYear()}`;
+  const date = currentDate.toISOString().split('T')[0];
+  console.log('DATE', date);
 
   const { register, handleSubmit } = useForm<PronounsForm>({
     defaultValues: {
@@ -41,6 +46,8 @@ export default function OnboardingQuestionDOB() {
           <Textbox
             type="date"
             id="dob"
+            max={date}
+            min="1900-01-01"
             {...register('dob', { required: true })}
           />
         </div>

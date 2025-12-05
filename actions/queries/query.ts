@@ -66,7 +66,7 @@ export async function fetchUserApplicationUUIDs(adopter_UUID: string) {
 //    app_uuid: string
 //    gender_pref: string | null
 //    personal_bio: string | null
-//    ranked_cards: Json | null
+//    ranked_cards: Json | null <-- change to export type RankedAdopteeMatch, array
 //    return_explanation: string | null
 //    status: Database["public"]["Enums"]["status_vals"]
 //    time_submitted: string

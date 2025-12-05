@@ -1,6 +1,5 @@
 'use client';
 
-import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { ButtonLink } from './Button';
 import LogoutButton from './LogoutButton';
 import TabsDemo from './Tabs';

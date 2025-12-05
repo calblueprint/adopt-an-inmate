@@ -2,6 +2,8 @@ import { UUID } from 'crypto';
 import Logger from '@/actions/logging';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 
+// import { AdopterApplication } from '@/types/schema';
+
 export type AdopterApplication = {
   // Add all the columns from adopter_applications_dummy table
   app_uuid: UUID;
@@ -14,14 +16,11 @@ export type AdopterApplication = {
   rejected: boolean;
 };
 
-export async function createAdopterApplication(
-  applicationData: Omit<AdopterApplication, 'id' | 'created_at' | 'updated_at'>,
-) {
+export async function createAdopterApplication() {
   const supabase = getSupabaseBrowserClient();
 
   const { data, error } = await supabase
     .from('adopter_applications_dummy')
-    .insert([applicationData])
     .select()
     .single();
 

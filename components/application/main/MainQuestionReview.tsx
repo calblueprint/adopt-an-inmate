@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
 import QuestionBack from '@/components/questions/QuestionBack';
@@ -28,6 +29,23 @@ export default function MainQuestionReview() {
 
   const handleContinue = () => {
     advanceToStage(ApplicationStage.MATCHING);
+
+    // not re-saving return_explanation since need to tweak stillInCorrespondence category thing
+    try {
+      upsertApplication({
+        //save everything again in case
+        adopter_uuid: userId!, //totally not null ahaha
+        app_uuid: appState.appId,
+        gender_pref: appState.form.genderPreference,
+        personal_bio: appState.form.bio,
+        ranked_cards: null,
+        //return_explanation: appState.form.whyAdopting || appState.form.whyEnded,
+        status: 'incomplete',
+        time_submitted: '',
+      });
+    } catch (error) {
+      console.error('Failed to save application:', error);
+    }
   };
 
   return (

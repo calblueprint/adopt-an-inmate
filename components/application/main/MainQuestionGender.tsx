@@ -9,9 +9,8 @@ import ErrorMessage from '@/components/ErrorMessage';
 import QuestionBack from '@/components/questions/QuestionBack';
 import RadioCard from '@/components/RadioCard';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
-import { useProfile } from '@/contexts/ProfileProvider';
+import { useAuth } from '@/contexts/AuthProvider';
 import { useQuestionNavigaton } from '@/hooks/questions';
-import { AdopterApplication } from '@/types/schema';
 
 const genderPrefFormSchema = z.object({
   genderPreference: z.enum(
@@ -23,7 +22,7 @@ const genderPrefFormSchema = z.object({
 export default function MainQuestionGender() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
-  const { profileData } = useProfile();
+  const { userId } = useAuth();
 
   const {
     register,
@@ -44,23 +43,11 @@ export default function MainQuestionGender() {
       form: { ...prev.form, genderPreference },
     }));
 
-    const updatedFields: Partial<AdopterApplication> = {};
-    if (appState.form.genderPreference !== genderPreference) {
-      updatedFields.gender_pref = genderPreference;
-    }
-    console.log('Old:', appState.form.genderPreference); //delete
-    console.log('New:', genderPreference); //delete
-
     try {
       await upsertApplication({
-        ...updatedFields,
+        adopter_uuid: userId!, //totally not null ahaha
         app_uuid: appState.appId,
-        adopter_uuid: profileData!.user_id, //totally not null ahaha
-        incomplete: true,
-        reached_ranking: false,
-        accepted: null,
-        rejected: null,
-        return_explanation: null,
+        gender_pref: genderPreference,
       });
     } catch (error) {
       console.error('Failed to save application:', error);

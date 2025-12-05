@@ -1,7 +1,7 @@
 'use server';
 
 import { getSupabaseServerClient } from '@/lib/supabase';
-import { AdopteeMatch } from '@/types/schema';
+import { AdopteeMatch, AdopterApplication } from '@/types/schema';
 
 /* Fetch top k (by simliaity) adoptee rows with hierarchical filtering:
  * Start with all filters applied. If no results, progressively drop filters
@@ -58,6 +58,33 @@ export async function fetchUserApplicationUUIDs(adopter_UUID: string) {
   if (error) {
     throw new Error(`Error fetching adopter's applications: ${error.message}`);
   }
+
+  return data;
+}
+
+// accepted: boolean | null
+// adopter_uuid: string
+// app_uuid: string
+// gender_pref: string | null
+// incomplete: boolean | null
+// personal_bio: string | null
+// ranked_cards: Json | null
+// reached_ranking: boolean
+// rejected: boolean | null
+// return_explanation: string | null
+// time_submitted: string
+
+export async function upsertApplication(app: AdopterApplication) {
+  const supabase = await getSupabaseServerClient();
+
+  const { data, error } = await supabase
+    .from('adopter_applications_dummy')
+    .upsert(app, { onConflict: 'app_uuid' })
+    .select()
+    .single();
+
+  if (error)
+    throw new Error(`Error upserting application data: ${error.message}`);
 
   return data;
 }

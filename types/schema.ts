@@ -17,3 +17,6 @@ export type RankedAdopteeMatch = Pick<
   AdopteeMatch,
   'id' | 'age' | 'bio' | 'first_name' | 'state' | 'gender'
 >;
+
+export type AdopterApplication =
+  Database['public']['Tables']['adopter_applications_dummy']['Row'];

@@ -20,11 +20,3 @@ export type RankedAdopteeMatch = Pick<
 
 export type AdopterApplication =
   Database['public']['Tables']['adopter_applications_dummy']['Row'];
-
-export type AdopteeMatch =
-  Database['public']['Functions']['find_top_k_filtered']['Returns'][number];
-
-export type RankedAdopteeMatch = Pick<
-  AdopteeMatch,
-  'id' | 'age' | 'bio' | 'first_name' | 'state' | 'gender'
->;

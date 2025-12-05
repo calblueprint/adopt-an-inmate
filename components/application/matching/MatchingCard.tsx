@@ -5,7 +5,7 @@ import { LuCake, LuMapPin, LuUser } from 'react-icons/lu';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/Button';
 import { getStateAbbv } from '@/lib/utils';
-import { AdopteeMatch } from '@/types/schema';
+import { RankedAdopteeMatch } from '@/types/schema';
 
 export default function MatchingCard({
   match,
@@ -13,7 +13,7 @@ export default function MatchingCard({
   rank,
   onSelect,
 }: {
-  match: AdopteeMatch;
+  match: RankedAdopteeMatch;
   matchIndex: number;
   rank?: number;
   onSelect: (id: string) => void;

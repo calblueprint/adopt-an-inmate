@@ -3,12 +3,15 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
+import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import ErrorMessage from '@/components/ErrorMessage';
 import QuestionBack from '@/components/questions/QuestionBack';
 import RadioCard from '@/components/RadioCard';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import { useProfile } from '@/contexts/ProfileProvider';
 import { useQuestionNavigaton } from '@/hooks/questions';
+import { AdopterApplication } from '@/types/schema';
 
 const genderPrefFormSchema = z.object({
   genderPreference: z.enum(
@@ -20,6 +23,7 @@ const genderPrefFormSchema = z.object({
 export default function MainQuestionGender() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
+  const { profileData } = useProfile();
 
   const {
     register,
@@ -32,13 +36,36 @@ export default function MainQuestionGender() {
     resolver: zodResolver(genderPrefFormSchema),
   });
 
-  const onSubmit = ({
+  const onSubmit = async ({
     genderPreference,
   }: z.infer<typeof genderPrefFormSchema>) => {
     setAppState(prev => ({
       ...prev,
       form: { ...prev.form, genderPreference },
     }));
+
+    const updatedFields: Partial<AdopterApplication> = {};
+    if (appState.form.genderPreference !== genderPreference) {
+      updatedFields.gender_pref = genderPreference;
+    }
+    console.log('Old:', appState.form.genderPreference); //delete
+    console.log('New:', genderPreference); //delete
+
+    try {
+      await upsertApplication({
+        ...updatedFields,
+        app_uuid: appState.appId,
+        adopter_uuid: profileData!.user_id, //totally not null ahaha
+        incomplete: true,
+        reached_ranking: false,
+        accepted: null,
+        rejected: null,
+        return_explanation: null,
+      });
+    } catch (error) {
+      console.error('Failed to save application:', error);
+    }
+
     nextQuestion();
   };
 

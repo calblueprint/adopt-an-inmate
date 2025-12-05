@@ -144,42 +144,33 @@ export type Database = {
       }
       adopter_applications_dummy: {
         Row: {
-          accepted: boolean | null
           adopter_uuid: string
           app_uuid: string
           gender_pref: string | null
-          incomplete: boolean | null
           personal_bio: string | null
           ranked_cards: Json | null
-          reached_ranking: boolean
-          rejected: boolean | null
           return_explanation: string | null
+          status: Database["public"]["Enums"]["status_vals"] | null
           time_submitted: string
         }
         Insert: {
-          accepted?: boolean | null
           adopter_uuid: string
           app_uuid?: string
           gender_pref?: string | null
-          incomplete?: boolean | null
           personal_bio?: string | null
           ranked_cards?: Json | null
-          reached_ranking?: boolean
-          rejected?: boolean | null
           return_explanation?: string | null
+          status?: Database["public"]["Enums"]["status_vals"] | null
           time_submitted?: string
         }
         Update: {
-          accepted?: boolean | null
           adopter_uuid?: string
           app_uuid?: string
           gender_pref?: string | null
-          incomplete?: boolean | null
           personal_bio?: string | null
           ranked_cards?: Json | null
-          reached_ranking?: boolean
-          rejected?: boolean | null
           return_explanation?: string | null
+          status?: Database["public"]["Enums"]["status_vals"] | null
           time_submitted?: string
         }
         Relationships: [
@@ -269,7 +260,7 @@ export type Database = {
       transfer_tables: { Args: never; Returns: undefined }
     }
     Enums: {
-      [_ in never]: never
+      status_vals: "incomplete" | "pending" | "accepted" | "rejected" | "ended"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -396,6 +387,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      status_vals: ["incomplete", "pending", "accepted", "rejected", "ended"],
+    },
   },
 } as const

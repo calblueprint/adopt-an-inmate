@@ -35,7 +35,7 @@ export default function StageMatching() {
         .upsert({
           adopter_uuid: user.id,
           app_uuid: appState.appId,
-          incomplete: true,
+          status: 'incomplete',
           gender_pref: appState.form.genderPreference,
           personal_bio: appState.form.bio,
           return_explanation:

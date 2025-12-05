@@ -79,14 +79,18 @@ export const findMatches = async (appId: string) => {
   );
 
   const rankedMatches: RankedAdopteeMatch[] = matches.map(m => ({
-    ...m,
-    rank: null,
+    id: m.id,
+    age: m.age,
+    bio: m.bio,
+    first_name: m.first_name,
+    gender: m.gender,
+    state: m.state,
   }));
 
   // update application
   const { error: updateError } = await supabase
     .from('adopter_applications_dummy')
-    .update({ ranked_cards: { matches } })
+    .update({ ranked_cards: rankedMatches })
     .eq('app_uuid', appId);
 
   if (updateError) {

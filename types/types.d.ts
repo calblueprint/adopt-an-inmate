@@ -1,9 +1,9 @@
-import { AdopteeMatch } from './schema';
+import { RankedAdopteeMatch } from './schema';
 
 export interface ApplicationState {
   appId: string;
   form: Partial<FormState>;
-  matches: AdopteeMatch[] | null;
+  matches: RankedAdopteeMatch[] | null;
   selectedMatch: string | null;
   stillInCorrespondence: boolean;
 }

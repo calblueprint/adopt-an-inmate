@@ -62,6 +62,20 @@ export async function fetchUserApplicationUUIDs(adopter_UUID: string) {
   return data;
 }
 
+// export type AdopterApplication = {
+//   app_id: string;
+//   adopter_id: string;
+//   personal_bio: string;
+//   gender_pref: string;
+//   return_explanation: string;
+//   incomplete: boolean;
+//   accepted: boolean;
+//   rejected: boolean;
+//   reached_ranking: boolean;
+//   ranked_cards: string; // JSONB or smt
+//   time_submitted: Date; //check if works
+// };
+
 // accepted: boolean | null
 // adopter_uuid: string
 // app_uuid: string
@@ -74,7 +88,12 @@ export async function fetchUserApplicationUUIDs(adopter_UUID: string) {
 // return_explanation: string | null
 // time_submitted: string
 
-export async function upsertApplication(app: AdopterApplication) {
+export async function upsertApplication(
+  app: Omit<Partial<AdopterApplication>, 'adopter_uuid' | 'app_uuid'> & {
+    adopter_uuid: string;
+    app_uuid: string;
+  },
+) {
   const supabase = await getSupabaseServerClient();
 
   const { data, error } = await supabase

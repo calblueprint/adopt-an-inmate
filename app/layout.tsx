@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Golos_Text } from 'next/font/google';
 import localFont from 'next/font/local';
 import '@/styles/global.css';
-import OnboardingGuard from '@/components/OnboardingGuard';
 import { AuthProvider } from '@/contexts/AuthProvider';
 import ProfileProvider from '@/contexts/ProfileProvider';
 import { cn } from '@/lib/utils';

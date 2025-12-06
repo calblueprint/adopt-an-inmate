@@ -34,6 +34,12 @@ export const metadata: Metadata = {
   description: 'Description of project',
 };
 
+{
+  /* <OnboardingGuard>
+            <ProfileProvider>{children}</ProfileProvider>
+          </OnboardingGuard> */
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{

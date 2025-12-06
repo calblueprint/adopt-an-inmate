@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import ForgotPasswordFlowDecider from '@/components/auth/forgot-password/ForgotPasswordFlowDecider';
+import { ButtonLink } from '@/components/Button';
 import Logo from '@/components/Logo';
 
 export default function ForgotPasswordPage() {

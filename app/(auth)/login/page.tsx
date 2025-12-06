@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { LuEye, LuEyeClosed } from 'react-icons/lu';
 import { useRouter } from 'next/navigation';
 import { loginWithEmailPassword } from '@/actions/auth';
 import { Button, ButtonLink } from '@/components/Button';
@@ -22,6 +23,7 @@ export default function LoginPage() {
   const router = useRouter();
 
   const [authError, setAuthError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignIn = async ({ email, password }: LoginForm) => {
     const { error } = await loginWithEmailPassword({
@@ -90,10 +92,25 @@ export default function LoginPage() {
               </div>
 
               <Textbox
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
                 {...register('password', { required: true })}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? (
+                  // Eye icon (password visible)
+                  <LuEye />
+                ) : (
+                  // Eye closed icon (password hidden)
+                  <LuEyeClosed />
+                )}
+              </button>
+
               {errors.password && (
                 <p className="text-right text-error">
                   {errors.password.message}

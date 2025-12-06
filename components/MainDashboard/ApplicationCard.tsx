@@ -1,6 +1,9 @@
+import { formatAmericanTime } from '@/lib/formatters';
+import { determineAppStatus } from '@/lib/utils';
+import { AdopterApplication } from '@/types/schema';
 import ApplicationCardButton from './ApplicationCardButton';
 
-export default function ApplicationCard() {
+export default function ApplicationCard({ app }: { app: AdopterApplication }) {
   return (
     <div className="flex w-55 flex-col rounded-2xl border-2 border-cyan-12 bg-white">
       <div className="flex flex-col gap-y-30">
@@ -9,8 +12,12 @@ export default function ApplicationCard() {
         </div>
 
         <div className="flex flex-col pb-3 pl-3">
-          <p className="font-medium text-red-12">10/10/2025</p>
-          <p className="text-xs text-gray-10">Status: Pending</p>
+          <p className="font-medium text-red-12">
+            {formatAmericanTime(app.time_submitted)}
+          </p>
+          <p className="text-xs text-gray-10">
+            Status: {determineAppStatus(app)}
+          </p>
         </div>
       </div>
     </div>

@@ -1,8 +1,6 @@
-'use client';
-
 import { Button } from '../Button';
 import LogoutButton from './LogoutButton';
-import TabsDemo from './MainDashboardTabs';
+import MainDashboardTabs from './MainDashboardTabs';
 
 export default function MainDashboard() {
   return (
@@ -11,8 +9,8 @@ export default function MainDashboard() {
         <LogoutButton />
       </div>
 
-      <div className="w-full rounded-2xl bg-white px-24">
-        <div className="flex flex-row justify-between py-14">
+      <div className="flex w-full flex-col gap-14 rounded-2xl bg-white p-16">
+        <div className="flex flex-row justify-between">
           <div className="flex flex-col">
             <p className="text-2xl font-semibold text-cyan-12">Applications</p>
             <p className="text-gray-13">
@@ -25,9 +23,7 @@ export default function MainDashboard() {
           </div>
         </div>
 
-        <div className="flex">
-          <TabsDemo />
-        </div>
+        <MainDashboardTabs />
       </div>
     </div>
   );

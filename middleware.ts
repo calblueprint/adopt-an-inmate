@@ -6,7 +6,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Define public routes that don't require authentication
-  const publicRoutes = ['/login', '/signup'];
+  const publicRoutes = ['/login', '/sign-up'];
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
   // Create supabase client to check user status

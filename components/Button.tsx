@@ -25,12 +25,12 @@ const buttonStyle = cva(
       {
         variant: 'default',
         disabled: false,
-        className: 'hover:bg-gray-50',
+        className: 'hover:bg-cyan-9',
       },
       {
         variant: 'secondary',
         disabled: false,
-        className: 'hover:bg-gray-3',
+        className: 'hover:bg-cyan-9/10',
       },
       {
         variant: 'primary',
@@ -40,7 +40,7 @@ const buttonStyle = cva(
       {
         variant: 'rounded',
         disabled: false,
-        className: 'hover:bg-gray-3',
+        className: 'hover:bg-cyan-9',
       },
       {
         variant: 'ghost',

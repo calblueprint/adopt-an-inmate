@@ -1,19 +1,11 @@
+import { RankedAdopteeMatch } from './schema';
+
 export interface ApplicationState {
   appId: string;
   form: Partial<FormState>;
-  matches: AdopteeMatch[] | null;
+  matches: RankedAdopteeMatch[] | null;
   selectedMatch: string | null;
   stillInCorrespondence: boolean;
-}
-
-export interface AdopteeMatch {
-  id: string;
-  first_name: string;
-  dob: Date;
-  state: string;
-  gender: string;
-  bio: string;
-  rank: number | null;
 }
 
 export interface FormState {

@@ -14,6 +14,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.65.0(react@19.2.1))
+      '@huggingface/inference':
+        specifier: ^4.13.4
+        version: 4.13.4
       '@mondaydotcomorg/api':
         specifier: ^11.0.1
         version: 11.0.1
@@ -687,6 +690,17 @@ packages:
     resolution: {integrity: sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA==}
     peerDependencies:
       react-hook-form: ^7.55.0
+
+  '@huggingface/inference@4.13.4':
+    resolution: {integrity: sha512-1G6jBDYLAZw7oNrJdMp+0/CafeoNaCLzrDd9fYSX3nhjzMuyWIPZ/MtP5EwXdC0htlFPx+R6JGqPhctAalQO+w==}
+    engines: {node: '>=18'}
+
+  '@huggingface/jinja@0.5.3':
+    resolution: {integrity: sha512-asqfZ4GQS0hD876Uw4qiUb7Tr/V5Q+JZuo2L+BtdrD4U40QU58nIRq3ZSgAzJgT874VLjhGVacaYfrdpXtEvtA==}
+    engines: {node: '>=18'}
+
+  '@huggingface/tasks@0.19.66':
+    resolution: {integrity: sha512-cj3+pAxyMWRZXepxdgVUUrlbLVhSD7+G6lt/HI7GKUo8pOdsre4CWVcu+4AXptY9btaCqyBGzTOCD7Ve2OtTfw==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -5304,6 +5318,15 @@ snapshots:
     dependencies:
       '@standard-schema/utils': 0.3.0
       react-hook-form: 7.65.0(react@19.2.1)
+
+  '@huggingface/inference@4.13.4':
+    dependencies:
+      '@huggingface/jinja': 0.5.3
+      '@huggingface/tasks': 0.19.66
+
+  '@huggingface/jinja@0.5.3': {}
+
+  '@huggingface/tasks@0.19.66': {}
 
   '@humanfs/core@0.19.1': {}
 

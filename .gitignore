@@ -36,5 +36,6 @@ yarn-error.log*
 next-env.d.ts
 
 # python
+.venv
 /adopt-an-inmate-venv
 __pycache__/

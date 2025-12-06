@@ -13,7 +13,7 @@ importers:
     dependencies:
       '@hookform/resolvers':
         specifier: ^5.2.2
-        version: 5.2.2(react-hook-form@7.65.0(react@19.1.1))
+        version: 5.2.2(react-hook-form@7.65.0(react@19.2.1))
       '@huggingface/inference':
         specifier: ^4.13.4
         version: 4.13.4

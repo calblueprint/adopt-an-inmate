@@ -4,7 +4,10 @@ import { Button } from '@/components/Button';
 import QuestionBack from '@/components/questions/QuestionBack';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useApplicationNavigation } from '@/hooks/app-process';
-import { formatGenderPreference } from '@/lib/formatters';
+import {
+  formatGenderPreference,
+  formatOffensePreference,
+} from '@/lib/formatters';
 import { ApplicationStage } from '@/types/enums';
 
 export default function MainQuestionReview() {
@@ -29,6 +32,10 @@ export default function MainQuestionReview() {
         <div className="flex flex-col gap-1">
           <p className="text-sm text-gray-11">Gender preference</p>
           <p>{formatGenderPreference(appState.form.genderPreference)}</p>
+        </div>
+        <div className="flex flex-col gap-1">
+          <p className="text-sm text-gray-11">Offenses not preffered</p>
+          <p>{formatOffensePreference(appState.form.offensePreference)}</p>
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-sm text-gray-11">

@@ -35,6 +35,12 @@ export const metadata: Metadata = {
   description: 'Description of project',
 };
 
+{
+  /* <OnboardingGuard>
+            <ProfileProvider>{children}</ProfileProvider>
+          </OnboardingGuard> */
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -46,9 +52,7 @@ export default function RootLayout({
         className={cn(bespoke.variable, golos.variable, 'h-svh w-full bg-bg')}
       >
         <AuthProvider>
-          <OnboardingGuard>
-            <ProfileProvider>{children}</ProfileProvider>
-          </OnboardingGuard>
+          <ProfileProvider>{children}</ProfileProvider>
         </AuthProvider>
       </body>
     </html>

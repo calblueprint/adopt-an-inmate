@@ -18,6 +18,8 @@ export default function MatchingSelectScreen({
   const [rankedIds, setRankedIds] = useState<string[]>([]);
   const { userId } = useAuth();
 
+  const devUserId = '297a39c3-a21f-4ec7-86e1-cc3c003cda26'; //delete
+
   /**
    * Toggles the rank of an adoptee.
    * If ranked, removes it from rankedIds.
@@ -43,17 +45,21 @@ export default function MatchingSelectScreen({
     onTransitionToReview(rankedIds);
     
     try {
-      const user_ranked = rankedIds.map(
+      const userRanked = rankedIds.map(
         id => appState.matches!.find(match => match.id === id)!,
       );
 
       await upsertApplication({
-        adopter_uuid: userId!, //totally not null ahaha
+        adopter_uuid: devUserId ?? userId!,
         app_uuid: appState.appId,
         status: 'pending', //for time being, "Next" on ranking = submitted
-        ranked_cards: user_ranked,
+        ranked_cards: userRanked,
         time_submitted: new Date().toISOString(), //are u sure this gives the current timestamp
       });
+
+      console.log('Ranked IDs:', rankedIds);
+      console.log('User-ranked objects:', userRanked);
+      console.log('Submitting application for user:', devUserId);
     } catch (error) {
       console.error('Failed to save rankings:', error);
     }

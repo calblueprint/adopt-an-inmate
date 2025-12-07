@@ -24,6 +24,8 @@ export default function MainQuestionGender() {
   const { nextQuestion } = useQuestionNavigaton();
   const { userId } = useAuth();
 
+  const devUserId = '297a39c3-a21f-4ec7-86e1-cc3c003cda26'; //delete
+
   const {
     register,
     handleSubmit,
@@ -45,7 +47,7 @@ export default function MainQuestionGender() {
 
     try {
       await upsertApplication({
-        adopter_uuid: userId!, //totally not null ahaha
+        adopter_uuid: devUserId ?? userId!,
         app_uuid: appState.appId,
         gender_pref: genderPreference,
       });

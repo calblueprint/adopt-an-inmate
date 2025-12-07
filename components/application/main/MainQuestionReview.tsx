@@ -27,21 +27,24 @@ export default function MainQuestionReview() {
     }
   }, [userId, profileReady, profileData, loadProfile]);
 
+  const devUserId = '297a39c3-a21f-4ec7-86e1-cc3c003cda26'; //delete
+
   const handleContinue = () => {
     advanceToStage(ApplicationStage.MATCHING);
 
     // not re-saving return_explanation since need to tweak stillInCorrespondence category thing
     try {
+      console.log('Submitting application for user:', appState.appId);
+
       upsertApplication({
         //save everything again in case
-        adopter_uuid: userId!, //totally not null ahaha
+        adopter_uuid: devUserId ?? userId!,
         app_uuid: appState.appId,
         gender_pref: appState.form.genderPreference,
         personal_bio: appState.form.bio,
         ranked_cards: null,
         //return_explanation: appState.form.whyAdopting || appState.form.whyEnded,
         status: 'incomplete',
-        time_submitted: '',
       });
     } catch (error) {
       console.error('Failed to save application:', error);

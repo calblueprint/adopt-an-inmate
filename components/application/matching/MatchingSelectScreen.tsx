@@ -19,6 +19,8 @@ export default function MatchingSelectScreen({
   const [rankedIds, setRankedIds] = useState<string[]>([]);
   const { userId } = useAuth();
 
+  const devUserId = '297a39c3-a21f-4ec7-86e1-cc3c003cda26'; //delete
+
   /**
    * Toggles the rank of an adoptee.
    * If ranked, removes it from rankedIds.
@@ -59,6 +61,10 @@ export default function MatchingSelectScreen({
         ranked_cards: userRanked,
         time_submitted: new Date().toISOString(),
       });
+
+      console.log('Ranked IDs:', rankedIds);
+      console.log('User-ranked objects:', userRanked);
+      console.log('Submitting application for user:', devUserId);
     } catch (error) {
       Logger.error(`Failed to save rankings: ${String(error)}`);
     }

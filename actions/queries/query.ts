@@ -62,15 +62,6 @@ export async function fetchUserApplicationUUIDs(adopter_UUID: string) {
   return data;
 }
 
-//    adopter_uuid: string
-//    app_uuid: string
-//    gender_pref: string | null
-//    personal_bio: string | null
-//    ranked_cards: Json | null <-- change to export type RankedAdopteeMatch, array
-//    return_explanation: string | null
-//    status: Database["public"]["Enums"]["status_vals"]
-//    time_submitted: string
-
 export async function upsertApplication(
   app: Omit<Partial<AdopterApplication>, 'adopter_uuid' | 'app_uuid'> & {
     adopter_uuid: string;

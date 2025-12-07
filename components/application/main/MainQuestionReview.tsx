@@ -27,8 +27,6 @@ export default function MainQuestionReview() {
     }
   }, [userId, profileReady, profileData, loadProfile]);
 
-  const devUserId = '297a39c3-a21f-4ec7-86e1-cc3c003cda26'; //delete
-
   const handleContinue = () => {
     advanceToStage(ApplicationStage.MATCHING);
 
@@ -36,7 +34,7 @@ export default function MainQuestionReview() {
     try {
       upsertApplication({
         //save everything again in case
-        adopter_uuid: devUserId ?? userId!,
+        adopter_uuid: userId!,
         app_uuid: appState.appId,
         gender_pref: appState.form.genderPreference,
         personal_bio: appState.form.bio,

@@ -1,14 +1,13 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
+import z, { uuidv4 } from 'zod';
 import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import { TextArea } from '@/components/TextArea';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useQuestionNavigaton } from '@/hooks/questions';
-
-//import { uuidv4, z } from 'zod/';
 
 interface BioForm {
   bio: string;
@@ -19,14 +18,7 @@ export default function MainQuestionBio() {
   const { nextQuestion } = useQuestionNavigaton();
   const { userId } = useAuth(); //NOTE: disable RLS to test, then renable ig
 
-  const devUserId = '297a39c3-a21f-4ec7-86e1-cc3c003cda26'; //delete
-  const devAppId = 'ce554661-540f-4ad4-a2d5-7f8002f50108'; //delete
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<BioForm>({
+  const { register, handleSubmit, formState: { errors } } = useForm<BioForm>({
     defaultValues: {
       bio: appState.form.bio,
     },
@@ -40,19 +32,19 @@ export default function MainQuestionBio() {
       // compute new app_uuid if missing
       const genAppId =
         !appState.appId || appState.appId === 'appId'
-          ? devAppId //z.string().parse(uuidv4())
+          ? z.string().parse(uuidv4())
           : appState.appId;
 
       setAppState(prev => ({ ...prev, appId: genAppId }));
 
       // since first question, set initial default for irrelevant cols
       await upsertApplication({
-        adopter_uuid: devUserId ?? userId!,
+        adopter_uuid: userId!,
         app_uuid: genAppId, //should we do useEffect mayhaps
         personal_bio: bio,
         ranked_cards: null,
         status: 'incomplete',
-        //time_submitted: '', //should this be nullable?
+        //time_submitted: '', //should change to nullable in supabase?
       });
     } catch (error) {
       console.error('Failed to save application:', error);

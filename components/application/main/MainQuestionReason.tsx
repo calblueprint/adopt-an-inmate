@@ -18,8 +18,6 @@ export default function MainQuestionReason() {
   const { nextQuestion } = useQuestionNavigaton();
   const { userId } = useAuth();
 
-  const devUserId = '297a39c3-a21f-4ec7-86e1-cc3c003cda26'; //delete
-
   const { register, handleSubmit } = useForm<ReasonForm>({
     defaultValues: {
       reason: appState.stillInCorrespondence
@@ -42,7 +40,7 @@ export default function MainQuestionReason() {
 
     try {
       await upsertApplication({
-        adopter_uuid: devUserId ?? userId!,
+        adopter_uuid: userId!,
         app_uuid: appState.appId,
         return_explanation: reason,
       });

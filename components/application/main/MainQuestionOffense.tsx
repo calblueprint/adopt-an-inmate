@@ -40,6 +40,7 @@ export default function MainQuestionOffense() {
 
   const selected = watch('offensePreference');
 
+  //TODO: make sure that selecting "none" clears all other options
   const toggle = (value: OffenseOption) => {
     if (selected.includes(value)) {
       setValue(

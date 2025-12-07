@@ -5,10 +5,13 @@ import { findMatches } from '@/actions/matching';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import MatchingLoading from '../matching/MatchingLoading';
+import MatchingReviewScreen from '../matching/MatchingReviewScreen';
 import MatchingSelectScreen from '../matching/MatchingSelectScreen';
 
 export default function StageMatching() {
   const { appState, setAppState } = useApplicationContext();
+  const [subStage, setSubStage] = useState<'select' | 'review'>('select');
+  const [rankedIds, setRankedIds] = useState<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const loadStarted = useRef(false);
 
@@ -61,7 +64,28 @@ export default function StageMatching() {
     loadMatches();
   }, [isLoaded, appState, setAppState]);
 
-  if (isLoaded) return <MatchingSelectScreen />;
+  /**
+   * Function to finalize the ranks and transition to the review screen.
+   * This is passed down as a prop.
+   */
+  const handleTransitionToReview = (rankedIds: string[]) => {
+    setRankedIds(rankedIds);
+    setAppState(prev => ({
+      ...prev,
+      rankedMatches: rankedIds,
+    }));
+    setSubStage('review');
+  };
+
+  if (isLoaded) {
+    if (subStage === 'select') {
+      return (
+        <MatchingSelectScreen onTransitionToReview={handleTransitionToReview} />
+      );
+    } else if (subStage === 'review') {
+      return <MatchingReviewScreen ranks={rankedIds} />;
+    }
+  }
 
   return <MatchingLoading />;
 }

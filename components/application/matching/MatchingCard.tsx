@@ -5,15 +5,27 @@ import { LuCake, LuMapPin, LuUser } from 'react-icons/lu';
 import { cn, getStateAbbv } from '@/lib/utils';
 import { RankedAdopteeMatch } from '@/types/schema';
 
+interface MatchingCardProps {
+  match: RankedAdopteeMatch;
+  matchIndex: number;
+  rank?: number;
+  onSelect?: (id: string) => void;
+  isReview?: boolean;
+}
+
 export default function MatchingCard({
   match,
   rank,
   onSelect,
 }: {
   match: RankedAdopteeMatch;
+  matchIndex: number;
   rank?: number;
   onSelect: (id: string) => void;
 }) {
+  const bioElmt = useRef<HTMLParagraphElement>(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
   const isSelected = !(rank === undefined);
   const [isFadeVisible, setIsFadeVisible] = useState(false);
 
@@ -23,18 +35,21 @@ export default function MatchingCard({
   };
 
   const handleCardClick = () => {
-    onSelect(match.id);
+    if (!isReview && onSelect) {
+      onSelect(match.id);
+    }
   };
 
+  const cardClassName = `relative flex flex-1 flex-col gap-6 rounded-lg border p-8 shadow-md transition-all ${
+    isReview
+      ? 'cursor-default'
+      : 'cursor-pointer hover:not-has-[button:hover]:border-gray-7'
+  } ${
+    isSelected ? 'border-4 border-red-12' : 'border-4 border-transparent'
+  } bg-gray-1`;
+
   return (
-    <div
-      onClick={handleCardClick}
-      className={`relative flex flex-1 cursor-pointer flex-col gap-6 rounded-lg border p-8 shadow-md transition-all ${
-        isSelected
-          ? 'border-4 border-red-12'
-          : 'border-4 border-transparent hover:not-has-[button:hover]:border-gray-7'
-      } bg-gray-1`}
-    >
+    <div onClick={handleCardClick} className={cardClassName}>
       {/* rank badge */}
       {rank !== undefined && (
         <div className="absolute top-0 left-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-red-12">

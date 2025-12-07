@@ -6,6 +6,7 @@ export interface ApplicationState {
   matches: RankedAdopteeMatch[] | null;
   selectedMatch: string | null;
   stillInCorrespondence: boolean;
+  rankedMatches: string[] | null;
 }
 
 export interface FormState {

@@ -5,7 +5,13 @@ import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import MatchingCard from './MatchingCard';
 
-export default function MatchingSelectScreen() {
+interface MatchingSelectScreenProps {
+  onTransitionToReview: (rankedIds: string[]) => void;
+}
+
+export default function MatchingSelectScreen({
+  onTransitionToReview,
+}: MatchingSelectScreenProps) {
   const { appState } = useApplicationContext();
 
   const [rankedIds, setRankedIds] = useState<string[]>([]);
@@ -33,6 +39,10 @@ export default function MatchingSelectScreen() {
    */
   const handleResetRanks = () => {
     setRankedIds([]);
+  };
+
+  const handleNextClick = () => {
+    onTransitionToReview(rankedIds);
   };
 
   const isNextDisabled = rankedIds.length != 4; // disable next if not all 4 ranked
@@ -82,6 +92,7 @@ export default function MatchingSelectScreen() {
           variant="primary"
           className="w-9/10 py-2 sm:w-[clamp(200px,50%,400px)]"
           disabled={isNextDisabled}
+          onClick={handleNextClick}
         >
           Next
         </Button>

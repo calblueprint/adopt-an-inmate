@@ -16,7 +16,8 @@ const spinnerStyles = cva('animate-spin', {
 });
 
 interface LoadingSpinnerProps
-  extends React.ComponentProps<typeof LuLoaderCircle>,
+  extends
+    React.ComponentProps<typeof LuLoaderCircle>,
     VariantProps<typeof spinnerStyles> {}
 
 export default function LoadingSpinner({

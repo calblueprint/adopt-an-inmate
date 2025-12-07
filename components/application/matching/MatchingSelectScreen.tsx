@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import { useAuth } from '@/contexts/AuthProvider';
 import MatchingCard from './MatchingCard';
 
 interface MatchingSelectScreenProps {
@@ -13,8 +15,8 @@ export default function MatchingSelectScreen({
   onTransitionToReview,
 }: MatchingSelectScreenProps) {
   const { appState } = useApplicationContext();
-
   const [rankedIds, setRankedIds] = useState<string[]>([]);
+  const { userId } = useAuth();
 
   /**
    * Toggles the rank of an adoptee.
@@ -34,8 +36,27 @@ export default function MatchingSelectScreen({
     });
   };
 
-  const handleNextClick = () => {
+  //TODO: route to review ranking page and MOVE BACKEND STUFF THERE
+  //TODO: create review ranking page, thank you page
+  const handleNextClick = async () => {
+
     onTransitionToReview(rankedIds);
+    
+    try {
+      const user_ranked = rankedIds.map(
+        id => appState.matches!.find(match => match.id === id)!,
+      );
+
+      await upsertApplication({
+        adopter_uuid: userId!, //totally not null ahaha
+        app_uuid: appState.appId,
+        status: 'pending', //for time being, "Next" on ranking = submitted
+        ranked_cards: user_ranked,
+        time_submitted: new Date().toISOString(), //are u sure this gives the current timestamp
+      });
+    } catch (error) {
+      console.error('Failed to save rankings:', error);
+    }
   };
 
   const isNextDisabled = rankedIds.length != 4; // disable next if not all 4 ranked

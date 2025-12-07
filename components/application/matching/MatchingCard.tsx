@@ -46,7 +46,7 @@ export default function MatchingCard({
     !isReview &&
     (!isSelected
       ? 'hover:not-has-[button:hover]:border-gray-7'
-      : 'hover:not-has-[button:hover]:border-red-10');
+      : 'hover:not-has-[button:hover]:border-red-8');
 
   const cardClassName = `relative flex flex-1 flex-col gap-6 rounded-lg border p-8 shadow-md transition-all ${
     interactiveClasses

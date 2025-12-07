@@ -16,7 +16,7 @@ interface BioForm {
 export default function MainQuestionBio() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
-  const { userId } = useAuth(); //NOTE: disable RLS to test, then renable ig
+  const { userId } = useAuth();
 
   const { register, handleSubmit, formState: { errors } } = useForm<BioForm>({
     defaultValues: {

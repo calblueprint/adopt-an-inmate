@@ -2,6 +2,7 @@
 
 import { ReactNode } from 'react';
 import { Button } from '@/components/Button';
+import { cn } from '@/lib/utils';
 
 interface ModalProps {
   isOpen: boolean;
@@ -24,7 +25,10 @@ export default function Modal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
       <div
-        className={`flex h-[30.1875rem] w-[26.4375rem] flex-col rounded-2xl bg-white p-8 shadow-xl ${className}`}
+        className={cn(
+          'flex h-[30.1875rem] w-[26.4375rem] flex-col rounded-2xl bg-white p-8 shadow-xl',
+          className,
+        )}
       >
         {/* Header */}
         {title && (

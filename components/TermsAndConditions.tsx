@@ -3,13 +3,13 @@ export function TermsAndConditions() {
     <div className="space-y-4">
       {/* Header */}
       <div className="mb-4">
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           Effective Date: November 30, 2025
         </p>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           Legal Entity: Adopt an Inmate, Inc., an Oregon nonprofit corporation
         </p>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           Contact: operations@adoptaninmate.org • PO Box 1543, Veneta, OR 97487,
           USA
         </p>
@@ -17,10 +17,10 @@ export function TermsAndConditions() {
 
       {/* Section 1 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           1) Acceptance of Terms
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           By accessing or using our website, web app, or related services
           (collectively, the &quot;Service&quot;), you agree to these Terms
           &amp; Conditions (&quot;Terms&quot;) and our Privacy Policy. If you do
@@ -30,10 +30,10 @@ export function TermsAndConditions() {
 
       {/* Section 2 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           2) Who May Use the Service
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           You must be 18 years or older. You represent that you can lawfully
           enter into these Terms and will comply with all applicable laws.
         </p>
@@ -41,10 +41,10 @@ export function TermsAndConditions() {
 
       {/* Section 3 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           3) Accounts &amp; Security
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           You&apos;re responsible for your account credentials and all activity
           under your account. Notify us immediately of unauthorized use. We may
           suspend or terminate accounts for any reason, including safety
@@ -54,10 +54,10 @@ export function TermsAndConditions() {
 
       {/* Section 4 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           4) Purpose of the Service (What We Do / Don&apos;t Do)
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           We are a nonprofit that facilitates connection, mentorship, and
           support between volunteers/adopters and people in prison (PIPs). We do
           not provide legal, medical, psychological, financial, or emergency
@@ -71,10 +71,10 @@ export function TermsAndConditions() {
 
       {/* Section 5 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           5) Appropriate Use &amp; Community Standards
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           You agree not to, and will not assist others to: Harass, threaten,
           exploit, or harm others; engage in hate speech; or send sexual content
           or explicit images. Request or send money, gifts, or financial details
@@ -91,10 +91,10 @@ export function TermsAndConditions() {
 
       {/* Section 6 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           6) User Content &amp; License
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           You retain ownership of content you submit (&quot;User Content&quot;).
           You grant Adopt an Inmate a worldwide, non-exclusive, royalty-free
           license to host, store, reproduce, and display your User Content
@@ -106,10 +106,10 @@ export function TermsAndConditions() {
 
       {/* Section 7 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           7) Privacy &amp; Data
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           Our Privacy Policy explains how we collect and use personal
           information. By using the Service, you consent to those practices. Do
           not share sensitive personal data you are not comfortable disclosing.
@@ -118,10 +118,10 @@ export function TermsAndConditions() {
 
       {/* Section 8 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           8) No Monitoring Guarantee; Safety
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           We may review communications for compliance and safety, but we are not
           obligated to monitor all activity. Use common sense and follow any
           safety guidelines we provide. Report concerns to
@@ -131,10 +131,10 @@ export function TermsAndConditions() {
 
       {/* Section 9 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           9) Third-Party Links &amp; Services
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           The Service may contain links to third parties. We are not responsible
           for their content, policies, or practices.
         </p>
@@ -142,10 +142,10 @@ export function TermsAndConditions() {
 
       {/* Section 10 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           10) Intellectual Property
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           The Service, including text, graphics, logos, and software, is owned
           by or licensed to Adopt an Inmate and protected by law. Except as
           expressly permitted, you may not copy, modify, distribute, or create
@@ -155,10 +155,10 @@ export function TermsAndConditions() {
 
       {/* Section 11 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           11) Feedback
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           If you provide ideas or suggestions, you grant us a perpetual,
           irrevocable, royalty-free license to use them without restriction or
           compensation.
@@ -167,10 +167,10 @@ export function TermsAndConditions() {
 
       {/* Section 12 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           12) Donations, Payments, &amp; Fees (If Applicable)
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           Donations and any fees, if collected through the Service, are
           processed by third-party providers. Unless otherwise stated in
           writing, donations are non-refundable.
@@ -179,10 +179,10 @@ export function TermsAndConditions() {
 
       {/* Section 13 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           13) Disclaimers
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           THE SERVICE IS PROVIDED &quot;AS IS&quot; AND &quot;AS
           AVAILABLE.&quot; WE DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED,
           INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
@@ -193,10 +193,10 @@ export function TermsAndConditions() {
 
       {/* Section 14 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           14) Limitation of Liability
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           TO THE FULLEST EXTENT PERMITTED BY LAW, ADOPT AN INMATE AND ITS
           DIRECTORS, OFFICERS, EMPLOYEES, VOLUNTEERS, AND AGENTS SHALL NOT BE
           LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL,
@@ -210,10 +210,10 @@ export function TermsAndConditions() {
 
       {/* Section 15 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           15) Indemnification
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           You agree to indemnify, defend, and hold harmless Adopt an Inmate and
           its affiliates from any claims, liabilities, damages, losses, and
           expenses (including reasonable attorneys&apos; fees) arising from your
@@ -224,10 +224,10 @@ export function TermsAndConditions() {
 
       {/* Section 16 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           16) Suspension &amp; Termination
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           We may suspend or terminate access at any time with or without notice,
           including if we believe your use presents risk to others, to the
           organization, or to the integrity of the Service. Upon termination,
@@ -237,10 +237,10 @@ export function TermsAndConditions() {
 
       {/* Section 17 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           17) Changes to the Service &amp; Terms
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           We may modify the Service or these Terms at any time. Changes are
           effective when posted. Your continued use after changes means you
           accept the updated Terms.
@@ -249,10 +249,10 @@ export function TermsAndConditions() {
 
       {/* Section 18 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           18) Governing Law &amp; Venue
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           These Terms are governed by the laws of the State of Oregon, without
           regard to conflict-of-laws principles. You agree to the exclusive
           jurisdiction and venue of state and federal courts located in Lane
@@ -262,10 +262,10 @@ export function TermsAndConditions() {
 
       {/* Section 19 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           19) Severability; Waiver
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           If any provision is found unenforceable, the remaining provisions
           remain in effect. Our failure to enforce a term is not a waiver.
         </p>
@@ -273,13 +273,13 @@ export function TermsAndConditions() {
 
       {/* Section 20 */}
       <section>
-        <h3 className="mb-2 text-base font-semibold text-[#1E1F24]">
+        <h3 className="mb-2 text-base font-semibold text-[var(--color-gray-12)]">
           20) Contact
         </h3>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           Questions or concerns: info@adoptaninmate.org
         </p>
-        <p className="text-[0.875rem] leading-normal font-medium text-[#BABBC7]">
+        <p className="text-[0.875rem] leading-normal font-medium text-[var(--color-gray-8)]">
           Mail: Adopt an Inmate, Inc., PO Box 1543, Veneta, OR 97487, USA
         </p>
       </section>

@@ -1,5 +1,4 @@
-import { formatAmericanTime } from '@/lib/formatters';
-import { determineAppStatus } from '@/lib/utils';
+import { capitalize, formatAmericanTime } from '@/lib/formatters';
 import { AdopterApplication } from '@/types/schema';
 import ApplicationCardButton from './ApplicationCardButton';
 
@@ -16,7 +15,7 @@ export default function ApplicationCard({ app }: { app: AdopterApplication }) {
             {formatAmericanTime(app.time_submitted)}
           </p>
           <p className="text-xs text-gray-10">
-            Status: {determineAppStatus(app)}
+            Status: {capitalize(app.status)}
           </p>
         </div>
       </div>

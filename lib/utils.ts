@@ -2,7 +2,6 @@ import clsx, { ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { stateNameAbbv } from '@/data/states';
 import { AdopterApplication } from '@/types/schema';
-import { capitalize } from './formatters';
 
 /**
  * Random number generator built on top of Math.random().
@@ -107,13 +106,4 @@ export const calculateAge = (dob: Date | string): number => {
  */
 export const appIsActive = (app: AdopterApplication) => {
   return !(app.status === 'rejected' || app.status === 'ended');
-};
-
-/**
- * Determine the status of an application.
- *
- * Returns a string of "Pending", "Accepted", "Incomplete", or "Rejected"
- */
-export const determineAppStatus = (app: AdopterApplication) => {
-  return capitalize(app.status);
 };

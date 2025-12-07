@@ -1,4 +1,5 @@
 import type { VariantProps } from 'class-variance-authority';
+import { MouseEvent } from 'react';
 import Link from 'next/link';
 import { cva } from 'class-variance-authority';
 
@@ -17,10 +18,30 @@ const linkVariant = cva('', {
 
 type LinkVariantProp = VariantProps<typeof linkVariant>['variant'];
 
+interface CustomLinkProps {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+  variant?: LinkVariantProp;
+  onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
+}
+
 export default function CustomLink({
   className,
   variant,
+  href,
+  onClick,
+  children,
   ...props
-}: React.ComponentProps<typeof Link> & { variant?: LinkVariantProp }) {
-  return <Link className={linkVariant({ variant, className })} {...props} />;
+}: CustomLinkProps) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className={linkVariant({ variant, className })}
+      {...props}
+    >
+      {children}
+    </Link>
+  );
 }

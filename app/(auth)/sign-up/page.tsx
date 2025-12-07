@@ -10,6 +10,8 @@ import { Button } from '@/components/Button';
 import Checkbox from '@/components/Checkbox';
 import CustomLink from '@/components/CustomLink';
 import ErrorMessage from '@/components/ErrorMessage';
+import Modal from '@/components/Modal';
+import { TermsAndConditions } from '@/components/TermsAndConditions';
 import { Textbox } from '@/components/Textbox';
 
 const signUpForm = z
@@ -52,6 +54,8 @@ export default function SignUpPage() {
   const router = useRouter();
 
   const [authError, setAuthError] = useState<string | null>(null);
+
+  const [isOpen, setOpen] = useState<boolean>(false);
 
   const handleSignUp = async ({
     email,
@@ -151,7 +155,15 @@ export default function SignUpPage() {
               <Checkbox id="tos" {...register('tos', { required: true })} />
               <p className="text-gray-9">
                 I&#39;ve read and agreed to the{' '}
-                <CustomLink href="#">Terms of Service</CustomLink>
+                <CustomLink
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault(); // stop navigation
+                    setOpen(true); // open modal
+                  }}
+                >
+                  Terms of Service
+                </CustomLink>
                 <span className="text-error">*</span>
               </p>
             </label>
@@ -163,6 +175,14 @@ export default function SignUpPage() {
           </Button>
         </div>
       </div>
+
+      <Modal
+        isOpen={isOpen}
+        title="Terms of Service"
+        onClose={() => setOpen(false)}
+      >
+        <TermsAndConditions />
+      </Modal>
     </form>
   );
 }

@@ -40,11 +40,17 @@ export default function MatchingCard({
     }
   };
 
+  const interactiveClasses = !isReview ? 'cursor-pointer' : 'cursor-default';
+
+  const hoverBorderClasses =
+    !isReview &&
+    (!isSelected
+      ? 'hover:not-has-[button:hover]:border-gray-7'
+      : 'hover:not-has-[button:hover]:border-red-10');
+
   const cardClassName = `relative flex flex-1 flex-col gap-6 rounded-lg border p-8 shadow-md transition-all ${
-    isReview
-      ? 'cursor-default'
-      : 'cursor-pointer hover:not-has-[button:hover]:border-gray-7'
-  } ${
+    interactiveClasses
+  } ${hoverBorderClasses} ${
     isSelected ? 'border-4 border-red-12' : 'border-4 border-transparent'
   } bg-gray-1`;
 
@@ -53,7 +59,7 @@ export default function MatchingCard({
       {/* rank badge */}
       {rank !== undefined && (
         <div className="absolute top-0 left-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-red-12">
-          <h2 className="font-bold text-white">{rank}</h2>
+          <h1 className="text-2.25 font-bold text-white">{rank}</h1>
         </div>
       )}
       {/* name and metadata */}

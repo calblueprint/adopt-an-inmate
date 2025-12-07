@@ -8,7 +8,7 @@ const textBoxStyle = cva('', {
   variants: {
     variant: {
       default:
-        'w-full rounded-lg bg-bg px-2 py-1.5 text-gray-11 placeholder:text-gray-8 outline-none ring-gray-11 transition-colors duration-200 focus-visible:bg-gray-2 focus-visible:ring-1',
+        'w-full rounded-lg bg-bg px-2 py-1.5 text-gray-11 placeholder:text-gray-8 outline-none ring-red-12 transition-colors duration-200 focus-visible:bg-gray-2 focus-visible:ring-1',
     },
     isEmpty: {
       true: '',

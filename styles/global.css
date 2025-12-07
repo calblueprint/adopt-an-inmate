@@ -71,7 +71,7 @@
 
 @layer base {
   * {
-    @apply font-bespoke;
+    @apply font-golos;
   }
 
   h1 {

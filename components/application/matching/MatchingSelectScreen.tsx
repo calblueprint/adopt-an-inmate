@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import MatchingCard from './MatchingCard';
-import MatchingDialog from './MatchingDialog';
 
 export default function MatchingSelectScreen() {
   const { appState } = useApplicationContext();
@@ -51,14 +50,13 @@ export default function MatchingSelectScreen() {
 
       <div className="flex flex-col gap-4">
         <div className="flex w-full gap-8 px-12">
-          {appState.matches?.map((m, idx) => {
+          {appState.matches?.map(m => {
             // calculate current rank based on array index
             const rankIndex = rankedIds.indexOf(m.id);
             const currentRank = rankIndex > -1 ? rankIndex + 1 : undefined;
             return (
               <MatchingCard
                 match={m}
-                matchIndex={idx}
                 key={m.id}
                 rank={currentRank}
                 onSelect={handleRankToggle}
@@ -66,8 +64,6 @@ export default function MatchingSelectScreen() {
             );
           })}
         </div>
-
-        <MatchingDialog />
 
         <div className="flex w-full justify-end px-12">
           <Button

@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { LuCake, LuMapPin, LuUser } from 'react-icons/lu';
-import { getStateAbbv } from '@/lib/utils';
+import { cn, getStateAbbv } from '@/lib/utils';
 import { RankedAdopteeMatch } from '@/types/schema';
 
 export default function MatchingCard({
@@ -14,6 +15,12 @@ export default function MatchingCard({
   onSelect: (id: string) => void;
 }) {
   const isSelected = !(rank === undefined);
+  const [isFadeVisible, setIsFadeVisible] = useState(false);
+
+  const handleBioScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const shouldFade = e.currentTarget.scrollTop > 16;
+    if (isFadeVisible !== shouldFade) setIsFadeVisible(shouldFade);
+  };
 
   const handleCardClick = () => {
     onSelect(match.id);
@@ -57,10 +64,15 @@ export default function MatchingCard({
       <div className="space-y-2">
         <p className="text-xs font-semibold text-gray-8 uppercase">Biography</p>
         <div className="relative">
-          <div className="h-52 overflow-y-auto py-4">
+          <div className="h-52 overflow-y-auto pb-4" onScroll={handleBioScroll}>
             <p>{match.bio}</p>
           </div>
-          <div className="absolute top-0 left-0 z-1 h-4 w-full bg-gradient-to-b from-gray-1 to-gray-1/0" />
+          <div
+            className={cn(
+              'absolute top-0 left-0 z-1 h-4 w-full bg-gradient-to-b from-gray-1 to-gray-1/0',
+              !isFadeVisible && 'invisible',
+            )}
+          />
           <div className="absolute bottom-0 left-0 z-1 h-4 w-full bg-gradient-to-t from-gray-1 to-gray-1/0" />
         </div>
       </div>

@@ -4,8 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { LuCake, LuMapPin, LuUser } from 'react-icons/lu';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/Button';
-import { calculateAge, getStateAbbv } from '@/lib/utils';
-import { AdopteeMatch } from '@/types/types';
+import { getStateAbbv } from '@/lib/utils';
+import { RankedAdopteeMatch } from '@/types/schema';
 
 export default function MatchingCard({
   match,
@@ -13,7 +13,7 @@ export default function MatchingCard({
   rank,
   onSelect,
 }: {
-  match: AdopteeMatch;
+  match: RankedAdopteeMatch;
   matchIndex: number;
   rank?: number;
   onSelect: (id: string) => void;
@@ -79,7 +79,7 @@ export default function MatchingCard({
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
             <LuCake size={16} className="text-red-12" />
-            <p>{calculateAge(match.dob)}</p>
+            <p>{match.age}</p>
           </div>
           <div className="flex items-center gap-1">
             <LuUser size={16} className="text-red-12" />

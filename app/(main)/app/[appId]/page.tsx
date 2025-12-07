@@ -12,7 +12,7 @@ export default async function ApplicationDetailPage({
   const { appId } = await params;
 
   return (
-    <div className="flex size-full flex-col items-center justify-center">
+    <div className="flex min-h-svh w-full flex-col items-center justify-between">
       <Link href="/">
         <Logo />
       </Link>
@@ -34,7 +34,7 @@ export default async function ApplicationDetailPage({
       </div>
 
       {/* spacer */}
-      <div className="h-22" />
+      <div className="h-16" />
     </div>
   );
 }

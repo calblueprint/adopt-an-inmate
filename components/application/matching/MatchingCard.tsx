@@ -59,7 +59,7 @@ export default function MatchingCard({
       {/* rank badge */}
       {rank !== undefined && (
         <div className="absolute top-0 left-1/2 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-red-12">
-          <h1 className="font-bold text-[2.25] text-white">{rank}</h1>
+          <h1 className="text-[2.25rem] font-bold text-white">{rank}</h1>
         </div>
       )}
       {/* name and metadata */}

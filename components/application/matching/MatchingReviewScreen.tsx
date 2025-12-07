@@ -21,7 +21,7 @@ export default function MatchingReviewScreen({
 
   const nextStage = () => {
     console.log('Submitting final ranked matches:', ranks);
-    advanceToStage(ApplicationStage.MAIN);
+    advanceToStage(ApplicationStage.SUBMITTED);
   };
 
   const allMatches = appState.matches || [];

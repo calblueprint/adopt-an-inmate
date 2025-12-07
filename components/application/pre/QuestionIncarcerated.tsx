@@ -61,6 +61,12 @@ export default function QuestionIncarcerated() {
     router.push(`?${params.toString()}`);
   };
 
+  const goBack = () => {
+    const params = new URLSearchParams(searchParams);
+    params.set('q', '0');
+    router.push(`?${params.toString()}`);
+  };
+
   return (
     <>
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -85,9 +91,14 @@ export default function QuestionIncarcerated() {
           </div>
         </div>
 
-        <Button variant="primary" type="submit">
-          Next
-        </Button>
+        <div className="flex justify-between">
+          <Button onClick={goBack} variant="secondary" type="button">
+            Back
+          </Button>
+          <Button variant="primary" type="submit">
+            Next
+          </Button>
+        </div>
       </form>
 
       {/* dialog popup for ineligibility */}

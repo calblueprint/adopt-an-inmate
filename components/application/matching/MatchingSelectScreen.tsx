@@ -41,10 +41,9 @@ export default function MatchingSelectScreen() {
   return (
     <div className="flex w-full flex-col gap-12 pt-8">
       <div className="flex flex-col items-center gap-4">
-        <h1>Pick your adoptee!</h1>
+        <h1>Rank your preferences!</h1>
         <p className="w-[clamp(300px,60%,400px)] text-center text-sm text-gray-11">
-          Click the cards in your order of preference. Click to reorder anytime,
-          or click again to change rankings.
+          Click the cards in your order of preference.
         </p>
       </div>
 

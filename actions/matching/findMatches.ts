@@ -31,6 +31,7 @@ export const findMatches = async (appId: string) => {
   if (!appData) return { data: null, error: 'Application not found' };
   if (!appData.personal_bio)
     return { data: null, error: 'Application has no bio' };
+  console.log('App data:', appData); //DELETEEEEEEEEEE
 
   // return existing data
   if (appData.ranked_cards) {
@@ -44,6 +45,7 @@ export const findMatches = async (appId: string) => {
   // then we have not yet created a match
 
   // find user
+  console.log('will the real user id pls stand up: ', appData.adopter_uuid);
   const { data: userProfile, error: fetchUserError } = await supabase
     .from('adopter_profiles')
     .select()

@@ -44,12 +44,11 @@ export default function MainQuestionBio() {
           : appState.appId;
 
       setAppState(prev => ({ ...prev, appId: genAppId }));
-      console.log('so this is the app id:', appState.appId);
 
       // since first question, set initial default for irrelevant cols
       await upsertApplication({
         adopter_uuid: devUserId ?? userId!,
-        app_uuid: appState.appId,
+        app_uuid: genAppId, //should we do useEffect mayhaps
         personal_bio: bio,
         ranked_cards: null,
         status: 'incomplete',

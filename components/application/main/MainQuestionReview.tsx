@@ -34,8 +34,6 @@ export default function MainQuestionReview() {
 
     // not re-saving return_explanation since need to tweak stillInCorrespondence category thing
     try {
-      console.log('Submitting application for user:', appState.appId);
-
       upsertApplication({
         //save everything again in case
         adopter_uuid: devUserId ?? userId!,

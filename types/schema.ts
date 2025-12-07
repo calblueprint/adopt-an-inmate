@@ -7,8 +7,8 @@ export type PublicFunctions = Database['public']['Functions'];
 
 export type Profile = PublicTable<'adopter_profiles'>;
 
-// TODO: update table name when no longer in testing
-export type AdopterApplication = PublicTable<'adopter_applications_dummy'>;
+// // TODO: update table name when no longer in testing
+// export type AdopterApplication = PublicTable<'adopter_applications_dummy'>;
 
 export type AdopteeMatch =
   PublicFunctions['find_top_k_filtered']['Returns'][number];

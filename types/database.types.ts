@@ -150,7 +150,7 @@ export type Database = {
           personal_bio: string | null
           ranked_cards: Json | null
           return_explanation: string | null
-          status: Database["public"]["Enums"]["status_vals"] | null
+          status: Database["public"]["Enums"]["status_vals"]
           time_submitted: string
         }
         Insert: {
@@ -160,7 +160,7 @@ export type Database = {
           personal_bio?: string | null
           ranked_cards?: Json | null
           return_explanation?: string | null
-          status?: Database["public"]["Enums"]["status_vals"] | null
+          status?: Database["public"]["Enums"]["status_vals"]
           time_submitted?: string
         }
         Update: {
@@ -170,7 +170,7 @@ export type Database = {
           personal_bio?: string | null
           ranked_cards?: Json | null
           return_explanation?: string | null
-          status?: Database["public"]["Enums"]["status_vals"] | null
+          status?: Database["public"]["Enums"]["status_vals"]
           time_submitted?: string
         }
         Relationships: [

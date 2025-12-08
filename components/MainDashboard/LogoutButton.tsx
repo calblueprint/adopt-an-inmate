@@ -1,4 +1,5 @@
 import { TbLogout } from 'react-icons/tb';
+import { signOut } from '@/actions/auth';
 
 export default function LogoutButton() {
   return (
@@ -10,7 +11,7 @@ export default function LogoutButton() {
         </div>
 
         <div>
-          <TbLogout className="h-5 w-5 text-red-12" />
+          <TbLogout className="h-5 w-5 text-red-12" onClick={signOut} />
         </div>
       </div>
     </div>

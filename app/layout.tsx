@@ -30,8 +30,8 @@ const golos = Golos_Text({
 
 // site metadata - what shows up on embeds
 export const metadata: Metadata = {
-  title: 'Project Name',
-  description: 'Description of project',
+  title: 'Adopt an Inmate',
+  description: 'Helping match adopters and adoptees across bars.',
 };
 
 export default function RootLayout({

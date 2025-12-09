@@ -42,7 +42,7 @@ export const getSiteUrl = () => {
   // environment variables set by Vercel when deployed
   // if they don't exist, assume local testing environment
   let url =
-    process?.env?.NEXT_PUBLIC_SITE_URL ??
+    process?.env?.NEXT_PUBLIC_PRODUCTION_URL ??
     process?.env?.NEXT_PUBLIC_VERCEL_URL ??
     'http://localhost:3000/';
 

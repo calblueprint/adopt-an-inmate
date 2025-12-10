@@ -41,6 +41,7 @@ export default function MainQuestionReview() {
         adopter_uuid: userId,
         app_uuid: appState.appId,
         gender_pref: appState.form.genderPreference,
+        offense_pref: appState.form.offensePreference,
         personal_bio: appState.form.bio,
         return_explanation: appState.form.whyAdopting || appState.form.whyEnded,
         status: 'incomplete',

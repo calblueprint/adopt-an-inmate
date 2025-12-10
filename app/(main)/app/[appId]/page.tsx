@@ -48,6 +48,7 @@ export default async function ApplicationDetailPage({
             matches: null,
             selectedMatch: null,
             stillInCorrespondence: false,
+            rankedMatches: null,
           }}
           defaultStage={ApplicationStage.PRE}
         >

@@ -5,7 +5,13 @@ import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import MatchingCard from './MatchingCard';
 
-export default function MatchingSelectScreen() {
+interface MatchingSelectScreenProps {
+  onTransitionToReview: (rankedIds: string[]) => void;
+}
+
+export default function MatchingSelectScreen({
+  onTransitionToReview,
+}: MatchingSelectScreenProps) {
   const { appState } = useApplicationContext();
 
   const [rankedIds, setRankedIds] = useState<string[]>([]);
@@ -28,15 +34,11 @@ export default function MatchingSelectScreen() {
     });
   };
 
-  /**
-   * Resets all ranks by clearing the rankedIds array.
-   */
-  const handleResetRanks = () => {
-    setRankedIds([]);
+  const handleNextClick = () => {
+    onTransitionToReview(rankedIds);
   };
 
   const isNextDisabled = rankedIds.length != 4; // disable next if not all 4 ranked
-  const isResetDisabled = rankedIds.length === 0; // disable reset if no ranks
 
   return (
     <div className="flex w-full flex-col gap-12 pt-8">
@@ -63,17 +65,6 @@ export default function MatchingSelectScreen() {
             );
           })}
         </div>
-
-        <div className="flex w-full justify-end px-12">
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={isResetDisabled}
-            onClick={handleResetRanks}
-          >
-            Reset all
-          </Button>
-        </div>
       </div>
 
       <div className="flex w-full justify-center">
@@ -82,6 +73,7 @@ export default function MatchingSelectScreen() {
           variant="primary"
           className="w-9/10 py-2 sm:w-[clamp(200px,50%,400px)]"
           disabled={isNextDisabled}
+          onClick={handleNextClick}
         >
           Next
         </Button>

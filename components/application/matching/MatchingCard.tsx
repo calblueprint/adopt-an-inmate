@@ -2,18 +2,23 @@
 
 import { useState } from 'react';
 import { LuCake, LuMapPin, LuUser } from 'react-icons/lu';
+import { cva } from 'class-variance-authority';
 import { cn, getStateAbbv } from '@/lib/utils';
 import { RankedAdopteeMatch } from '@/types/schema';
+
+interface MatchingCardProps {
+  match: RankedAdopteeMatch;
+  rank?: number;
+  onSelect?: (id: string) => void;
+  isReview?: boolean;
+}
 
 export default function MatchingCard({
   match,
   rank,
   onSelect,
-}: {
-  match: RankedAdopteeMatch;
-  rank?: number;
-  onSelect: (id: string) => void;
-}) {
+  isReview = false,
+}: MatchingCardProps) {
   const isSelected = !(rank === undefined);
   const [isFadeVisible, setIsFadeVisible] = useState(false);
 
@@ -23,24 +28,55 @@ export default function MatchingCard({
   };
 
   const handleCardClick = () => {
-    onSelect(match.id);
+    if (!isReview && onSelect) {
+      onSelect(match.id);
+    }
   };
+
+  const cardVariants = cva(
+    'relative flex flex-1 flex-col gap-6 rounded-lg border p-8 shadow-md transition-all bg-gray-1',
+    {
+      variants: {
+        isSelected: {
+          true: 'border-4 border-red-12',
+          false: 'border-4 border-transparent',
+        },
+        isReview: {
+          true: 'cursor-default',
+          false: 'cursor-pointer',
+        },
+      },
+      compoundVariants: [
+        {
+          isReview: false,
+          isSelected: false,
+          className: 'hover:not-has-[button:hover]:border-gray-7',
+        },
+        {
+          isReview: false,
+          isSelected: true,
+          className: 'hover:not-has-[button:hover]:border-red-9',
+        },
+      ],
+      defaultVariants: {
+        isSelected: false,
+        isReview: false,
+      },
+    },
+  );
 
   return (
     <div
       onClick={handleCardClick}
-      className={`relative flex flex-1 cursor-pointer flex-col gap-6 rounded-lg border p-8 shadow-md transition-all ${
-        isSelected
-          ? 'border-4 border-red-12'
-          : 'border-4 border-transparent hover:not-has-[button:hover]:border-gray-7'
-      } bg-gray-1`}
+      className={cardVariants({ isSelected, isReview })}
     >
       {/* rank badge */}
       {rank !== undefined && (
-        <div className="absolute top-0 left-0 flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-red-12">
-          <h4 className="font-bold text-white">{rank}</h4>
+        <div className="absolute top-0 left-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-red-12">
+          <h1 className="text-[2.25rem] font-bold text-white">{rank}</h1>
         </div>
       )}
+
       {/* name and metadata */}
       <div className="flex flex-col gap-1">
         <h1>{match.first_name}</h1>

@@ -42,7 +42,7 @@ export default function MainQuestionReview() {
         app_uuid: appState.appId,
         gender_pref: appState.form.genderPreference,
         personal_bio: appState.form.bio,
-        return_explanation: appState.form.whyAdopting || appState.form.whyEnded,
+        //return_explanation: appState.form.whyAdopting || appState.form.whyEnded,
         status: 'incomplete',
       });
     } catch (error) {

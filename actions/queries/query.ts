@@ -72,7 +72,7 @@ export async function upsertApplication(
 
   const { data, error } = await supabase
     .from('adopter_applications_dummy')
-    .upsert(app, { onConflict: 'app_uuid' })
+    .upsert(app)
     .select()
     .single();
 

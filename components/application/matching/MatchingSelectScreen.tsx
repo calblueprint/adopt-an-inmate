@@ -61,7 +61,7 @@ export default function MatchingSelectScreen({
       Logger.error(`Failed to save rankings: ${String(error)}`);
     }
 
-    //onTransitionToReview(rankedIds); // from carolyn's rebase
+    onTransitionToReview(rankedIds); // from carolyn's rebase
   };
 
   const isNextDisabled = rankedIds.length != 4; // disable next if not all 4 ranked

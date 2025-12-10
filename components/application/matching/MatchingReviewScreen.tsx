@@ -19,7 +19,6 @@ export default function MatchingReviewScreen({
   const { advanceToStage } = useApplicationNavigation();
 
   const nextStage = () => {
-    console.log('Submitting final ranked matches:', ranks);
     advanceToStage(ApplicationStage.SUBMITTED);
   };
 

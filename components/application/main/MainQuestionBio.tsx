@@ -16,7 +16,7 @@ interface BioForm {
 export default function MainQuestionBio() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
-  const { userId } = useAuth(); 
+  const { userId } = useAuth();
 
   const {
     register,

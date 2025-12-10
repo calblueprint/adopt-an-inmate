@@ -6,7 +6,6 @@ import { useApplicationNavigation } from '@/hooks/app-process';
 import { ApplicationStage } from '@/types/enums';
 import { RankedAdopteeMatch } from '@/types/schema';
 import MatchingCard from './MatchingCard';
-import MatchingDialog from './MatchingDialog';
 
 interface MatchingReviewScreenProps {
   ranks: string[];
@@ -42,16 +41,9 @@ export default function MatchingReviewScreen({
       <div className="flex flex-col gap-4">
         <div className="flex w-full gap-8 px-12">
           {rankedMatches.map((m, idx) => (
-            <MatchingCard
-              match={m}
-              matchIndex={idx}
-              key={m.id}
-              rank={idx + 1}
-              isReview={true}
-            />
+            <MatchingCard match={m} key={m.id} rank={idx + 1} isReview={true} />
           ))}
         </div>
-        <MatchingDialog />
       </div>
 
       <div className="flex w-full justify-center">

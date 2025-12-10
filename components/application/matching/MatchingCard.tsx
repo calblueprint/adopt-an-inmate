@@ -2,13 +2,12 @@
 
 import { useState } from 'react';
 import { LuCake, LuMapPin, LuUser } from 'react-icons/lu';
-import { cn, getStateAbbv } from '@/lib/utils';
 import { cva } from 'class-variance-authority';
+import { cn, getStateAbbv } from '@/lib/utils';
 import { RankedAdopteeMatch } from '@/types/schema';
 
 interface MatchingCardProps {
   match: RankedAdopteeMatch;
-  matchIndex: number;
   rank?: number;
   onSelect?: (id: string) => void;
   isReview?: boolean;
@@ -18,15 +17,8 @@ export default function MatchingCard({
   match,
   rank,
   onSelect,
-}: {
-  match: RankedAdopteeMatch;
-  matchIndex: number;
-  rank?: number;
-  onSelect: (id: string) => void;
-}) {
-  const bioElmt = useRef<HTMLParagraphElement>(null);
-  const [isOverflowing, setIsOverflowing] = useState(false);
-
+  isReview = false,
+}: MatchingCardProps) {
   const isSelected = !(rank === undefined);
   const [isFadeVisible, setIsFadeVisible] = useState(false);
 
@@ -84,6 +76,7 @@ export default function MatchingCard({
           <h1 className="text-[2.25rem] font-bold text-white">{rank}</h1>
         </div>
       )}
+
       {/* name and metadata */}
       <div className="flex flex-col gap-1">
         <h1>{match.first_name}</h1>

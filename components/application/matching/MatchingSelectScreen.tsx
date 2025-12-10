@@ -65,8 +65,6 @@ export default function MatchingSelectScreen({
             );
           })}
         </div>
-
-        <MatchingDialog />
       </div>
 
       <div className="flex w-full justify-center">

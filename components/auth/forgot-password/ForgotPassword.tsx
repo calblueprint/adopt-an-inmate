@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Logger from '@/actions/logging';
-import { Button } from '@/components/Button';
+import { Button, ButtonLink } from '@/components/Button';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { Textbox } from '@/components/Textbox';
 import { useTimer } from '@/hooks/useTimer';
@@ -102,6 +102,10 @@ export default function ForgotPassword() {
           {cooldownSeconds > 0 && `(${cooldownSeconds} s)`}
           {isProcessing && <LoadingSpinner className="text-gray-1" />}
         </Button>
+
+        <ButtonLink href="/login" variant="secondary">
+          Back
+        </ButtonLink>
       </div>
     </form>
   );

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { LuEye, LuEyeOff } from 'react-icons/lu';
 import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
@@ -54,8 +55,9 @@ export default function SignUpPage() {
   const router = useRouter();
 
   const [authError, setAuthError] = useState<string | null>(null);
-
   const [isOpen, setOpen] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSignUp = async ({
     email,
@@ -126,23 +128,61 @@ export default function SignUpPage() {
             {/* This is the password title and textbox */}
             <div className="flex flex-col">
               <p className="text-sm text-gray-9">Password</p>
-              <Textbox
-                type="password"
-                placeholder="Enter password"
-                error={errors.password?.message}
-                {...register('password', { required: true })}
-              />
+              <div className="relative flex flex-col">
+                <div className="relative">
+                  <Textbox
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter password"
+                    {...register('password', { required: true })}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                    aria-label={
+                      showPassword ? 'Hide password' : 'Show password'
+                    }
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <LuEye /> : <LuEyeOff />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="mt-1 text-sm text-error">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* This is the password confirmation title and textbox */}
             <div className="flex flex-col">
               <p className="text-sm text-gray-9">Password confirmation</p>
-              <Textbox
-                type="password"
-                placeholder="Confirm password"
-                error={errors.confirmPassword?.message}
-                {...register('confirmPassword', { required: true })}
-              />
+              <div className="relative flex flex-col">
+                <div className="relative">
+                  <Textbox
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    placeholder="Confirm password"
+                    {...register('confirmPassword', { required: true })}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                    aria-label={
+                      showConfirmPassword ? 'Hide password' : 'Show password'
+                    }
+                    tabIndex={-1}
+                  >
+                    {showConfirmPassword ? <LuEye /> : <LuEyeOff />}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <p className="mt-1 text-sm text-error">
+                    {errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
 

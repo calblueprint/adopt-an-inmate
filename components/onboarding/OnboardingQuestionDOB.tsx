@@ -15,6 +15,9 @@ export default function OnboardingQuestionDOB() {
   const { onboardingInfo, setOnboardingInfo } = useOnboardingContext();
   const { nextQuestion } = useQuestionNavigaton();
 
+  const currentDate = new Date();
+  const date = currentDate.toISOString().split('T')[0];
+
   const { register, handleSubmit } = useForm<PronounsForm>({
     defaultValues: {
       dob: onboardingInfo.dob?.toISOString().split('T')[0],
@@ -41,6 +44,8 @@ export default function OnboardingQuestionDOB() {
           <Textbox
             type="date"
             id="dob"
+            max={date}
+            min="1900-01-01"
             {...register('dob', { required: true })}
           />
         </div>

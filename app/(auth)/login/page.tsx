@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { LuEye, LuEyeOff } from 'react-icons/lu';
 import { useRouter } from 'next/navigation';
 import { loginWithEmailPassword } from '@/actions/auth';
 import { Button, ButtonLink } from '@/components/Button';
@@ -24,6 +25,7 @@ export default function LoginPage() {
 
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignIn = async ({ email, password }: LoginForm) => {
     setIsLoading(true);
@@ -74,7 +76,7 @@ export default function LoginPage() {
           <div className="flex flex-col">
             {errors.root && <p className="text-error">{errors.root.message}</p>}
 
-            {/* This is the Email title and textbox */}
+            {/* email title and textbox */}
             <div className="flex flex-col">
               <p className="text-base text-gray-9">Email</p>
               <Textbox
@@ -84,7 +86,7 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* This is the password title and textbox */}
+            {/* password title and textbox */}
             <div className="flex flex-col">
               <div className="flex flex-row justify-between pt-4">
                 <p className="text-base text-gray-9">Password</p>
@@ -97,11 +99,28 @@ export default function LoginPage() {
                 </CustomLink>
               </div>
 
-              <Textbox
-                type="password"
-                placeholder="Password"
-                {...register('password', { required: true })}
-              />
+              <div className="relative">
+                <Textbox
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Password"
+                  {...register('password', { required: true })}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    // Eye icon (password visible)
+                    <LuEye />
+                  ) : (
+                    // Eye closed icon (password hidden)
+                    <LuEyeOff />
+                  )}
+                </button>
+              </div>
+
               {errors.password && (
                 <p className="text-right text-error">
                   {errors.password.message}

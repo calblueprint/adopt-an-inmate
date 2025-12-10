@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
+import Logger from '@/actions/logging';
 import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import CheckboxCard from '@/components/CheckboxCard';
@@ -14,11 +15,11 @@ import { useQuestionNavigaton } from '@/hooks/questions';
 
 const offensePrefFormSchema = z.object({
   offensePreference: z
-    .array(z.enum(['Option 1', 'Option 2', 'Option 3', 'None']))
+    .array(z.enum(['Option 1', 'Option 2', 'Option 3']))
     .min(1, 'Please select at least one option'),
 });
 
-type OffenseOption = 'Option 1' | 'Option 2' | 'Option 3' | 'None';
+type OffenseOption = 'Option 1' | 'Option 2' | 'Option 3';
 
 export default function MainQuestionOffense() {
   const { appState, setAppState } = useApplicationContext();
@@ -40,7 +41,6 @@ export default function MainQuestionOffense() {
 
   const selected = watch('offensePreference');
 
-  //TODO: make sure that selecting "none" clears all other options
   const toggle = (value: OffenseOption) => {
     if (selected.includes(value)) {
       setValue(
@@ -61,13 +61,17 @@ export default function MainQuestionOffense() {
     }));
 
     try {
+      if (!userId) {
+        Logger.error('Offense Preference Question: missing userId');
+        return;
+      }
       await upsertApplication({
-        adopter_uuid: userId!,
+        adopter_uuid: userId,
         app_uuid: appState.appId,
         offense_pref: offensePreference,
       });
     } catch (error) {
-      console.error('Failed to save application:', error);
+      Logger.error(`Failed to save application: ${String(error)}`);
     }
 
     nextQuestion();
@@ -119,16 +123,6 @@ export default function MainQuestionOffense() {
               onChange={() => toggle('Option 3')}
             >
               <p>Option 3</p>
-            </CheckboxCard>
-
-            {/* None */}
-            <CheckboxCard
-              value="None"
-              checked={selected.includes('None')}
-              {...register('offensePreference')}
-              onChange={() => toggle('None')}
-            >
-              <p>None</p>
             </CheckboxCard>
           </div>
         </div>

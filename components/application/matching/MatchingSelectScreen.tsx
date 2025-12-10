@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import MatchingCard from './MatchingCard';
-import MatchingDialog from './MatchingDialog';
 
 export default function MatchingSelectScreen() {
   const { appState } = useApplicationContext();
@@ -42,23 +41,21 @@ export default function MatchingSelectScreen() {
   return (
     <div className="flex w-full flex-col gap-12 pt-8">
       <div className="flex flex-col items-center gap-4">
-        <h1>Pick your adoptee!</h1>
+        <h1>Rank your preferences!</h1>
         <p className="w-[clamp(300px,60%,400px)] text-center text-sm text-gray-11">
-          Click the cards in your order of preference. Click to reorder anytime,
-          or click again to change rankings.
+          Click the cards in your order of preference.
         </p>
       </div>
 
       <div className="flex flex-col gap-4">
         <div className="flex w-full gap-8 px-12">
-          {appState.matches?.map((m, idx) => {
+          {appState.matches?.map(m => {
             // calculate current rank based on array index
             const rankIndex = rankedIds.indexOf(m.id);
             const currentRank = rankIndex > -1 ? rankIndex + 1 : undefined;
             return (
               <MatchingCard
                 match={m}
-                matchIndex={idx}
                 key={m.id}
                 rank={currentRank}
                 onSelect={handleRankToggle}
@@ -66,8 +63,6 @@ export default function MatchingSelectScreen() {
             );
           })}
         </div>
-
-        <MatchingDialog />
 
         <div className="flex w-full justify-end px-12">
           <Button

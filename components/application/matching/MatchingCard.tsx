@@ -1,57 +1,25 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { LuCake, LuMapPin, LuUser } from 'react-icons/lu';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/Button';
-import { getStateAbbv } from '@/lib/utils';
+import { cn, getStateAbbv } from '@/lib/utils';
 import { RankedAdopteeMatch } from '@/types/schema';
 
 export default function MatchingCard({
   match,
-  matchIndex,
   rank,
   onSelect,
 }: {
   match: RankedAdopteeMatch;
-  matchIndex: number;
   rank?: number;
   onSelect: (id: string) => void;
 }) {
-  const bioElmt = useRef<HTMLParagraphElement>(null);
-  const [isOverflowing, setIsOverflowing] = useState(false);
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
   const isSelected = !(rank === undefined);
+  const [isFadeVisible, setIsFadeVisible] = useState(false);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const calculateOverflow = () => {
-      const lineHeight = 24;
-      const lines = 8;
-      const isOverflowingVar =
-        bioElmt.current && bioElmt.current.clientHeight >= lineHeight * lines;
-      setIsOverflowing(!!isOverflowingVar);
-    };
-
-    // initial overflow calculation
-    calculateOverflow();
-
-    // re-determine if text is overflowing with window resize
-    window.addEventListener('resize', calculateOverflow);
-
-    return () => {
-      window.removeEventListener('resize', calculateOverflow);
-    };
-  }, []);
-
-  const onShowMore = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    const params = new URLSearchParams(searchParams);
-    params.set('details', matchIndex.toString());
-    router.push(`?${params.toString()}`);
+  const handleBioScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const shouldFade = e.currentTarget.scrollTop > 16;
+    if (isFadeVisible !== shouldFade) setIsFadeVisible(shouldFade);
   };
 
   const handleCardClick = () => {
@@ -95,25 +63,17 @@ export default function MatchingCard({
       {/* biography */}
       <div className="space-y-2">
         <p className="text-xs font-semibold text-gray-8 uppercase">Biography</p>
-        <div className="relative overflow-hidden pb-4">
-          <p ref={bioElmt} className="line-clamp-8">
-            {match.bio}
-          </p>
-          {isOverflowing && (
-            <div className="absolute bottom-16 h-38 w-200 translate-y-full scale-x-300 bg-gray-1 blur-2xl" />
-          )}
-          {isOverflowing && (
-            <div className="absolute bottom-0 flex w-full justify-center">
-              <Button
-                variant="rounded"
-                className="py-2"
-                type="button"
-                onClick={onShowMore}
-              >
-                <p>Read more</p>
-              </Button>
-            </div>
-          )}
+        <div className="relative">
+          <div className="h-52 overflow-y-auto pb-4" onScroll={handleBioScroll}>
+            <p>{match.bio}</p>
+          </div>
+          <div
+            className={cn(
+              'absolute top-0 left-0 z-1 h-4 w-full bg-gradient-to-b from-gray-1 to-gray-1/0',
+              !isFadeVisible && 'invisible',
+            )}
+          />
+          <div className="absolute bottom-0 left-0 z-1 h-4 w-full bg-gradient-to-t from-gray-1 to-gray-1/0" />
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@ const checkboxStyles = cva('peer', {
   variants: {
     variant: {
       default:
-        'appearance-none size-5 rounded border-2 border-red-10 text-red-10 checked:bg-red-10 transition-colors',
+        'appearance-none size-5 rounded border-2 border-gray-7 text-red-10 checked:bg-red-12 transition-colors',
     },
   },
   defaultVariants: {

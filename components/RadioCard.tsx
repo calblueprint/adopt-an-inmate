@@ -12,7 +12,7 @@ export default function RadioCard({
 
   return (
     <label
-      className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-7 px-2 py-1 transition-colors has-[input:checked]:border-red-12"
+      className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-7 px-2 py-1 transition-colors has-[input:checked]:border-red-12 has-[input:checked]:bg-red-2"
       htmlFor={id}
     >
       <input

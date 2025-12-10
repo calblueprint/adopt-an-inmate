@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/Button';
+import { Button, ButtonLink } from '@/components/Button';
 import RadioCard from '@/components/RadioCard';
 import { useQuestionsContext } from '@/contexts/QuestionsContext';
 import IneligiblePopup from './IneligiblePopup';
@@ -85,9 +85,14 @@ export default function QuestionSeekingRomance() {
           </div>
         </div>
 
-        <Button variant="primary" type="submit">
-          Next
-        </Button>
+        <div className="flex justify-between">
+          <ButtonLink href="/" variant="secondary" type="button">
+            Back
+          </ButtonLink>
+          <Button variant="primary" type="submit">
+            Next
+          </Button>
+        </div>
       </form>
 
       {/* dialog popup for ineligibility */}

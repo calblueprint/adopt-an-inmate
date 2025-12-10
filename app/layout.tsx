@@ -31,7 +31,7 @@ const golos = Golos_Text({
 // site metadata - what shows up on embeds
 export const metadata: Metadata = {
   title: 'Adopt an Inmate',
-  description: 'Helping match incarcerated individuals with mentors.',
+  description: 'Helping to match incarcerated individuals with mentors.',
 };
 
 export default function RootLayout({

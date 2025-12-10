@@ -9,7 +9,7 @@ import MainQuestionReview from '../main/MainQuestionReview';
 
 export default function StageMain() {
   return (
-    <div className="flex w-9/10 flex-col rounded-lg bg-gray-1 p-8 sm:w-[clamp(400px,50%,500px)]">
+    <div className="flex w-9/10 flex-col gap-6 rounded-lg bg-gray-1 p-8 sm:w-[clamp(400px,50%,500px)]">
       <QuestionsContextProvider
         questions={[
           <MainQuestionBio key="bio" />,

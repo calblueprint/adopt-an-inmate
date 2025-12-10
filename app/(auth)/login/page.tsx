@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { LuEye, LuEyeClosed } from 'react-icons/lu';
+import { LuEye, LuEyeOff } from 'react-icons/lu';
 import { useRouter } from 'next/navigation';
 import { loginWithEmailPassword } from '@/actions/auth';
 import { Button, ButtonLink } from '@/components/Button';
@@ -76,7 +76,7 @@ export default function LoginPage() {
           <div className="flex flex-col">
             {errors.root && <p className="text-error">{errors.root.message}</p>}
 
-            {/* This is the Email title and textbox */}
+            {/* email title and textbox */}
             <div className="flex flex-col">
               <p className="text-base text-gray-9">Email</p>
               <Textbox
@@ -86,7 +86,7 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* This is the password title and textbox */}
+            {/* password title and textbox */}
             <div className="flex flex-col">
               <div className="flex flex-row justify-between pt-4">
                 <p className="text-base text-gray-9">Password</p>
@@ -116,7 +116,7 @@ export default function LoginPage() {
                     <LuEye />
                   ) : (
                     // Eye closed icon (password hidden)
-                    <LuEyeClosed />
+                    <LuEyeOff />
                   )}
                 </button>
               </div>

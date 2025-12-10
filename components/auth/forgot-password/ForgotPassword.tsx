@@ -103,7 +103,7 @@ export default function ForgotPassword() {
           {isProcessing && <LoadingSpinner className="text-gray-1" />}
         </Button>
 
-        <ButtonLink href="/login" variant="secondary" className="mt-2">
+        <ButtonLink href="/login" variant="secondary">
           Back
         </ButtonLink>
       </div>

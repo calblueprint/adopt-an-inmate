@@ -34,19 +34,11 @@ export default function MatchingSelectScreen({
     });
   };
 
-  /**
-   * Resets all ranks by clearing the rankedIds array.
-   */
-  const handleResetRanks = () => {
-    setRankedIds([]);
-  };
-
   const handleNextClick = () => {
     onTransitionToReview(rankedIds);
   };
 
   const isNextDisabled = rankedIds.length != 4; // disable next if not all 4 ranked
-  const isResetDisabled = rankedIds.length === 0; // disable reset if no ranks
 
   return (
     <div className="flex w-full flex-col gap-12 pt-8">
@@ -74,16 +66,7 @@ export default function MatchingSelectScreen({
           })}
         </div>
 
-        <div className="flex w-full justify-end px-12">
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={isResetDisabled}
-            onClick={handleResetRanks}
-          >
-            Reset all
-          </Button>
-        </div>
+        <MatchingDialog />
       </div>
 
       <div className="flex w-full justify-center">

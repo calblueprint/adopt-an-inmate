@@ -1,6 +1,6 @@
-import { Button } from '../Button';
 import LogoutButton from './LogoutButton';
 import MainDashboardTabs from './MainDashboardTabs';
+import NewApplicationButton from './NewApplicationButton';
 
 export default function MainDashboard() {
   return (
@@ -19,7 +19,7 @@ export default function MainDashboard() {
           </div>
 
           <div>
-            <Button variant="tertiary">New Application</Button>
+            <NewApplicationButton />
           </div>
         </div>
 

@@ -7,6 +7,7 @@ const spinnerStyles = cva('animate-spin', {
     variant: {
       default: 'text-gray-11 w-4 h-4',
       button: 'text-gray-1 w-6 h-6',
+      buttonSm: 'text-gray-1 size-4',
     },
   },
   defaultVariants: {

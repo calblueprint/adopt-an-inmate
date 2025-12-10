@@ -1,7 +1,6 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-// import { Mina } from 'next/font/google';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
 import { useQuestionNavigaton } from '@/hooks/questions';
 import { Button } from '../Button';

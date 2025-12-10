@@ -40,7 +40,6 @@ export default function MatchingSelectScreen({
   //TODO: route to review ranking page and MOVE BACKEND STUFF THERE
   //TODO: create review ranking page, thank you page
   const handleNextClick = async () => {
-    onTransitionToReview(rankedIds);
 
     try {
       if (!appState.matches) {
@@ -62,6 +61,8 @@ export default function MatchingSelectScreen({
     } catch (error) {
       Logger.error(`Failed to save rankings: ${String(error)}`);
     }
+
+    onTransitionToReview(rankedIds); // from carolyn's rebase
   };
 
   const isNextDisabled = rankedIds.length != 4; // disable next if not all 4 ranked

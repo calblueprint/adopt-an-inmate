@@ -18,7 +18,11 @@ export default function MainQuestionBio() {
   const { nextQuestion } = useQuestionNavigaton();
   const { userId } = useAuth();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<BioForm>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<BioForm>({
     defaultValues: {
       bio: appState.form.bio,
     },

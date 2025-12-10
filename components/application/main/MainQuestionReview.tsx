@@ -31,7 +31,6 @@ export default function MainQuestionReview() {
   const handleContinue = () => {
     advanceToStage(ApplicationStage.MATCHING);
 
-    // not re-saving return_explanation since need to tweak stillInCorrespondence category thing
     try {
       if (!userId) {
         Logger.error('Main Application Review: missing userId');

@@ -47,7 +47,7 @@ export default function MainQuestionGender() {
       <header className="flex flex-col gap-2">
         <h1>
           Do you have any gender preferences?
-          <span className="text-red-600">*</span>
+          <sup className="text-red-600">*</sup>
         </h1>
       </header>
 

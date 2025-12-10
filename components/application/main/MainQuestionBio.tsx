@@ -31,13 +31,10 @@ export default function MainQuestionBio() {
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-      {/* <header className="flex flex-col gap-2">
-        <h1>What is your story?</h1>
-      </header> */}
       <div className="flex flex-col gap-1">
         <header className="flex flex-col gap-2">
           <h1>
-            What is your story? <span className="text-red-600">*</span>{' '}
+            What is your story? <sup className="text-red-600">*</sup>{' '}
           </h1>
         </header>
         <div className="flex justify-between text-sm">

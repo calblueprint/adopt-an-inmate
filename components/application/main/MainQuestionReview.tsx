@@ -14,11 +14,7 @@ import {
 } from '@/lib/formatters';
 import { ApplicationStage } from '@/types/enums';
 
-export default function MainQuestionReview({
-  onIsReviewPage,
-}: {
-  onIsReviewPage?: (value: boolean) => void;
-}) {
+export default function MainQuestionReview() {
   const { appState } = useApplicationContext();
   const { advanceToStage } = useApplicationNavigation();
   const { userId } = useAuth();
@@ -34,12 +30,8 @@ export default function MainQuestionReview({
     advanceToStage(ApplicationStage.MATCHING);
   };
 
-  useEffect(() => {
-    onIsReviewPage?.(true);
-  }, [onIsReviewPage]);
-
   return (
-    <div className={`flex h-[37rem] w-[27rem] flex-col gap-[0.5rem]`}>
+    <div className="flex h-[37rem] w-[27rem] flex-col gap-[0.5rem]">
       <div className="flex items-center justify-between">
         <header className="flex flex-col gap-2 font-golos text-[1.75rem] leading-normal font-[500] font-medium text-[var(--color-gray-12)]">
           <h1>Review and Submit</h1>

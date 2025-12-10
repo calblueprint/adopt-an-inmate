@@ -1,19 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { fetchProfileById } from '@/actions/queries/profile';
+import { useEffect } from 'react';
 import { Button } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
 import QuestionBack from '@/components/questions/QuestionBack';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useAuth } from '@/contexts/AuthProvider';
+import { useProfile } from '@/contexts/ProfileProvider';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import {
   formatGenderPreference,
   formatOffensePreference,
 } from '@/lib/formatters';
 import { ApplicationStage } from '@/types/enums';
-import { Profile } from '@/types/schema';
 
 export default function MainQuestionReview({
   onIsReviewPage,
@@ -23,28 +22,13 @@ export default function MainQuestionReview({
   const { appState } = useApplicationContext();
   const { advanceToStage } = useApplicationNavigation();
   const { userId } = useAuth();
-  const [profileData, setProfileData] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { profileData, profileReady, loadProfile } = useProfile();
 
   useEffect(() => {
-    async function loadProfile() {
-      if (!userId) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const profile = await fetchProfileById(userId);
-        setProfileData(profile);
-      } catch (error) {
-        console.error('Error loading profile:', error);
-      } finally {
-        setLoading(false);
-      }
+    if (userId && !profileReady && !profileData) {
+      loadProfile();
     }
-
-    loadProfile();
-  }, [userId]);
+  }, [userId, profileReady, profileData, loadProfile]);
 
   const handleContinue = () => {
     advanceToStage(ApplicationStage.MATCHING);
@@ -96,7 +80,7 @@ export default function MainQuestionReview({
               First Name
             </p>
             <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
-              {profileData?.first_name}
+              {profileData?.first_name ?? (profileReady ? '' : 'Loading...')}
             </p>
           </div>
           <div className="flex flex-col gap-[0.38]">
@@ -104,7 +88,7 @@ export default function MainQuestionReview({
               Last Name
             </p>
             <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
-              {profileData?.last_name}
+              {profileData?.last_name ?? (profileReady ? '' : 'Loading...')}
             </p>
           </div>
           <div className="flex flex-col gap-[0.38]">
@@ -112,7 +96,7 @@ export default function MainQuestionReview({
               Date of Birth
             </p>
             <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
-              {profileData?.date_of_birth}
+              {profileData?.date_of_birth ?? (profileReady ? '' : 'Loading...')}
             </p>
           </div>
           <div className="flex flex-col gap-[0.38]">
@@ -120,7 +104,7 @@ export default function MainQuestionReview({
               Preferred Pronouns
             </p>
             <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
-              {profileData?.pronouns}
+              {profileData?.pronouns ?? (profileReady ? '' : 'Loading...')}
             </p>
           </div>
           <div className="flex flex-col gap-[0.38]">
@@ -150,7 +134,7 @@ export default function MainQuestionReview({
           </div>
           <div className="flex flex-col gap-[0.38]">
             <p className="text-[0.78844rem] leading-normal font-[600] font-medium text-[var(--color-gray-8)]">
-              Offenses not preffered
+              Offenses not preferred
             </p>
             <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
               {formatOffensePreference(appState.form.offensePreference)}

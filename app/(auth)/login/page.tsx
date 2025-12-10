@@ -99,25 +99,27 @@ export default function LoginPage() {
                 </CustomLink>
               </div>
 
-              <Textbox
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Password"
-                {...register('password', { required: true })}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-              >
-                {showPassword ? (
-                  // Eye icon (password visible)
-                  <LuEye />
-                ) : (
-                  // Eye closed icon (password hidden)
-                  <LuEyeClosed />
-                )}
-              </button>
+              <div className="relative">
+                <Textbox
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Password"
+                  {...register('password', { required: true })}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    // Eye icon (password visible)
+                    <LuEye />
+                  ) : (
+                    // Eye closed icon (password hidden)
+                    <LuEyeClosed />
+                  )}
+                </button>
+              </div>
 
               {errors.password && (
                 <p className="text-right text-error">

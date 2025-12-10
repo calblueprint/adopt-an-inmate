@@ -45,7 +45,10 @@ export default function MainQuestionGender() {
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <header className="flex flex-col gap-2">
-        <h1>Do you have any gender preferences?</h1>
+        <h1>
+          Do you have any gender preferences?
+          <sup className="text-red-600">*</sup>
+        </h1>
       </header>
 
       <div className="flex flex-col gap-4">

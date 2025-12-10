@@ -34,6 +34,12 @@ export const metadata: Metadata = {
   description: 'Helping to match incarcerated individuals with mentors.',
 };
 
+{
+  /* <OnboardingGuard>
+            <ProfileProvider>{children}</ProfileProvider>
+          </OnboardingGuard> */
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{

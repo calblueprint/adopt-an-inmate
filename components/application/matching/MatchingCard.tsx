@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { LuCake, LuMapPin, LuUser } from 'react-icons/lu';
 import { cn, getStateAbbv } from '@/lib/utils';
+import { cva } from 'class-variance-authority';
 import { RankedAdopteeMatch } from '@/types/schema';
 
 interface MatchingCardProps {
@@ -40,22 +41,43 @@ export default function MatchingCard({
     }
   };
 
-  const interactiveClasses = !isReview ? 'cursor-pointer' : 'cursor-default';
-
-  const hoverBorderClasses =
-    !isReview &&
-    (!isSelected
-      ? 'hover:not-has-[button:hover]:border-gray-7'
-      : 'hover:not-has-[button:hover]:border-red-9');
-
-  const cardClassName = `relative flex flex-1 flex-col gap-6 rounded-lg border p-8 shadow-md transition-all ${
-    interactiveClasses
-  } ${hoverBorderClasses} ${
-    isSelected ? 'border-4 border-red-12' : 'border-4 border-transparent'
-  } bg-gray-1`;
+  const cardVariants = cva(
+    'relative flex flex-1 flex-col gap-6 rounded-lg border p-8 shadow-md transition-all bg-gray-1',
+    {
+      variants: {
+        isSelected: {
+          true: 'border-4 border-red-12',
+          false: 'border-4 border-transparent',
+        },
+        isReview: {
+          true: 'cursor-default',
+          false: 'cursor-pointer',
+        },
+      },
+      compoundVariants: [
+        {
+          isReview: false,
+          isSelected: false,
+          className: 'hover:not-has-[button:hover]:border-gray-7',
+        },
+        {
+          isReview: false,
+          isSelected: true,
+          className: 'hover:not-has-[button:hover]:border-red-9',
+        },
+      ],
+      defaultVariants: {
+        isSelected: false,
+        isReview: false,
+      },
+    },
+  );
 
   return (
-    <div onClick={handleCardClick} className={cardClassName}>
+    <div
+      onClick={handleCardClick}
+      className={cardVariants({ isSelected, isReview })}
+    >
       {/* rank badge */}
       {rank !== undefined && (
         <div className="absolute top-0 left-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-red-12">

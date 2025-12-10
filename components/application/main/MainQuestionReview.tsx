@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Logger from '@/actions/logging';
 import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
@@ -32,18 +33,21 @@ export default function MainQuestionReview() {
 
     // not re-saving return_explanation since need to tweak stillInCorrespondence category thing
     try {
+      if (!userId) {
+        Logger.error('Main Application Review: missing userId');
+        return;
+      }
       upsertApplication({
         //save everything again in case
-        adopter_uuid: userId!,
+        adopter_uuid: userId,
         app_uuid: appState.appId,
         gender_pref: appState.form.genderPreference,
         personal_bio: appState.form.bio,
-        ranked_cards: null,
-        //return_explanation: appState.form.whyAdopting || appState.form.whyEnded,
+        return_explanation: appState.form.whyAdopting || appState.form.whyEnded,
         status: 'incomplete',
       });
     } catch (error) {
-      console.error('Failed to save application:', error);
+      Logger.error(`Failed to save application: ${String(error)}`);
     }
   };
 

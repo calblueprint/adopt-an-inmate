@@ -18,5 +18,4 @@ export type RankedAdopteeMatch = Pick<
   'id' | 'age' | 'bio' | 'first_name' | 'state' | 'gender'
 >;
 
-export type AdopterApplication =
-  Database['public']['Tables']['adopter_applications_dummy']['Row'];
+export type AdopterApplication = PublicTable<'adopter_applications_dummy'>;

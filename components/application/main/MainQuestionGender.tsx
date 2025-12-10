@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
+import Logger from '@/actions/logging';
 import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import ErrorMessage from '@/components/ErrorMessage';
@@ -44,13 +45,17 @@ export default function MainQuestionGender() {
     }));
 
     try {
+      if (!userId) {
+        Logger.error('Gender Preference Question: missing userId');
+        return;
+      }
       await upsertApplication({
-        adopter_uuid: userId!,
+        adopter_uuid: userId,
         app_uuid: appState.appId,
         gender_pref: genderPreference,
       });
     } catch (error) {
-      console.error('Failed to save application:', error);
+      Logger.error(`Failed to save application: ${String(error)}`);
     }
 
     nextQuestion();

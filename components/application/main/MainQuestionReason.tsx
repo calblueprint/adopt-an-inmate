@@ -1,6 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
+import Logger from '@/actions/logging';
 import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import QuestionBack from '@/components/questions/QuestionBack';
@@ -39,13 +40,17 @@ export default function MainQuestionReason() {
       }));
 
     try {
+      if (!userId) {
+        Logger.error('Reason Ended Question: missing userId');
+        return;
+      }
       await upsertApplication({
-        adopter_uuid: userId!,
+        adopter_uuid: userId,
         app_uuid: appState.appId,
         return_explanation: reason,
       });
     } catch (error) {
-      console.error('Failed to save application:', error);
+      Logger.error(`Failed to save application: ${String(error)}`);
     }
 
     nextQuestion();

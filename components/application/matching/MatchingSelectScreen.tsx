@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Logger from '@/actions/logging';
 import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
@@ -43,8 +44,13 @@ export default function MatchingSelectScreen({
     onTransitionToReview(rankedIds);
     
     try {
+      if (!appState.matches) {
+        Logger.error('Failed to fetch matches');
+        return;
+      }
+      const localMatches = appState.matches; //already not null
       const userRanked = rankedIds.map(
-        id => appState.matches!.find(match => match.id === id)!,
+        id => localMatches.find(match => match.id === id)!,
       );
 
       await upsertApplication({
@@ -55,7 +61,7 @@ export default function MatchingSelectScreen({
         time_submitted: new Date().toISOString(),
       });
     } catch (error) {
-      console.error('Failed to save rankings:', error);
+      Logger.error(`Failed to save rankings: ${String(error)}`);
     }
   };
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import z, { uuidv4 } from 'zod';
+import Logger from '@/actions/logging';
 import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import { TextArea } from '@/components/TextArea';
@@ -28,26 +28,17 @@ export default function MainQuestionBio() {
     setAppState(prev => ({ ...prev, form: { ...prev.form, bio } }));
 
     try {
-      // TODO: move this "new application" button, so gen app id when press that instead
-      // compute new app_uuid if missing
-      const genAppId =
-        !appState.appId || appState.appId === 'appId'
-          ? z.string().parse(uuidv4())
-          : appState.appId;
-
-      setAppState(prev => ({ ...prev, appId: genAppId }));
-
-      // since first question, set initial default for irrelevant cols
+      if (!userId) {
+        Logger.error('Personal Bio Question: missing userId');
+        return;
+      }
       await upsertApplication({
-        adopter_uuid: userId!,
-        app_uuid: genAppId, //should we do useEffect mayhaps
+        adopter_uuid: userId,
+        app_uuid: appState.appId,
         personal_bio: bio,
-        ranked_cards: null,
-        status: 'incomplete',
-        //time_submitted: '', //should change to nullable in supabase?
       });
     } catch (error) {
-      console.error('Failed to save application:', error);
+      Logger.error(`Failed to save application: ${String(error)}`);
     }
 
     nextQuestion();

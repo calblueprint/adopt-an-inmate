@@ -34,7 +34,9 @@ export const findMatches = async (appId: string) => {
 
   // return existing data
   if (appData.ranked_cards) {
-    const matches = appData.ranked_cards as RankedAdopteeMatch[];
+    const { matches } = appData.ranked_cards as {
+      matches: RankedAdopteeMatch[];
+    };
     return { data: matches, error: null };
   }
 

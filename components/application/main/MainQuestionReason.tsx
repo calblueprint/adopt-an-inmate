@@ -1,10 +1,13 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
+import Logger from '@/actions/logging';
+import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import QuestionBack from '@/components/questions/QuestionBack';
 import { TextArea } from '@/components/TextArea';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import { useAuth } from '@/contexts/AuthProvider';
 import { useQuestionNavigaton } from '@/hooks/questions';
 
 interface ReasonForm {
@@ -14,6 +17,7 @@ interface ReasonForm {
 export default function MainQuestionReason() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
+  const { userId } = useAuth();
 
   const { register, handleSubmit } = useForm<ReasonForm>({
     defaultValues: {
@@ -23,7 +27,7 @@ export default function MainQuestionReason() {
     },
   });
 
-  const onSubmit = ({ reason }: ReasonForm) => {
+  const onSubmit = async ({ reason }: ReasonForm) => {
     if (appState.stillInCorrespondence)
       setAppState(prev => ({
         ...prev,
@@ -34,6 +38,20 @@ export default function MainQuestionReason() {
         ...prev,
         form: { ...prev.form, whyEnded: reason },
       }));
+
+    try {
+      if (!userId) {
+        Logger.error('Reason Ended Question: missing userId');
+        return;
+      }
+      await upsertApplication({
+        adopter_uuid: userId,
+        app_uuid: appState.appId,
+        return_explanation: reason,
+      });
+    } catch (error) {
+      Logger.error(`Failed to save application: ${String(error)}`);
+    }
 
     nextQuestion();
   };

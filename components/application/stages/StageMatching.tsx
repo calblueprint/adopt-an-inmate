@@ -32,21 +32,6 @@ export default function StageMatching() {
       // not logged in: should be redirected
       if (!user) return;
 
-      // upsert app data to db
-      const { error: upsertError } = await supabase
-        .from('adopter_applications_dummy')
-        .upsert({
-          adopter_uuid: user.id,
-          app_uuid: appState.appId,
-          status: 'incomplete',
-          gender_pref: appState.form.genderPreference,
-          personal_bio: appState.form.bio,
-          return_explanation:
-            appState.form.whyAdopting || appState.form.whyEnded,
-        });
-
-      if (upsertError) throw new Error(upsertError.message);
-
       // check if app already has matches
       if (appState.matches) {
         setIsLoaded(true);

@@ -1,40 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
 import { updateSession } from './lib/supabase/middleware';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const { user, supabaseResponse } = await updateSession(request);
 
   // Define public routes that don't require authentication
   const publicRoutes = ['/login', '/sign-up'];
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
-  // Create supabase client to check user status
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
-          );
-        },
-      },
-    },
-  );
-
-  // Get user to check auth and onboarding status
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   // If it's a public route, just update session and continue
   if (isPublicRoute) {
-    return await updateSession(request);
+    return supabaseResponse;
   }
 
   // If not logged in, redirect to login
@@ -60,7 +37,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // All checks passed, update session and continue
-  return await updateSession(request);
+  return supabaseResponse;
 }
 
 export const config = {

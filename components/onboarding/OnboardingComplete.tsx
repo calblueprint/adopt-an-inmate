@@ -14,22 +14,18 @@ export default function OnboardingComplete() {
   const handleContinue = async () => {
     setIsUpdating(true);
 
-    try {
-      const supabase = getSupabaseBrowserClient();
-      const { error } = await supabase.auth.updateUser({
-        data: { onboarding_complete: true },
-      });
+    const supabase = getSupabaseBrowserClient();
+    const { error } = await supabase.auth.updateUser({
+      data: { onboarding_complete: true },
+    });
 
-      if (error) {
-        Logger.error(`Error updating user metadata: ${error.message}`);
-        throw error;
-      }
-
-      router.push('/');
-    } catch (error) {
-      Logger.error(`Failed to complete onboarding: ${error}`);
+    if (error) {
+      Logger.error(`Error updating user metadata: ${error.message}`);
       setIsUpdating(false);
+      return;
     }
+
+    router.push('/');
   };
 
   return (

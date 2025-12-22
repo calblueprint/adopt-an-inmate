@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Logger from '@/actions/logging';
 import DeciderStage from '@/components/application/DeciderStage';
 import Logo from '@/components/Logo';

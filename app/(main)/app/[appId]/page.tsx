@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
+import Logger from '@/actions/logging';
 import DeciderStage from '@/components/application/DeciderStage';
 import Logo from '@/components/Logo';
 import { ApplicationContextProvider } from '@/contexts/ApplicationContext';
+import { getAuthenticatedUser } from '@/lib/auth/get_user';
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { ApplicationStage } from '@/types/enums';
 import { FormState } from '@/types/types';
@@ -16,29 +18,28 @@ export default async function ApplicationDetailPage({
 
   const supabase = await getSupabaseServerClient();
 
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    redirect('/login');
-  }
+  const user = await getAuthenticatedUser();
 
   const { data: appData, error: getAppError } = await supabase
     .from('adopter_applications_dummy')
     .select()
     .eq('app_uuid', appId)
+    .eq('adopter_uuid', user.id)
+    .eq('status', 'incomplete')
     .maybeSingle();
 
-  if (getAppError || !appData) throw notFound();
-
-  if (appData.adopter_uuid !== user.id) {
-    redirect('/');
+  if (getAppError) {
+    Logger.error(
+      `User ${user.id} attempted to access application ${appId} but an error occurred: ${getAppError.message}`,
+    );
+    notFound();
   }
 
-  if (appData.status !== 'incomplete') {
-    redirect('/');
+  if (!appData) {
+    Logger.error(
+      `User ${user.id} attempted to access application ${appId} with unauthorized status`,
+    );
+    notFound();
   }
 
   return (

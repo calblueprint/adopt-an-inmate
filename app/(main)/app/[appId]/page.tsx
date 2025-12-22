@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import Logger from '@/actions/logging';
 import DeciderStage from '@/components/application/DeciderStage';
 import Logo from '@/components/Logo';
 import { ApplicationContextProvider } from '@/contexts/ApplicationContext';
+import { getAuthenticatedUser } from '@/lib/auth/get_user';
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { ApplicationStage } from '@/types/enums';
 import { FormState } from '@/types/types';
@@ -15,13 +17,30 @@ export default async function ApplicationDetailPage({
   const { appId } = await params;
 
   const supabase = await getSupabaseServerClient();
+
+  const user = await getAuthenticatedUser();
+
   const { data: appData, error: getAppError } = await supabase
     .from('adopter_applications_dummy')
     .select()
     .eq('app_uuid', appId)
+    .eq('adopter_uuid', user.id)
+    .eq('status', 'incomplete')
     .maybeSingle();
 
-  if (getAppError || !appData) throw notFound();
+  if (getAppError) {
+    Logger.error(
+      `User ${user.id} attempted to access application ${appId} but an error occurred: ${getAppError.message}`,
+    );
+    notFound();
+  }
+
+  if (!appData) {
+    Logger.error(
+      `User ${user.id} attempted to access application ${appId} with unauthorized status`,
+    );
+    notFound();
+  }
 
   return (
     <div className="flex min-h-svh w-full flex-col items-center justify-between">

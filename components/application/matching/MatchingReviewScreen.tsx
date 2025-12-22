@@ -9,10 +9,12 @@ import MatchingCard from './MatchingCard';
 
 interface MatchingReviewScreenProps {
   ranks: string[];
+  onBack: () => void;
 }
 
 export default function MatchingReviewScreen({
   ranks,
+  onBack,
 }: MatchingReviewScreenProps) {
   const { appState } = useApplicationContext();
   const { advanceToStage, upsertAppInfo } = useApplicationNavigation();
@@ -50,7 +52,15 @@ export default function MatchingReviewScreen({
         </div>
       </div>
 
-      <div className="flex w-full justify-center">
+      <div className="flex w-full justify-center gap-4">
+        <Button
+          type="button"
+          variant="secondary"
+          className="w-9/10 py-2 sm:w-[clamp(200px,50%,400px)]"
+          onClick={onBack}
+        >
+          Back
+        </Button>
         <Button
           type="button"
           variant="primary"

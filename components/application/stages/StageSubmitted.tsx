@@ -1,14 +1,15 @@
 'use client';
 
-import { FaHandHoldingHeart } from 'react-icons/fa';
+import Image from 'next/image';
+import heartIcon from '@/assets/images/heart.svg';
 import { ButtonLink } from '@/components/Button';
 
 export default function StageSubmitted() {
   return (
     <div className="flex size-full flex-col items-center justify-center">
-      <div className="flex h-[404px] w-[447px] flex-col gap-6 rounded-lg bg-gray-1 p-8 sm:w-[clamp(400px,50%,500px)]">
+      <div className="flex h-[404px] w-[447px] flex-col rounded-lg bg-gray-1 p-8 sm:w-[clamp(400px,50%,500px)]">
         <div className="my-6 grid w-full place-items-center">
-          <FaHandHoldingHeart size={64} className="text-red-12" />
+          <Image src={heartIcon} alt="Heart icon" />
         </div>
         <div className="flex flex-col gap-14">
           <div className="flex flex-col gap-2">
@@ -21,7 +22,7 @@ export default function StageSubmitted() {
             </p>
           </div>
 
-          <ButtonLink href="/app" variant="primary" className="py-2">
+          <ButtonLink href="/" variant="primary" className="py-2">
             Back to Home
           </ButtonLink>
         </div>

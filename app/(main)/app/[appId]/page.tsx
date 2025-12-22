@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import DeciderStage from '@/components/application/DeciderStage';
 import Logo from '@/components/Logo';
 import { ApplicationContextProvider } from '@/contexts/ApplicationContext';
@@ -15,6 +15,16 @@ export default async function ApplicationDetailPage({
   const { appId } = await params;
 
   const supabase = await getSupabaseServerClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    redirect('/login');
+  }
+
   const { data: appData, error: getAppError } = await supabase
     .from('adopter_applications_dummy')
     .select()
@@ -22,6 +32,14 @@ export default async function ApplicationDetailPage({
     .maybeSingle();
 
   if (getAppError || !appData) throw notFound();
+
+  if (appData.adopter_uuid !== user.id) {
+    redirect('/');
+  }
+
+  if (appData.status !== 'incomplete') {
+    redirect('/');
+  }
 
   return (
     <div className="flex min-h-svh w-full flex-col items-center justify-between">

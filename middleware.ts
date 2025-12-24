@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
   const { user, supabaseResponse } = await updateSession(request);
 
   // Define public routes that don't require authentication
-  const publicRoutes = ['/login', '/sign-up'];
+  const publicRoutes = ['/login', '/sign-up', '/forgot-password'];
   const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
   // If it's a public route, just update session and continue

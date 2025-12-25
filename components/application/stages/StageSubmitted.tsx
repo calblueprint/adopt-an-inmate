@@ -22,7 +22,7 @@ export default function StageSubmitted() {
             </p>
           </div>
 
-          <ButtonLink href="/" variant="primary" className="py-2">
+          <ButtonLink href="/" variant="primary">
             Back to Home
           </ButtonLink>
         </div>

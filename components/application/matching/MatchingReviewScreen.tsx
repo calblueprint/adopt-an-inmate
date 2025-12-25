@@ -1,6 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/Button';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import { ApplicationStage } from '@/types/enums';
@@ -16,10 +18,13 @@ export default function MatchingReviewScreen({
   ranks,
   onBack,
 }: MatchingReviewScreenProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const { appState } = useApplicationContext();
   const { advanceToStage, upsertAppInfo } = useApplicationNavigation();
 
   const nextStage = async () => {
+    setIsLoading(true);
+
     upsertAppInfo({
       status: 'pending',
       ranked_cards: rankedMatches,
@@ -27,6 +32,7 @@ export default function MatchingReviewScreen({
     }); //new upsert helper
 
     advanceToStage(ApplicationStage.SUBMITTED);
+    setIsLoading(false);
   };
 
   const allMatches = appState.matches || [];
@@ -66,8 +72,9 @@ export default function MatchingReviewScreen({
           variant="primary"
           className="w-9/10 py-2 sm:w-[clamp(200px,50%,400px)]"
           onClick={nextStage}
+          disabled={isLoading}
         >
-          Submit
+          {isLoading ? <LoadingSpinner variant="button" /> : 'Submit'}
         </Button>
       </div>
     </div>

@@ -36,7 +36,9 @@ export default function MatchingSelectScreen({
 
   const handleNextClick = async () => {
     if (!appState.matches) {
-      Logger.error('Failed to fetch matches');
+      Logger.error(
+        `Failed to fetch matches for application: ${appState.appId}`,
+      );
       return;
     }
 

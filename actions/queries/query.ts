@@ -1,7 +1,7 @@
 'use server';
 
 import { getSupabaseServerClient } from '@/lib/supabase';
-import { AdopteeMatch, AdopterApplication } from '@/types/schema';
+import { AdopteeMatch, AdopterApplicationUpdate } from '@/types/schema';
 
 /* Fetch top k (by simliaity) adoptee rows with hierarchical filtering:
  * Start with all filters applied. If no results, progressively drop filters
@@ -63,7 +63,7 @@ export async function fetchUserApplicationUUIDs(adopter_UUID: string) {
 }
 
 export async function upsertApplication(
-  app: Omit<Partial<AdopterApplication>, 'adopter_uuid' | 'app_uuid'> & {
+  app: AdopterApplicationUpdate & {
     adopter_uuid: string;
     app_uuid: string;
   },

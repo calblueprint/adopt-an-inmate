@@ -21,7 +21,4 @@ export type RankedAdopteeMatch = Pick<
 export type AdopterApplicationUpdate = Omit<
   Partial<AdopterApplication>,
   'adopter_uuid' | 'app_uuid'
->; //& {
-//   adopter_uuid: string;
-//   app_uuid: string;
-// };
+>;

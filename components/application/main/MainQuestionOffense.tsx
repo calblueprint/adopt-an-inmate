@@ -12,12 +12,12 @@ import { useApplicationNavigation } from '@/hooks/app-process';
 import { useQuestionNavigaton } from '@/hooks/questions';
 
 const offensePrefFormSchema = z.object({
-  offensePreference: z
-    .array(z.enum(['Option 1', 'Option 2', 'Option 3', 'None']))
-    .min(1, 'Please select at least one option'),
+  offensePreference: z.array(
+    z.enum(['Violent offense', 'Harm-related offense', 'Other:']),
+  ),
 });
 
-type OffenseOption = 'Option 1' | 'Option 2' | 'Option 3' | 'None';
+type OffenseOption = 'Violent offense' | 'Harm-related offense' | 'Other:';
 
 export default function MainQuestionOffense() {
   const { appState, setAppState } = useApplicationContext();
@@ -75,48 +75,38 @@ export default function MainQuestionOffense() {
 
         <div className="flex flex-col gap-1">
           <p className="text-sm text-gray-11">
-            Select all that apply. If you have no preference, select None.
+            Select all that apply. (optional)
           </p>
 
           <div className="flex flex-col gap-2">
             {/* Option 1 */}
             <CheckboxCard
-              value="Option 1"
-              checked={selected.includes('Option 1')}
+              value="Violent offense"
+              checked={selected.includes('Violent offense')}
               {...register('offensePreference')}
-              onChange={() => toggle('Option 1')}
+              onChange={() => toggle('Violent offense')}
             >
-              <p>Option 1</p>
+              <p>Violent offense</p>
             </CheckboxCard>
 
             {/* Option 2 */}
             <CheckboxCard
-              value="Option 2"
-              checked={selected.includes('Option 2')}
+              value="Harm-related offense"
+              checked={selected.includes('Harm-related offense')}
               {...register('offensePreference')}
-              onChange={() => toggle('Option 2')}
+              onChange={() => toggle('Harm-related offense')}
             >
-              <p>Option 2</p>
+              <p>Harm-related offense</p>
             </CheckboxCard>
 
             {/* Option 3 */}
             <CheckboxCard
-              value="Option 3"
-              checked={selected.includes('Option 3')}
+              value="Other:"
+              checked={selected.includes('Other:')}
               {...register('offensePreference')}
-              onChange={() => toggle('Option 3')}
+              onChange={() => toggle('Other:')}
             >
-              <p>Option 3</p>
-            </CheckboxCard>
-
-            {/* None */}
-            <CheckboxCard
-              value="None"
-              checked={selected.includes('None')}
-              {...register('offensePreference')}
-              onChange={() => toggle('None')}
-            >
-              <p>None</p>
+              <p>Other:</p>
             </CheckboxCard>
           </div>
         </div>

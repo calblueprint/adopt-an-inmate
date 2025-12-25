@@ -2,6 +2,7 @@ import type { VariantProps } from 'class-variance-authority';
 import { forwardRef } from 'react';
 import Link from 'next/link';
 import { cva } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 
 const buttonStyle = cva(
   'cursor-pointer flex items-center gap-2 justify-center text-center px-3 py-1 transition-colors',
@@ -82,7 +83,11 @@ export const ButtonLink = forwardRef<
   React.ComponentPropsWithRef<typeof Link> & { variant?: ButtonVariant }
 >(({ children, className, variant = 'default', ...props }, ref) => {
   return (
-    <Link ref={ref} className={buttonStyle({ className, variant })} {...props}>
+    <Link
+      ref={ref}
+      className={cn(buttonStyle({ variant }), className)}
+      {...props}
+    >
       {children}
     </Link>
   );

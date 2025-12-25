@@ -3,14 +3,12 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
-import Logger from '@/actions/logging';
-import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import ErrorMessage from '@/components/ErrorMessage';
 import QuestionBack from '@/components/questions/QuestionBack';
 import RadioCard from '@/components/RadioCard';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
-import { useAuth } from '@/contexts/AuthProvider';
+import { useApplicationNavigation } from '@/hooks/app-process';
 import { useQuestionNavigaton } from '@/hooks/questions';
 
 const genderPrefFormSchema = z.object({
@@ -23,7 +21,7 @@ const genderPrefFormSchema = z.object({
 export default function MainQuestionGender() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
-  const { userId } = useAuth();
+  const { upsertAppInfo } = useApplicationNavigation();
 
   const {
     register,
@@ -44,20 +42,7 @@ export default function MainQuestionGender() {
       form: { ...prev.form, genderPreference },
     }));
 
-    try {
-      if (!userId) {
-        Logger.error('Gender Preference Question: missing userId');
-        return;
-      }
-      await upsertApplication({
-        adopter_uuid: userId,
-        app_uuid: appState.appId,
-        gender_pref: genderPreference,
-      });
-    } catch (error) {
-      Logger.error(`Failed to save application: ${String(error)}`);
-    }
-
+    upsertAppInfo({ gender_pref: genderPreference }); //new upsert helper
     nextQuestion();
   };
 

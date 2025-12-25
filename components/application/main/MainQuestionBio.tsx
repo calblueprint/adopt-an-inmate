@@ -1,12 +1,10 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import Logger from '@/actions/logging';
-import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import { TextArea } from '@/components/TextArea';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
-import { useAuth } from '@/contexts/AuthProvider';
+import { useApplicationNavigation } from '@/hooks/app-process';
 import { useQuestionNavigaton } from '@/hooks/questions';
 
 interface BioForm {
@@ -16,7 +14,7 @@ interface BioForm {
 export default function MainQuestionBio() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
-  const { userId } = useAuth();
+  const { upsertAppInfo } = useApplicationNavigation();
 
   const {
     register,
@@ -30,21 +28,7 @@ export default function MainQuestionBio() {
 
   const onSubmit = async ({ bio }: BioForm) => {
     setAppState(prev => ({ ...prev, form: { ...prev.form, bio } }));
-
-    try {
-      if (!userId) {
-        Logger.error('Personal Bio Question: missing userId');
-        return;
-      }
-      await upsertApplication({
-        adopter_uuid: userId,
-        app_uuid: appState.appId,
-        personal_bio: bio,
-      });
-    } catch (error) {
-      Logger.error(`Failed to save application: ${String(error)}`);
-    }
-
+    upsertAppInfo({ personal_bio: bio }); //new upsert helper
     nextQuestion();
   };
 

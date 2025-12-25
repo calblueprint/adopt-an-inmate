@@ -8,6 +8,7 @@ import CheckboxCard from '@/components/CheckboxCard';
 import ErrorMessage from '@/components/ErrorMessage';
 import QuestionBack from '@/components/questions/QuestionBack';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import { useApplicationNavigation } from '@/hooks/app-process';
 import { useQuestionNavigaton } from '@/hooks/questions';
 
 const offensePrefFormSchema = z.object({
@@ -21,6 +22,7 @@ type OffenseOption = 'Option 1' | 'Option 2' | 'Option 3' | 'None';
 export default function MainQuestionOffense() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
+  const { upsertAppInfo } = useApplicationNavigation();
 
   const {
     register,
@@ -55,6 +57,7 @@ export default function MainQuestionOffense() {
       ...prev,
       form: { ...prev.form, offensePreference },
     }));
+    upsertAppInfo({ offense_pref: offensePreference }); //new upsert helper
     nextQuestion();
   };
 

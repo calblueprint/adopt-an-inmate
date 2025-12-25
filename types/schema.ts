@@ -17,3 +17,11 @@ export type RankedAdopteeMatch = Pick<
   AdopteeMatch,
   'id' | 'age' | 'bio' | 'first_name' | 'state' | 'gender'
 >;
+
+export type AdopterApplicationUpdate = Omit<
+  Partial<AdopterApplication>,
+  'adopter_uuid' | 'app_uuid'
+>; //& {
+//   adopter_uuid: string;
+//   app_uuid: string;
+// };

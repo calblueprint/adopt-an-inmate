@@ -37,15 +37,12 @@ export default function MatchingSelectScreen({
     });
   };
 
-  //TODO: route to review ranking page and MOVE BACKEND STUFF THERE
-  //TODO: create review ranking page, thank you page
   const handleNextClick = async () => {
     try {
       if (!appState.matches) {
         Logger.error('Failed to fetch matches');
         return;
       }
-      //const localMatches = appState.matches; //already not null
       const userRanked = rankedIds.map(
         id => appState.matches!.find(match => match.id === id)!,
       );

@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-import Logger from '@/actions/logging';
-import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
 import QuestionBack from '@/components/questions/QuestionBack';
@@ -30,24 +28,6 @@ export default function MainQuestionReview() {
 
   const handleContinue = () => {
     advanceToStage(ApplicationStage.MATCHING);
-
-    try {
-      if (!userId) {
-        Logger.error('Main Application Review: missing userId');
-        return;
-      }
-      upsertApplication({
-        //save everything again in case
-        adopter_uuid: userId,
-        app_uuid: appState.appId,
-        gender_pref: appState.form.genderPreference,
-        personal_bio: appState.form.bio,
-        //return_explanation: appState.form.whyAdopting || appState.form.whyEnded,
-        status: 'incomplete',
-      });
-    } catch (error) {
-      Logger.error(`Failed to save application: ${String(error)}`);
-    }
   };
 
   return (

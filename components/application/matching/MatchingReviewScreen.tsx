@@ -15,10 +15,15 @@ export default function MatchingReviewScreen({
   ranks,
 }: MatchingReviewScreenProps) {
   const { appState } = useApplicationContext();
+  const { advanceToStage, upsertAppInfo } = useApplicationNavigation();
 
-  const { advanceToStage } = useApplicationNavigation();
+  const nextStage = async () => {
+    upsertAppInfo({
+      status: 'pending',
+      ranked_cards: rankedMatches,
+      time_submitted: new Date().toISOString(),
+    }); //new upsert helper
 
-  const nextStage = () => {
     advanceToStage(ApplicationStage.SUBMITTED);
   };
 

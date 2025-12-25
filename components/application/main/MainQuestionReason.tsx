@@ -5,6 +5,7 @@ import { Button } from '@/components/Button';
 import QuestionBack from '@/components/questions/QuestionBack';
 import { TextArea } from '@/components/TextArea';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import { useApplicationNavigation } from '@/hooks/app-process';
 import { useQuestionNavigaton } from '@/hooks/questions';
 
 interface ReasonForm {
@@ -14,6 +15,7 @@ interface ReasonForm {
 export default function MainQuestionReason() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
+  const { upsertAppInfo } = useApplicationNavigation();
 
   const { register, handleSubmit } = useForm<ReasonForm>({
     defaultValues: {
@@ -23,7 +25,7 @@ export default function MainQuestionReason() {
     },
   });
 
-  const onSubmit = ({ reason }: ReasonForm) => {
+  const onSubmit = async ({ reason }: ReasonForm) => {
     if (appState.stillInCorrespondence)
       setAppState(prev => ({
         ...prev,
@@ -35,6 +37,7 @@ export default function MainQuestionReason() {
         form: { ...prev.form, whyEnded: reason },
       }));
 
+    upsertAppInfo({ return_explanation: reason }); //new upsert helper
     nextQuestion();
   };
 

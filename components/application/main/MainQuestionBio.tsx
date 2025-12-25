@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/Button';
 import { TextArea } from '@/components/TextArea';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import { useApplicationNavigation } from '@/hooks/app-process';
 import { useQuestionNavigaton } from '@/hooks/questions';
 
 interface BioForm {
@@ -13,6 +14,7 @@ interface BioForm {
 export default function MainQuestionBio() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
+  const { upsertAppInfo } = useApplicationNavigation();
 
   const {
     register,
@@ -24,8 +26,9 @@ export default function MainQuestionBio() {
     },
   });
 
-  const onSubmit = ({ bio }: BioForm) => {
+  const onSubmit = async ({ bio }: BioForm) => {
     setAppState(prev => ({ ...prev, form: { ...prev.form, bio } }));
+    upsertAppInfo({ personal_bio: bio }); //new upsert helper
     nextQuestion();
   };
 

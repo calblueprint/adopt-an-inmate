@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Logger from '@/actions/logging';
 import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import MatchingCard from './MatchingCard';
@@ -13,7 +14,6 @@ export default function MatchingSelectScreen({
   onTransitionToReview,
 }: MatchingSelectScreenProps) {
   const { appState } = useApplicationContext();
-
   const [rankedIds, setRankedIds] = useState<string[]>([]);
 
   /**
@@ -34,7 +34,14 @@ export default function MatchingSelectScreen({
     });
   };
 
-  const handleNextClick = () => {
+  const handleNextClick = async () => {
+    if (!appState.matches) {
+      Logger.error(
+        `Failed to fetch matches for application: ${appState.appId}`,
+      );
+      return;
+    }
+
     onTransitionToReview(rankedIds);
   };
 

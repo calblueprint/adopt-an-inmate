@@ -15,9 +15,7 @@ import { AdopterApplicationUpdate } from '@/types/schema';
 export const useApplicationNavigation = () => {
   const router = useRouter();
   const { appState, appStage } = useApplicationContext();
-
   const { userId } = useAuth();
-  //const { appState } = useApplicationContext();
 
   /**
    * Helper function to record current stage in context

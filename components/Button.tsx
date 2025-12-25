@@ -11,7 +11,7 @@ const buttonStyle = cva(
       variant: {
         default: 'border border-gray-700 rounded-lg',
         secondary: 'border border-gray-8 bg-gray-1 rounded-lg text-cyan-12',
-        primary: 'bg-cyan-12 rounded-lg text-gray-1',
+        primary: 'bg-cyan-12 rounded-lg text-gray-1 py-2',
         tertiary: 'bg-cyan-9 text-white rounded-lg py-3 px-4',
         rounded:
           'rounded-full px-6 border border-cyan-12 bg-gray-1 text-cyan-12',

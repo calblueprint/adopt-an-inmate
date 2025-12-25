@@ -7,14 +7,14 @@ import { Button } from '@/components/Button';
 import CheckboxCard from '@/components/CheckboxCard';
 import ErrorMessage from '@/components/ErrorMessage';
 import QuestionBack from '@/components/questions/QuestionBack';
+import { Textbox } from '@/components/Textbox';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import { useQuestionNavigaton } from '@/hooks/questions';
 
 const offensePrefFormSchema = z.object({
-  offensePreference: z.array(
-    z.enum(['Violent offense', 'Harm-related offense', 'Other:']),
-  ),
+  offensePreference: z.array(z.string()).optional().nullable(),
+  offenseOther: z.string().optional(),
 });
 
 type OffenseOption = 'Violent offense' | 'Harm-related offense' | 'Other:';
@@ -33,11 +33,13 @@ export default function MainQuestionOffense() {
   } = useForm<z.infer<typeof offensePrefFormSchema>>({
     defaultValues: {
       offensePreference: appState.form.offensePreference ?? [],
+      offenseOther: appState.form.offenseOther ?? '',
     },
     resolver: zodResolver(offensePrefFormSchema),
   });
 
-  const selected = watch('offensePreference');
+  const selected = watch('offensePreference') ?? [];
+  const otherValue = watch('offenseOther') ?? '';
 
   const toggle = (value: OffenseOption) => {
     if (selected.includes(value)) {
@@ -45,6 +47,9 @@ export default function MainQuestionOffense() {
         'offensePreference',
         selected.filter(v => v !== value),
       );
+      if (value === 'Other:') {
+        setValue('offenseOther', ''); //maybe otherValue here?
+      }
     } else {
       setValue('offensePreference', [...selected, value]);
     }
@@ -52,12 +57,28 @@ export default function MainQuestionOffense() {
 
   const onSubmit = ({
     offensePreference,
+    offenseOther,
   }: z.infer<typeof offensePrefFormSchema>) => {
+    let selectedOffenses = offensePreference ?? [];
+    selectedOffenses = selectedOffenses.filter(
+      //filter to only keep non-text options
+      offense =>
+        offense === 'Violent offense' || offense === 'Harm-related offense',
+    );
+
+    if (offenseOther?.trim()) {
+      selectedOffenses = [...selectedOffenses, offenseOther.trim()]; //add new "other" text option
+    }
+
     setAppState(prev => ({
       ...prev,
-      form: { ...prev.form, offensePreference },
+      form: {
+        ...prev.form,
+        offensePreference: selectedOffenses,
+        offenseOther: offenseOther ?? '',
+      },
     }));
-    upsertAppInfo({ offense_pref: offensePreference }); //new upsert helper
+    upsertAppInfo({ offense_pref: selectedOffenses });
     nextQuestion();
   };
 
@@ -79,7 +100,7 @@ export default function MainQuestionOffense() {
           </p>
 
           <div className="flex flex-col gap-2">
-            {/* Option 1 */}
+            {/* Violent offense */}
             <CheckboxCard
               value="Violent offense"
               checked={selected.includes('Violent offense')}
@@ -89,7 +110,7 @@ export default function MainQuestionOffense() {
               <p>Violent offense</p>
             </CheckboxCard>
 
-            {/* Option 2 */}
+            {/* Harm-related offense */}
             <CheckboxCard
               value="Harm-related offense"
               checked={selected.includes('Harm-related offense')}
@@ -99,14 +120,23 @@ export default function MainQuestionOffense() {
               <p>Harm-related offense</p>
             </CheckboxCard>
 
-            {/* Option 3 */}
+            {/* Other offense */}
             <CheckboxCard
-              value="Other:"
-              checked={selected.includes('Other:')}
-              {...register('offensePreference')}
+              value={watch('offenseOther') || ''}
+              checked={selected.includes('Other:') || !!otherValue.trim()}
               onChange={() => toggle('Other:')}
             >
               <p>Other:</p>
+
+              {(selected.includes('Other:') || !!otherValue.trim()) && ( //hmmm
+                <Textbox
+                  placeholder="Please specify"
+                  {...register('offenseOther')}
+                  value={watch('offenseOther') || ''}
+                  onChange={e => setValue('offenseOther', e.target.value)}
+                  className="h-6 resize-none"
+                />
+              )}
             </CheckboxCard>
           </div>
         </div>

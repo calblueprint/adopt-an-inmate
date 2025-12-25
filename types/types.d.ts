@@ -14,7 +14,8 @@ export interface FormState {
   genderPreference: 'male' | 'female' | 'no_preference';
   whyAdopting?: string;
   whyEnded?: string;
-  offensePreference: ('Violent offense' | 'Harm-related offense' | 'Other:')[];
+  offensePreference: string[] | null;
+  offenseOther: string | null;
 }
 
 export interface EmailPasswordCredentials {

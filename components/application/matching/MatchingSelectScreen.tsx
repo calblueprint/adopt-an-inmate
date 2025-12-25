@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import Logger from '@/actions/logging';
-import { upsertApplication } from '@/actions/queries/query';
+//import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
-import { useAuth } from '@/contexts/AuthProvider';
+//import { useAuth } from '@/contexts/AuthProvider';
 import MatchingCard from './MatchingCard';
 
 interface MatchingSelectScreenProps {
@@ -17,7 +17,7 @@ export default function MatchingSelectScreen({
 }: MatchingSelectScreenProps) {
   const { appState } = useApplicationContext();
   const [rankedIds, setRankedIds] = useState<string[]>([]);
-  const { userId } = useAuth();
+  //const { userId } = useAuth();
 
   /**
    * Toggles the rank of an adoptee.
@@ -43,22 +43,22 @@ export default function MatchingSelectScreen({
         Logger.error('Failed to fetch matches');
         return;
       }
-      const userRanked = rankedIds.map(
-        id => appState.matches!.find(match => match.id === id)!,
-      );
+      // const userRanked = rankedIds.map(
+      //   id => appState.matches!.find(match => match.id === id)!,
+      // );
 
-      await upsertApplication({
-        adopter_uuid: userId!,
-        app_uuid: appState.appId,
-        status: 'pending', //for time being, "Next" on ranking = submitted
-        ranked_cards: userRanked,
-        time_submitted: new Date().toISOString(),
-      });
+      // await upsertApplication({
+      //   adopter_uuid: userId!,
+      //   app_uuid: appState.appId,
+      //   status: 'pending', //for time being, "Next" on ranking = submitted
+      //   ranked_cards: userRanked,
+      //   time_submitted: new Date().toISOString(),
+      // });
     } catch (error) {
       Logger.error(`Failed to save rankings: ${String(error)}`);
     }
 
-    onTransitionToReview(rankedIds); // from carolyn's rebase
+    onTransitionToReview(rankedIds);
   };
 
   const isNextDisabled = rankedIds.length != 4; // disable next if not all 4 ranked

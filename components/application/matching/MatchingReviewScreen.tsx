@@ -1,7 +1,10 @@
 'use client';
 
+import Logger from '@/actions/logging';
+import { upsertApplication } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import { useAuth } from '@/contexts/AuthProvider';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import { ApplicationStage } from '@/types/enums';
 import { RankedAdopteeMatch } from '@/types/schema';
@@ -15,11 +18,28 @@ export default function MatchingReviewScreen({
   ranks,
 }: MatchingReviewScreenProps) {
   const { appState } = useApplicationContext();
-
   const { advanceToStage } = useApplicationNavigation();
+  const { userId } = useAuth();
 
-  const nextStage = () => {
+  const nextStage = async () => {
     advanceToStage(ApplicationStage.SUBMITTED);
+
+    try {
+      if (!userId) {
+        Logger.error('Ranking Review Page: missing userId');
+        return;
+      }
+
+      await upsertApplication({
+        adopter_uuid: userId,
+        app_uuid: appState.appId,
+        status: 'pending',
+        ranked_cards: rankedMatches, //check if type matches
+        time_submitted: new Date().toISOString(),
+      });
+    } catch (error) {
+      Logger.error(`Failed to save application: ${String(error)}`);
+    }
   };
 
   const allMatches = appState.matches || [];

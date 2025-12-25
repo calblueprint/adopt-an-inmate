@@ -48,7 +48,7 @@ export default function MainQuestionOffense() {
         selected.filter(v => v !== value),
       );
       if (value === 'Other:') {
-        setValue('offenseOther', ''); //maybe otherValue here?
+        setValue('offenseOther', '');
       }
     } else {
       setValue('offensePreference', [...selected, value]);
@@ -128,7 +128,7 @@ export default function MainQuestionOffense() {
             >
               <p>Other:</p>
 
-              {(selected.includes('Other:') || !!otherValue.trim()) && ( //hmmm
+              {(selected.includes('Other:') || !!otherValue.trim()) && (
                 <Textbox
                   placeholder="Please specify"
                   {...register('offenseOther')}

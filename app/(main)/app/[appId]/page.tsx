@@ -23,6 +23,15 @@ export default async function ApplicationDetailPage({
 
   if (getAppError || !appData) throw notFound();
 
+  const predefinedOffenses = ['Violent offense', 'Harm-related offense'];
+  const offensePref = appData.offense_pref ?? [];
+  const offensePreference = offensePref.filter(offense =>
+    predefinedOffenses.includes(offense),
+  );
+  const customOffense = offensePref.find(
+    offense => !predefinedOffenses.includes(offense),
+  );
+
   return (
     <div className="flex min-h-svh w-full flex-col items-center justify-between">
       <Link href="/">
@@ -40,8 +49,11 @@ export default async function ApplicationDetailPage({
                 (appData.gender_pref as FormState['genderPreference']) ??
                 undefined,
               offensePreference:
-                (appData.offense_pref as FormState['offensePreference']) ??
-                undefined,
+                offensePreference.length > 0
+                  ? (offensePreference as FormState['offensePreference'])
+                  : undefined,
+              offenseOther:
+                (customOffense as FormState['offenseOther']) ?? undefined,
               whyAdopting: appData.return_explanation ?? undefined,
               whyEnded: appData.return_explanation ?? undefined,
             },

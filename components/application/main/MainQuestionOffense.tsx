@@ -24,6 +24,14 @@ export default function MainQuestionOffense() {
   const { nextQuestion } = useQuestionNavigaton();
   const { upsertAppInfo } = useApplicationNavigation();
 
+  const initialOffensePreference = appState.form.offensePreference ?? [];
+  const initialOffenseOther = appState.form.offenseOther ?? '';
+  const initialPreferences = [...initialOffensePreference];
+
+  if (initialOffenseOther.trim() && !initialPreferences.includes('Other:')) {
+    initialPreferences.push('Other:');
+  }
+
   const {
     register,
     handleSubmit,
@@ -32,8 +40,8 @@ export default function MainQuestionOffense() {
     formState: { errors },
   } = useForm<z.infer<typeof offensePrefFormSchema>>({
     defaultValues: {
-      offensePreference: appState.form.offensePreference ?? [],
-      offenseOther: appState.form.offenseOther ?? '',
+      offensePreference: initialPreferences,
+      offenseOther: initialOffenseOther,
     },
     resolver: zodResolver(offensePrefFormSchema),
   });

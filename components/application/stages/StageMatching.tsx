@@ -62,13 +62,19 @@ export default function StageMatching() {
     setSubStage('review');
   };
 
+  const handleBackToSelect = () => {
+    setSubStage('select');
+  };
+
   if (isLoaded) {
     if (subStage === 'select') {
       return (
         <MatchingSelectScreen onTransitionToReview={handleTransitionToReview} />
       );
     } else if (subStage === 'review') {
-      return <MatchingReviewScreen ranks={rankedIds} />;
+      return (
+        <MatchingReviewScreen ranks={rankedIds} onBack={handleBackToSelect} />
+      );
     }
   }
 

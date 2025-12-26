@@ -7,22 +7,30 @@ import { Button } from '@/components/Button';
 import CheckboxCard from '@/components/CheckboxCard';
 import ErrorMessage from '@/components/ErrorMessage';
 import QuestionBack from '@/components/questions/QuestionBack';
+import { Textbox } from '@/components/Textbox';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import { useQuestionNavigaton } from '@/hooks/questions';
 
 const offensePrefFormSchema = z.object({
-  offensePreference: z
-    .array(z.enum(['Option 1', 'Option 2', 'Option 3', 'None']))
-    .min(1, 'Please select at least one option'),
+  offensePreference: z.array(z.string()).optional().nullable(),
+  offenseOther: z.string().optional(),
 });
 
-type OffenseOption = 'Option 1' | 'Option 2' | 'Option 3' | 'None';
+type OffenseOption = 'Violent offense' | 'Harm-related offense' | 'Other:';
 
 export default function MainQuestionOffense() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
   const { upsertAppInfo } = useApplicationNavigation();
+
+  const initialOffensePreference = appState.form.offensePreference ?? [];
+  const initialOffenseOther = appState.form.offenseOther ?? '';
+  const initialPreferences = [...initialOffensePreference];
+
+  if (initialOffenseOther.trim() && !initialPreferences.includes('Other:')) {
+    initialPreferences.push('Other:');
+  }
 
   const {
     register,
@@ -32,12 +40,14 @@ export default function MainQuestionOffense() {
     formState: { errors },
   } = useForm<z.infer<typeof offensePrefFormSchema>>({
     defaultValues: {
-      offensePreference: appState.form.offensePreference ?? [],
+      offensePreference: initialPreferences,
+      offenseOther: initialOffenseOther,
     },
     resolver: zodResolver(offensePrefFormSchema),
   });
 
-  const selected = watch('offensePreference');
+  const selected = watch('offensePreference') ?? [];
+  const otherValue = watch('offenseOther') ?? '';
 
   const toggle = (value: OffenseOption) => {
     if (selected.includes(value)) {
@@ -45,6 +55,9 @@ export default function MainQuestionOffense() {
         'offensePreference',
         selected.filter(v => v !== value),
       );
+      if (value === 'Other:') {
+        setValue('offenseOther', '');
+      }
     } else {
       setValue('offensePreference', [...selected, value]);
     }
@@ -52,12 +65,28 @@ export default function MainQuestionOffense() {
 
   const onSubmit = ({
     offensePreference,
+    offenseOther,
   }: z.infer<typeof offensePrefFormSchema>) => {
+    let selectedOffenses = offensePreference ?? [];
+    selectedOffenses = selectedOffenses.filter(
+      //filter to only keep non-text options
+      offense =>
+        offense === 'Violent offense' || offense === 'Harm-related offense',
+    );
+
+    if (offenseOther?.trim()) {
+      selectedOffenses = [...selectedOffenses, offenseOther.trim()]; //add new "other" text option
+    }
+
     setAppState(prev => ({
       ...prev,
-      form: { ...prev.form, offensePreference },
+      form: {
+        ...prev.form,
+        offensePreference: selectedOffenses,
+        offenseOther: offenseOther ?? '',
+      },
     }));
-    upsertAppInfo({ offense_pref: offensePreference }); //new upsert helper
+    upsertAppInfo({ offense_pref: selectedOffenses });
     nextQuestion();
   };
 
@@ -75,48 +104,47 @@ export default function MainQuestionOffense() {
 
         <div className="flex flex-col gap-1">
           <p className="text-sm text-gray-11">
-            Select all that apply. If you have no preference, select None.
+            Select all that apply. (optional)
           </p>
 
           <div className="flex flex-col gap-2">
-            {/* Option 1 */}
+            {/* Violent offense */}
             <CheckboxCard
-              value="Option 1"
-              checked={selected.includes('Option 1')}
+              value="Violent offense"
+              checked={selected.includes('Violent offense')}
               {...register('offensePreference')}
-              onChange={() => toggle('Option 1')}
+              onChange={() => toggle('Violent offense')}
             >
-              <p>Option 1</p>
+              <p>Violent offense</p>
             </CheckboxCard>
 
-            {/* Option 2 */}
+            {/* Harm-related offense */}
             <CheckboxCard
-              value="Option 2"
-              checked={selected.includes('Option 2')}
+              value="Harm-related offense"
+              checked={selected.includes('Harm-related offense')}
               {...register('offensePreference')}
-              onChange={() => toggle('Option 2')}
+              onChange={() => toggle('Harm-related offense')}
             >
-              <p>Option 2</p>
+              <p>Harm-related offense</p>
             </CheckboxCard>
 
-            {/* Option 3 */}
+            {/* Other offense */}
             <CheckboxCard
-              value="Option 3"
-              checked={selected.includes('Option 3')}
-              {...register('offensePreference')}
-              onChange={() => toggle('Option 3')}
+              value={watch('offenseOther') || ''}
+              checked={selected.includes('Other:') || !!otherValue.trim()}
+              onChange={() => toggle('Other:')}
             >
-              <p>Option 3</p>
-            </CheckboxCard>
+              <p>Other:</p>
 
-            {/* None */}
-            <CheckboxCard
-              value="None"
-              checked={selected.includes('None')}
-              {...register('offensePreference')}
-              onChange={() => toggle('None')}
-            >
-              <p>None</p>
+              {(selected.includes('Other:') || !!otherValue.trim()) && (
+                <Textbox
+                  placeholder="Please specify"
+                  {...register('offenseOther')}
+                  value={watch('offenseOther') || ''}
+                  onChange={e => setValue('offenseOther', e.target.value)}
+                  className="h-6 resize-none"
+                />
+              )}
             </CheckboxCard>
           </div>
         </div>

@@ -72,7 +72,6 @@
       "nanoid": "^3.3.8"
     },
     "ignoredBuiltDependencies": [
-      "@tailwindcss/oxide",
       "esbuild"
     ],
     "onlyBuiltDependencies": [

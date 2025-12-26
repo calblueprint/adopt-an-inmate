@@ -7,7 +7,7 @@ import { ButtonLink } from '@/components/Button';
 export default function StageSubmitted() {
   return (
     <div className="flex size-full flex-col items-center justify-center">
-      <div className="flex h-[404px] w-[447px] flex-col rounded-lg bg-gray-1 p-8 sm:w-[clamp(400px,50%,500px)]">
+      <div className="flex w-[447px] flex-col rounded-lg bg-gray-1 p-8 sm:w-[clamp(400px,50%,500px)]">
         <div className="my-6 grid w-full place-items-center">
           <Image src={heartIcon} alt="Heart icon" />
         </div>
@@ -22,7 +22,7 @@ export default function StageSubmitted() {
             </p>
           </div>
 
-          <ButtonLink href="/" variant="primary">
+          <ButtonLink href="/" variant="primary" className="mb-6 py-2">
             Back to Home
           </ButtonLink>
         </div>

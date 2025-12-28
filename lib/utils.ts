@@ -39,20 +39,19 @@ export function cn(...inputs: ClassValue[]) {
  * Returns the site URL depending on environment.
  */
 export const getSiteUrl = () => {
-  // environment variables set by Vercel when deployed
-  // if they don't exist, assume local testing environment
-  let url =
-    process?.env?.NEXT_PUBLIC_PRODUCTION_URL ??
-    process?.env?.NEXT_PUBLIC_VERCEL_URL ??
-    'http://localhost:3000/';
+  const deployEnv = process.env.VERCEL_ENV;
 
-  // prepend with https if it's not localhost
-  url = url.startsWith('http') ? url : `https://${url}`;
+  // no vercel env => local environment, use localhost
+  if (!deployEnv) return 'http://localhost:3000/';
 
-  // ensure trailing /
-  url = url.endsWith('/') ? url : `${url}/`;
+  // preview env => use vercel url for same environment testing
+  // otherwise, use prod site url
+  const siteUrl =
+    deployEnv === 'preview'
+      ? process.env.VERCEL_URL
+      : process.env.VERCEL_PROJECT_PRODUCTION_URL;
 
-  return url;
+  return `https://${siteUrl}/`;
 };
 
 /**

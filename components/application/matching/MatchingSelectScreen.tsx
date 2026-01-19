@@ -1,9 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { LuCake, LuMapPin, LuUser } from 'react-icons/lu';
 import Logger from '@/actions/logging';
 import { Button } from '@/components/Button';
+import MobileMatchingCard from '@/components/MobileMatchingCard';
+import MobilePopUp from '@/components/MobilePopUp';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import useMediaQuery from '@/hooks/useMediaQuery';
+import { RankedAdopteeMatch } from '@/types/schema';
 import MatchingCard from './MatchingCard';
 
 interface MatchingSelectScreenProps {
@@ -15,23 +20,24 @@ export default function MatchingSelectScreen({
 }: MatchingSelectScreenProps) {
   const { appState } = useApplicationContext();
   const [rankedIds, setRankedIds] = useState<string[]>([]);
+  const isMobile = useMediaQuery('(max-width: 640px)');
+  const [isRankingOpen, setIsRankingOpen] = useState(false);
+  const [selectedMatch, setSelectedMatch] = useState<RankedAdopteeMatch | null>(
+    null,
+  );
 
-  /**
-   * Toggles the rank of an adoptee.
-   * If ranked, removes it from rankedIds.
-   * If unranked, adds it to the end of rankedIds.
-   */
   const handleRankToggle = (id: string) => {
-    setRankedIds(prevIds => {
-      const index = prevIds.indexOf(id);
-      if (index > -1) {
-        // unrank: filter out the id to remove it
-        return prevIds.filter(rankedId => rankedId !== id);
-      } else {
-        // rank: add id
-        return [...prevIds, id];
-      }
+    setRankedIds(prev => {
+      const index = prev.indexOf(id);
+      return index > -1
+        ? prev.filter(rankedId => rankedId !== id)
+        : [...prev, id];
     });
+  };
+
+  const handleReadMore = (match: RankedAdopteeMatch) => {
+    setSelectedMatch(match);
+    setIsRankingOpen(true);
   };
 
   const handleNextClick = async () => {
@@ -41,11 +47,85 @@ export default function MatchingSelectScreen({
       );
       return;
     }
-
     onTransitionToReview(rankedIds);
   };
 
-  const isNextDisabled = rankedIds.length != 4; // disable next if not all 4 ranked
+  const isNextDisabled = rankedIds.length !== 4;
+
+  if (isMobile) {
+    return (
+      <div className="flex w-full flex-col gap-12 pt-8">
+        <div className="flex flex-col items-center gap-4">
+          <h1>Rank your preferences!</h1>
+          <p className="w-[clamp(300px,60%,400px)] text-center text-sm text-gray-11">
+            Click the cards in your order of preference.
+          </p>
+        </div>
+
+        <div className="grid w-full grid-cols-2 gap-4 px-4">
+          {appState.matches?.map(m => {
+            const rankIndex = rankedIds.indexOf(m.id);
+            const currentRank = rankIndex > -1 ? rankIndex + 1 : undefined;
+
+            return (
+              <MobileMatchingCard
+                key={m.id}
+                match={m}
+                rank={currentRank}
+                onSelect={handleRankToggle}
+                onReadMore={handleReadMore}
+              />
+            );
+          })}
+        </div>
+
+        <div className="flex w-full justify-center">
+          <Button
+            type="button"
+            variant="primary"
+            className="w-9/10 py-2 sm:w-[clamp(200px,50%,400px)]"
+            disabled={isNextDisabled}
+            onClick={handleNextClick}
+          >
+            Next
+          </Button>
+        </div>
+
+        <MobilePopUp
+          open={isRankingOpen}
+          onClose={() => setIsRankingOpen(false)}
+          title={selectedMatch?.first_name}
+        >
+          {selectedMatch && (
+            <div className="flex flex-col gap-3 overflow-x-hidden">
+              <div className="flex flex-wrap items-center gap-3 font-['Golos_Text'] text-[0.875rem] font-normal text-black">
+                <div className="flex items-center gap-1">
+                  <LuCake size={13} className="text-red-12" />
+                  <span>{selectedMatch.age}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <LuUser size={13} className="text-red-12" />
+                  <span className="capitalize">{selectedMatch.gender}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <LuMapPin size={13} className="text-red-12" />
+                  <span>{selectedMatch.state}</span>
+                </div>
+              </div>
+
+              <div className="w-[16.57806rem] font-['Golos_Text'] text-[0.75rem] font-semibold text-[#BABBC7]">
+                Biography
+              </div>
+
+              <p className="font-['Golos_Text'] text-[0.875rem] font-normal whitespace-pre-line text-[#1E1F24]">
+                {selectedMatch.bio}
+              </p>
+            </div>
+          )}
+        </MobilePopUp>
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-full flex-col gap-12 pt-8">
@@ -59,13 +139,13 @@ export default function MatchingSelectScreen({
       <div className="flex flex-col gap-4">
         <div className="flex w-full gap-8 px-12">
           {appState.matches?.map(m => {
-            // calculate current rank based on array index
             const rankIndex = rankedIds.indexOf(m.id);
             const currentRank = rankIndex > -1 ? rankIndex + 1 : undefined;
+
             return (
               <MatchingCard
-                match={m}
                 key={m.id}
+                match={m}
                 rank={currentRank}
                 onSelect={handleRankToggle}
               />

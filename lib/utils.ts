@@ -70,6 +70,14 @@ export const assertEnvVarExists = (key: string) => {
 };
 
 /**
+ * Safely gets an environment variable. If it doesn't exist, throw an error.
+ */
+export const getEnvVar = (key: string) => {
+  assertEnvVarExists(key);
+  return process.env[key] as string;
+};
+
+/**
  * Get the abbreviation of a state from its name.
  * ex: getStateAbbv("California") => "CA"
  */

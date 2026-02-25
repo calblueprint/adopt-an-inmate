@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Logger from '@/actions/logging';
-import { upsertApplication } from '@/actions/queries/query';
+import { submitApplication } from '@/actions/queries/query'; //changed from previous function
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { ApplicationStage } from '@/types/enums';
@@ -15,7 +15,7 @@ import { AdopterApplicationUpdate } from '@/types/schema';
 export const useApplicationNavigation = () => {
   const router = useRouter();
   const { appState, appStage } = useApplicationContext();
-  const { userId } = useAuth();
+  const { userId, userEmail } = useAuth(); //asks for user email too
 
   /**
    * Helper function to record current stage in context
@@ -36,11 +36,18 @@ export const useApplicationNavigation = () => {
         Logger.error('Updating Application Info: missing userId');
         return;
       }
-      await upsertApplication({
-        adopter_uuid: userId,
-        app_uuid: appState.appId,
-        ...app,
-      });
+      if (!userEmail) { //if userEmail is not provided, log an error and return
+        Logger.error('Updating Application Info: missing userEmail');
+        return;
+      }
+      await submitApplication(
+        {
+          adopter_uuid: userId,
+          app_uuid: appState.appId,
+          ...app,
+        },
+        userEmail,
+      );
     } catch (error) {
       Logger.error(`Failed to save application: ${String(error)}`);
     }

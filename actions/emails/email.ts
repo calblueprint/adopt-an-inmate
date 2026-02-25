@@ -9,9 +9,9 @@ export async function autoEmailSender(
   recipient: string,
 ) {
   const transporter = nodemailer.createTransport({
-    secure: true,
-    host: 'smtp.gmail.com',
-    port: 465,
+    host: 'smtp-relay.brevo.com', //switched to brevo and port to 587 with secure as false
+    port: 587,
+    secure: false,
     auth: {
       user: senderAddress,
       pass: senderAppPassword,

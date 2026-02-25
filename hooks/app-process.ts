@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Logger from '@/actions/logging';
-import { upsertApplication } from '@/actions/queries/query';
+import { submitApplication } from '@/actions/queries/query';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { ApplicationStage } from '@/types/enums';
@@ -36,7 +36,7 @@ export const useApplicationNavigation = () => {
         Logger.error('Updating Application Info: missing userId');
         return;
       }
-      await upsertApplication({
+      await submitApplication({
         adopter_uuid: userId,
         app_uuid: appState.appId,
         ...app,

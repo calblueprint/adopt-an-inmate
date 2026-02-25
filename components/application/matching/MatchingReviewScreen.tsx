@@ -29,7 +29,7 @@ export default function MatchingReviewScreen({
       status: 'pending',
       ranked_cards: rankedMatches,
       time_submitted: new Date().toISOString(),
-    }); //new upsert helper
+    });
 
     advanceToStage(ApplicationStage.SUBMITTED);
     setIsLoading(false);

@@ -1,5 +1,6 @@
 'use server';
 
+import { autoEmailSender } from '@/actions/emails/email';
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { AdopteeMatch, AdopterApplicationUpdate } from '@/types/schema';
 
@@ -78,6 +79,33 @@ export async function upsertApplication(
 
   if (error)
     throw new Error(`Error upserting application data: ${error.message}`);
+
+  return data;
+}
+
+export async function submitApplication(
+  app: AdopterApplicationUpdate & {
+    adopter_uuid: string;
+    app_uuid: string;
+  },
+  adopterEmail: string,
+) {
+  if (!process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_KEY) {
+    throw new Error(
+      'Missing email configuration: BREVO_SMTP_USER and BREVO_SMTP_KEY must be set in environment',
+    );
+  }
+
+  const data = await upsertApplication(app);
+
+  const text = `Hi!
+
+Thank you for submitting your adoption application (ID: ${app.app_uuid}). We'll review it and get back to you with a match soon.
+
+Best,
+The Adopt an Inmate Team`;
+
+  await autoEmailSender(text, 'Adoption Application Submitted', adopterEmail);
 
   return data;
 }

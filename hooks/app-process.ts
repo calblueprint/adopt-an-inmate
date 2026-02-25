@@ -36,7 +36,8 @@ export const useApplicationNavigation = () => {
         Logger.error('Updating Application Info: missing userId');
         return;
       }
-      if (!userEmail) { //if userEmail is not provided, log an error and return
+      if (!userEmail) {
+        //if userEmail is not provided, log an error and return
         Logger.error('Updating Application Info: missing userEmail');
         return;
       }

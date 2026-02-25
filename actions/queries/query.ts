@@ -1,9 +1,9 @@
 'use server';
 
+import { autoEmailSender } from '@/actions/emails/email'; //imports the auto email sender function
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { AdopteeMatch, AdopterApplicationUpdate } from '@/types/schema';
 import { EmailPasswordCredentials } from '@/types/types'; //imports the email password credentials
-import { autoEmailSender } from '@/actions/emails/email'; //imports the auto email sender function
 
 /* Fetch top k (by simliaity) adoptee rows with hierarchical filtering:
  * Start with all filters applied. If no results, progressively drop filters

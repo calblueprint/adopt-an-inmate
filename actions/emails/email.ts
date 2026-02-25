@@ -1,6 +1,10 @@
 import nodemailer from 'nodemailer';
 
-export async function autoEmailSender(text: string, subject: string, recipient: string) {
+export async function autoEmailSender(
+  text: string,
+  subject: string,
+  recipient: string,
+) {
   const senderAddress = process.env.BREVO_SMTP_USER;
   const senderAppPassword = process.env.BREVO_SMTP_KEY;
   const senderName = process.env.EMAIL_SENDER_NAME ?? 'Adopt an Inmate Team';

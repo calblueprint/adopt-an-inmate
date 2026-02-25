@@ -37,7 +37,9 @@ export const useApplicationNavigation = () => {
         return;
       }
       if (!userEmail) {
-        Logger.error(`Updating Application Info: missing userEmail for userId: ${userId}`);
+        Logger.error(
+          `Updating Application Info: missing userEmail for userId: ${userId}`,
+        );
         return;
       }
       await submitApplication(

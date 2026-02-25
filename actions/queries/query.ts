@@ -1,9 +1,8 @@
 'use server';
 
-import { autoEmailSender } from '@/actions/emails/email'; //imports the auto email sender function
+import { autoEmailSender } from '@/actions/emails/email';
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { AdopteeMatch, AdopterApplicationUpdate } from '@/types/schema';
-import { EmailPasswordCredentials } from '@/types/types'; //imports the email password credentials
 
 /* Fetch top k (by simliaity) adoptee rows with hierarchical filtering:
  * Start with all filters applied. If no results, progressively drop filters
@@ -93,22 +92,18 @@ export async function submitApplication(
 ) {
   const data = await upsertApplication(app);
 
-  const senderCredentials: EmailPasswordCredentials = {
-    email: process.env.BREVO_SMTP_USER ?? '',
-    password: process.env.BREVO_SMTP_KEY ?? '',
-  };
-  const senderName = process.env.EMAIL_SENDER_NAME ?? 'Adopt an Inmate Team';
+  if (!process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_KEY) {
+    throw new Error(
+      'Missing email configuration: BREVO_SMTP_USER and BREVO_SMTP_KEY must be set in environment variables.',
+    );
+  }
 
-  const text = `Hi! Thank you for submitting your adoption application (ID: ${app.app_uuid}). We'll review it and get back to you with a match soon. Best, The Adopt an Inmate Team`;
+  const text = `Hi! Thank you for submitting your adoption application (ID: ${app.app_uuid}). We'll review it and get back to you with a match soon.
 
-  await autoEmailSender(
-    senderCredentials.email,
-    senderCredentials.password,
-    senderName,
-    text,
-    'Adoption Application Submitted',
-    adopterEmail,
-  );
+Best,
+The Adopt an Inmate Team`;
+
+  await autoEmailSender(text, 'Adoption Application Submitted', adopterEmail);
 
   return data;
 }

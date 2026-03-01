@@ -5,7 +5,6 @@ import { CONFIG } from '@/config';
 import { capitalize } from '@/lib/formatters';
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { assertEnvVarExists, getEnvVar } from '@/lib/utils';
-import { AdopterApplication, Profile } from '@/types/schema';
 import { mondayApiClient } from '../core';
 
 // assert env var exists at system level to trigger
@@ -14,11 +13,9 @@ import { mondayApiClient } from '../core';
 assertEnvVarExists('MONDAY_ADOPTER_DATA_BOARD_ID');
 assertEnvVarExists('MONDAY_ADOPTER_DATA_WAITING_GROUP_ID');
 
-const createAdopterApplication = async (
-  profile: Profile,
-  application: AdopterApplication,
-) => {
-  if (!CONFIG.enableMondayMutations) return;
+const exportApplication = async (appId: string) => {
+  if (!CONFIG.enableMondayMutations)
+    return { success: false, error: 'Forbidden action.' };
 
   // WARNING: this will throw an error if the environment variable
   // is not set correctly. If there is an error during deployment,
@@ -26,21 +23,46 @@ const createAdopterApplication = async (
   const boardId = getEnvVar('MONDAY_ADOPTER_DATA_BOARD_ID');
   const groupId = getEnvVar('MONDAY_ADOPTER_DATA_WAITING_GROUP_ID');
 
-  // fetch email from cookies
   const supabase = await getSupabaseServerClient();
+
+  // get logged in user
   const {
     data: { user },
+    error: getUserError,
   } = await supabase.auth.getUser();
+  if (getUserError || !user) {
+    Logger.error(
+      `Error trying to get user when exporting Monday application ${appId}.`,
+    );
+    return { success: false, error: 'Failed to identify user.' };
+  }
 
-  if (!user) return { success: false, error: 'Invalid credentials.' };
+  // fetch app data from database
+  const { data: appDataList, error: rpcFuncError } = await supabase.rpc(
+    'get_user_and_application',
+    { app_id: appId },
+  );
 
-  const email = user.email;
+  // unexpected error
+  if (rpcFuncError) {
+    Logger.error(
+      `Error trying to invoke get_user_and_application(${appId}): ${rpcFuncError.message}`,
+    );
+    return { success: false };
+  }
 
-  // TODO: fetch application instead of receiving it
-  // as a function parameter.
+  // app not found
+  if (appDataList.length === 0) {
+    Logger.warn(`Could not find application with ID ${appId}`);
+    return { success: false, error: 'Could not find application.' };
+  }
 
-  // TODO: check against database to prevent duplicated
-  // calls to push to Monday.com database.
+  const appData = appDataList[0];
+
+  // cross-check logged in user email with app id
+  if (user.id != appData.user_id) {
+    return { success: false, error: 'User ID mismatch.' };
+  }
 
   // maps human-readable column names
   // to the column IDs on Monday.com
@@ -63,23 +85,23 @@ const createAdopterApplication = async (
   // for the adopter profile row (i.e. main item)
   const currentTime = new Date();
   const currentDateISOString = currentTime.toISOString().split('T')[0]; // ex: 2026-02-22
-  const capitalizedPronouns = profile.pronouns
+  const capitalizedPronouns = appData.pronouns
     .split('/')
     .map(p => capitalize(p))
     .join(' / ');
 
   const mainColumnValues: Partial<Record<keyof typeof columnMap, unknown>> = {
-    email: { email, text: email },
+    email: { email: user.email, text: user.email },
     added_time: currentDateISOString,
     current_status: 'Pending',
-    date_of_birth: profile.date_of_birth,
-    first_name: profile.first_name,
-    last_name: profile.last_name,
-    location: { lat: 0, lng: 0, address: profile.state },
+    date_of_birth: appData.date_of_birth,
+    first_name: appData.first_name,
+    last_name: appData.last_name,
+    location: { lat: 0, lng: 0, address: appData.state },
     pronouns: capitalizedPronouns,
-    veteran_status: profile.veteran_status ? 'Yes' : 'No',
-    gender_preference: application.gender_pref,
-    notes: application.personal_bio,
+    veteran_status: appData.veteran_status ? 'Yes' : 'No',
+    gender_preference: appData.gender_pref,
+    notes: appData.personal_bio,
   };
 
   // translate key in mainColumnValues
@@ -101,7 +123,7 @@ const createAdopterApplication = async (
       create_item(
         board_id: "${boardId}",
         group_id: "${groupId}",
-        item_name: "${email}",
+        item_name: "${user.email}",
         create_labels_if_missing: true,
         column_values: "${JSON.stringify(processedMainColumnValues).replaceAll('"', '\\"')}"
       ) { id }
@@ -110,15 +132,36 @@ const createAdopterApplication = async (
 
   // execute queries
   try {
-    // extract item ID after query success
+    // create monday item
     const response = await mondayApiClient.request(mainItemQuery);
     if (!response) throw new Error('No response received');
 
+    // extract item ID after query success
     const createItemField = (response as Record<string, unknown>).create_item;
     if (!createItemField) throw new Error('Response has no create_item field');
 
     const itemId = (createItemField as Record<string, string>).id;
     if (!itemId) throw new Error('Response has no item id');
+
+    // mark as exported on supabase
+    let attempts = 3;
+
+    // max 3 attempts to mark to supabase before giving up
+    while (attempts > 0) {
+      const { error: updateError } = await supabase
+        .from('adopter_applications_dummy')
+        .update({ exported_to_monday: true })
+        .eq('app_uuid', appId);
+
+      if (updateError) {
+        attempts--;
+        Logger.error(
+          `Error marking application ${appId} as already exported to Monday. Attempt ${3 - attempts}/3`,
+        );
+      } else {
+        break;
+      }
+    }
 
     return { success: true, id: itemId };
   } catch (error) {
@@ -128,4 +171,4 @@ const createAdopterApplication = async (
   }
 };
 
-export default createAdopterApplication;
+export default exportApplication;

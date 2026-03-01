@@ -148,6 +148,7 @@ export type Database = {
           app_uuid: string
           gender_pref: string | null
           offense_pref: string[] | null
+          age_pref: string | null
           personal_bio: string | null
           ranked_cards: Json | null
           return_explanation: string | null

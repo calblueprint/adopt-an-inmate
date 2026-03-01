@@ -154,7 +154,6 @@ export type Database = {
           gender_pref: string | null
           monday_id: string | null
           offense_pref: string[] | null
-          age_pref: string | null
           personal_bio: string | null
           ranked_cards: string[] | null
           return_explanation: string | null

@@ -27,10 +27,31 @@ export default function MainQuestionAge() {
   });
 
   const onSubmit = async ({ age }: AgeForm) => {
-    setAppState(prev => ({ ...prev, form: { ...prev.form, age } }));
-    upsertAppInfo({ age_pref: age }); //new upsert helper
+    // Parse "20-40" or "20 40" or "20, 40" into [20, 40]
+    const parts = age.split(/[-,\s]+/).map(s => parseInt(s.trim(), 10));
+
+    if (parts.length !== 2 || parts.some(isNaN)) {
+      // handle invalid input - ideally surface this via react-hook-form validate
+      return;
+    }
+
+    const agePref: [number, number] = [parts[0], parts[1]];
+
+    // setAppState(prev => ({ ...prev, form: { ...prev.form, agePreference: agePref } }));
+    // setAppState(prev => ({ ...prev, form: { ...prev.form, agePreference: agePref } }));
+    setAppState(prev => ({
+      ...prev,
+      form: { ...prev.form, agePreference: agePref.join(',') },
+    }));
+
+    upsertAppInfo({ age_pref: agePref });
     nextQuestion();
   };
+
+  //   setAppState(prev => ({ ...prev, form: { ...prev.form, age } }));
+  //   upsertAppInfo({ age_pref: age }); //new upsert helper
+  //   nextQuestion();
+  // };
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>

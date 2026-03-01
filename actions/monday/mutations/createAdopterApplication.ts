@@ -1,16 +1,25 @@
 'use server';
 
 import Logger from '@/actions/logging';
+import { CONFIG } from '@/config';
 import { capitalize } from '@/lib/formatters';
 import { getSupabaseServerClient } from '@/lib/supabase';
-import { getEnvVar } from '@/lib/utils';
+import { assertEnvVarExists, getEnvVar } from '@/lib/utils';
 import { AdopterApplication, Profile } from '@/types/schema';
 import { mondayApiClient } from '../core';
+
+// assert env var exists at system level to trigger
+// error messages at build time (rather than run time)
+// => alert us to setup these env vars before the function needs them
+assertEnvVarExists('MONDAY_ADOPTER_DATA_BOARD_ID');
+assertEnvVarExists('MONDAY_ADOPTER_DATA_WAITING_GROUP_ID');
 
 const createAdopterApplication = async (
   profile: Profile,
   application: AdopterApplication,
 ) => {
+  if (!CONFIG.enableMondayMutations) return;
+
   // WARNING: this will throw an error if the environment variable
   // is not set correctly. If there is an error during deployment,
   // ensure these variables are defined in the server environment settings

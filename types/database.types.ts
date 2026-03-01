@@ -145,10 +145,11 @@ export type Database = {
       adopter_applications_dummy: {
         Row: {
           adopter_uuid: string
+          age_pref: number[] | null
           app_uuid: string
+          exported_to_monday: boolean
           gender_pref: string | null
           offense_pref: string[] | null
-          age_pref: string | null
           personal_bio: string | null
           ranked_cards: Json | null
           return_explanation: string | null
@@ -157,7 +158,9 @@ export type Database = {
         }
         Insert: {
           adopter_uuid: string
+          age_pref?: number[] | null
           app_uuid?: string
+          exported_to_monday?: boolean
           gender_pref?: string | null
           offense_pref?: string[] | null
           personal_bio?: string | null
@@ -168,7 +171,9 @@ export type Database = {
         }
         Update: {
           adopter_uuid?: string
+          age_pref?: number[] | null
           app_uuid?: string
+          exported_to_monday?: boolean
           gender_pref?: string | null
           offense_pref?: string[] | null
           personal_bio?: string | null
@@ -258,6 +263,21 @@ export type Database = {
           offense: string
           similarity: number
           state: string
+          veteran_status: string
+        }[]
+      }
+      get_user_and_application: {
+        Args: { app_id: string }
+        Returns: {
+          date_of_birth: string
+          exported_to_monday: boolean
+          first_name: string
+          gender_pref: string
+          last_name: string
+          personal_bio: string
+          pronouns: string
+          state: string
+          user_id: string
           veteran_status: string
         }[]
       }

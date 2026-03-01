@@ -19,7 +19,7 @@ export default function LogoutButton() {
 
   const getDisplayName = () => {
     if (!profileReady || !profileData) {
-      return '';
+      return 'Loading...';
     }
 
     const firstName = profileData.first_name?.trim();

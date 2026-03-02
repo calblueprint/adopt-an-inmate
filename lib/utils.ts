@@ -1,7 +1,8 @@
-import clsx, { ClassValue } from 'clsx';
+import type { AdopterApplication } from '@/types/schema';
+import type { ClassValue } from 'clsx';
+import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { stateNameAbbv } from '@/data/states';
-import { AdopterApplication } from '@/types/schema';
 
 /**
  * Random number generator built on top of Math.random().
@@ -135,8 +136,7 @@ export function getResumeStageAndQuestion(app: AdopterApplication): {
   // Check MAIN stage question columns
   const hasBio = app.personal_bio != null && app.personal_bio.trim() !== '';
   const hasGender = app.gender_pref != null && app.gender_pref.trim() !== '';
-  const hasOffense =
-    app.offense_pref != null && app.offense_pref.length > 0;
+  const hasOffense = app.offense_pref != null && app.offense_pref.length > 0;
   const hasReason =
     app.return_explanation != null && app.return_explanation.trim() !== '';
 

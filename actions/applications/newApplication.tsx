@@ -4,9 +4,11 @@ import { getSupabaseServerClient } from '@/lib/supabase';
 import { getResumeStageAndQuestion } from '@/lib/utils';
 import Logger from '../logging';
 
-export type NewApplicationResult =
-  | { app_uuid: string; stage: number; question: number }
-  | null;
+export type NewApplicationResult = {
+  app_uuid: string;
+  stage: number;
+  question: number;
+} | null;
 
 export const getNewApplicationId = async (): Promise<{
   data: NewApplicationResult;

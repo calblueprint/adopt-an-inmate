@@ -1,7 +1,7 @@
 'use client';
 
+import type { AdopterApplication } from '@/types/schema';
 import { useRouter } from 'next/navigation';
-import { AdopterApplication } from '@/types/schema';
 import { getResumeStageAndQuestion } from '@/lib/utils';
 
 export default function ApplicationCardButton({

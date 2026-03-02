@@ -1,9 +1,17 @@
 'use server';
 
 import { getSupabaseServerClient } from '@/lib/supabase';
+import { getResumeStageAndQuestion } from '@/lib/utils';
 import Logger from '../logging';
 
-export const getNewApplicationId = async () => {
+export type NewApplicationResult =
+  | { app_uuid: string; stage: number; question: number }
+  | null;
+
+export const getNewApplicationId = async (): Promise<{
+  data: NewApplicationResult;
+  error: string | null;
+}> => {
   const supabase = await getSupabaseServerClient();
 
   // get user auth
@@ -38,10 +46,18 @@ export const getNewApplicationId = async () => {
     return { data: null, error: 'Error fetching applications' };
   }
 
-  // navigate to incomplete app if one exists
+  // navigate to incomplete app if one exists - route to correct stage/question
   if (existingIncompletes && existingIncompletes.length > 0) {
     const existingApp = existingIncompletes[0];
-    return { data: existingApp.app_uuid, error: null };
+    const { stage, question } = getResumeStageAndQuestion(existingApp);
+    return {
+      data: {
+        app_uuid: existingApp.app_uuid,
+        stage,
+        question,
+      },
+      error: null,
+    };
   }
 
   // create app with user id
@@ -64,6 +80,13 @@ export const getNewApplicationId = async () => {
     return { data: null, error: 'An error occurred while trying to insert' };
   }
 
-  // successful; redirect
-  return { data: insertedRow.app_uuid, error: null };
+  // successful; new app starts at PRE stage, q 0
+  return {
+    data: {
+      app_uuid: insertedRow.app_uuid,
+      stage: 0,
+      question: 0,
+    },
+    error: null,
+  };
 };

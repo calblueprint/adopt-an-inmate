@@ -107,3 +107,46 @@ export const calculateAge = (dob: Date | string): number => {
 export const appIsActive = (app: AdopterApplication) => {
   return !(app.status === 'rejected' || app.status === 'ended');
 };
+
+/**
+ * Get the stage and question to resume/view an application.
+ * For incomplete: route to correct stage/question based on filled columns.
+ * For pending/accepted/rejected/ended: route to SUBMITTED stage (show info).
+ * - ranked_cards not null (incomplete) -> MATCHING stage (2), q=0
+ * - ranked_cards null: check main question columns for MAIN stage question
+ *   - personal_bio -> q0, gender_pref -> q1, offense_pref -> q2, return_explanation -> q3
+ *   - all main cols filled -> q4 (review)
+ * - No main cols filled -> PRE stage (0), q=0
+ */
+export function getResumeStageAndQuestion(app: AdopterApplication): {
+  stage: number;
+  question: number;
+} {
+  // Non-incomplete: show submitted/info view
+  if (app.status !== 'incomplete') {
+    return { stage: 3, question: 0 }; // SUBMITTED
+  }
+
+  // ranked_cards not null -> MATCHING stage (2)
+  if (app.ranked_cards != null) {
+    return { stage: 2, question: 0 };
+  }
+
+  // Check MAIN stage question columns
+  const hasBio = app.personal_bio != null && app.personal_bio.trim() !== '';
+  const hasGender = app.gender_pref != null && app.gender_pref.trim() !== '';
+  const hasOffense =
+    app.offense_pref != null && app.offense_pref.length > 0;
+  const hasReason =
+    app.return_explanation != null && app.return_explanation.trim() !== '';
+
+  if (hasBio) {
+    if (!hasGender) return { stage: 1, question: 1 };
+    if (!hasOffense) return { stage: 1, question: 2 };
+    if (!hasReason) return { stage: 1, question: 3 };
+    return { stage: 1, question: 4 }; // review
+  }
+
+  // PRE stage - no main cols filled
+  return { stage: 0, question: 0 };
+}

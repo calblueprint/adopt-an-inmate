@@ -22,11 +22,15 @@ export const useQuestionsContext = () => {
 export function QuestionsContextProvider({
   children,
   questions,
+  initialQuestionsCompleted,
 }: {
   children: React.ReactNode;
   questions: React.ReactNode[];
+  initialQuestionsCompleted?: number;
 }) {
-  const [questionsCompleted, setQuestionsCompleted] = useState<number>(0);
+  const [questionsCompleted, setQuestionsCompleted] = useState<number>(
+    initialQuestionsCompleted ?? 0,
+  );
 
   return (
     <QuestionsContext.Provider

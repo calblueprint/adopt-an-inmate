@@ -19,8 +19,8 @@ export default function NewApplicationButton() {
       return;
     }
 
-    // successful; redirect
-    router.push(`/app/${data}`);
+    // successful; redirect to app at correct stage/question
+    router.push(`/app/${data.app_uuid}?stage=${data.stage}&q=${data.question}`);
   };
 
   return (

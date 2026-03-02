@@ -34,7 +34,7 @@ export const findMatches = async (appId: string) => {
 
   // return existing data
   if (appData.ranked_cards) {
-    const matches = appData.ranked_cards as RankedAdopteeMatch[];
+    const matches = appData.ranked_cards as string[];
     return { data: matches, error: null };
   }
 
@@ -76,19 +76,20 @@ export const findMatches = async (appId: string) => {
     userProfile.state,
   );
 
-  const rankedMatches: RankedAdopteeMatch[] = matches.map(m => ({
-    id: m.id,
-    age: m.age,
-    bio: m.bio,
-    first_name: m.first_name,
-    gender: m.gender,
-    state: m.state,
-  }));
+  // const rankedMatches: RankedAdopteeMatch[] = matches.map(m => ({
+  //   id: m.id,
+  //   age: m.age,
+  //   bio: m.bio,
+  //   first_name: m.first_name,
+  //   gender: m.gender,
+  //   state: m.state,
+  // }));
+  const matchIds: string[] = matches.map(m => m.id);
 
   // update application
   const { error: updateError } = await supabase
     .from('adopter_applications_dummy')
-    .update({ ranked_cards: rankedMatches })
+    .update({ ranked_cards: matchIds })
     .eq('app_uuid', appId);
 
   if (updateError) {
@@ -96,5 +97,5 @@ export const findMatches = async (appId: string) => {
     return { data: null, error: 'An unexpected error occurred' };
   }
 
-  return { data: rankedMatches, error: null };
+  return { data: matchIds, error: null };
 };

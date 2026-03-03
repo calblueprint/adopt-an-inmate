@@ -63,6 +63,14 @@ export const sleep = async (ms: number) => {
 };
 
 /**
+ * Throw an error if the condition is false
+ * with an optionally provided error message.
+ */
+export const assert = (cond: boolean, msg?: string) => {
+  if (!cond) throw new Error(msg ?? 'Assertion failed');
+};
+
+/**
  * Asserts that an environment variable exists.
  */
 export const assertEnvVarExists = (key: string) => {

@@ -4,7 +4,7 @@ import Logger from '@/actions/logging';
 import { CONFIG } from '@/config';
 import { capitalize } from '@/lib/formatters';
 import { getSupabaseServerClient } from '@/lib/supabase';
-import { assertEnvVarExists, getEnvVar } from '@/lib/utils';
+import { assert, assertEnvVarExists, getEnvVar } from '@/lib/utils';
 import { mondayApiClient } from '../core';
 
 // assert env var exists at system level to trigger
@@ -12,6 +12,7 @@ import { mondayApiClient } from '../core';
 // => alert us to setup these env vars before the function needs them
 assertEnvVarExists('MONDAY_ADOPTER_DATA_BOARD_ID');
 assertEnvVarExists('MONDAY_ADOPTER_DATA_WAITING_GROUP_ID');
+assertEnvVarExists('MONDAY_WL_PIPS_BOARD_ID');
 
 const exportApplication = async (appId: string) => {
   if (!CONFIG.enableMondayMutations)
@@ -20,8 +21,9 @@ const exportApplication = async (appId: string) => {
   // WARNING: this will throw an error if the environment variable
   // is not set correctly. If there is an error during deployment,
   // ensure these variables are defined in the server environment settings
-  const boardId = getEnvVar('MONDAY_ADOPTER_DATA_BOARD_ID');
-  const groupId = getEnvVar('MONDAY_ADOPTER_DATA_WAITING_GROUP_ID');
+  const adopterBoardId = getEnvVar('MONDAY_ADOPTER_DATA_BOARD_ID');
+  const adopterGroupId = getEnvVar('MONDAY_ADOPTER_DATA_WAITING_GROUP_ID');
+  const adopteeBoardId = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
 
   const supabase = await getSupabaseServerClient();
 
@@ -59,9 +61,24 @@ const exportApplication = async (appId: string) => {
 
   const appData = appDataList[0];
 
+  // check the app hasn't already been exported
+  if (appData.exported_to_monday) {
+    return { success: false, error: 'Application already exported.' };
+  }
+
   // cross-check logged in user email with app id
   if (user.id != appData.user_id) {
     return { success: false, error: 'User ID mismatch.' };
+  }
+
+  // verify data integrity of ranked cards object
+  try {
+    assert(!!appData.ranked_cards);
+    assert(appData.ranked_cards instanceof Array);
+    const rankedCardsArray = appData.ranked_cards as Array<string>;
+    assert(rankedCardsArray.length === 4);
+  } catch {
+    return { success: false, error: 'Invalid ranked cards object.' };
   }
 
   // maps human-readable column names
@@ -87,7 +104,7 @@ const exportApplication = async (appId: string) => {
   const currentDateISOString = currentTime.toISOString().split('T')[0]; // ex: 2026-02-22
   const capitalizedPronouns = appData.pronouns
     .split('/')
-    .map(p => capitalize(p))
+    .map(p => capitalize(p.trim()))
     .join(' / ');
 
   const mainColumnValues: Partial<Record<keyof typeof columnMap, unknown>> = {
@@ -117,16 +134,32 @@ const exportApplication = async (appId: string) => {
 
   // calculations to build column values for the application(s)
 
+  const rankedCards = appData.ranked_cards as Array<string>;
+  const adopteeUpdatesQueries = rankedCards.map(
+    (id, idx) =>
+      `update${idx + 1}:change_simple_column_value(
+          board_id: "${adopteeBoardId}",
+          item_id: "${id}",
+          column_id: "status__1",
+          value: "OFC: Out For Consideration"
+        ) { id }`,
+  );
+
+  const adopteeUpdatesQuery = adopteeUpdatesQueries.join(',');
+
   // query to create new main item (i.e. adopter row)
   const mainItemQuery = `
     mutation {
       create_item(
-        board_id: "${boardId}",
-        group_id: "${groupId}",
+        board_id: "${adopterBoardId}",
+        group_id: "${adopterGroupId}",
         item_name: "${user.email}",
         create_labels_if_missing: true,
         column_values: "${JSON.stringify(processedMainColumnValues).replaceAll('"', '\\"')}"
-      ) { id }
+      ) {
+        id
+      },
+      ${adopteeUpdatesQuery}
     }
   `;
 

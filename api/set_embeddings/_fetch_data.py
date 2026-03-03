@@ -86,7 +86,8 @@ class MondayBoardFetcher:
           for col in item["column_values"]:
             column_data[col["id"]] = col["text"]
           item_data = {
-            "id": item["name"],
+            "id": item["id"],
+            "name": item["name"],
             "columns": column_data
           }
           adoptee_batch.append(item_data)
@@ -121,6 +122,7 @@ class MondayBoardFetcher:
       columns = item["columns"]
       record = {
         "id": record_id,
+        "inmate_id": item["name"],
         "first_name": get_col_val(columns, MONDAY_COLUMN_IDS["first_name"]),
         "last_name": get_col_val(columns, MONDAY_COLUMN_IDS["last_name"]),
         "bio": get_col_val(columns, MONDAY_COLUMN_IDS["bio"]),

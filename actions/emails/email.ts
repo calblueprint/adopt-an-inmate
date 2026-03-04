@@ -8,6 +8,7 @@ export async function autoEmailSender(
   const senderAddress = process.env.BREVO_SMTP_USER;
   const senderAppPassword = process.env.BREVO_SMTP_KEY;
   const senderName = process.env.EMAIL_SENDER_NAME ?? 'Adopt an Inmate Team';
+  const verifiedAddress = 'adopt@adoptaninmate.org';
 
   if (!senderAddress || !senderAppPassword) {
     throw new Error(
@@ -26,7 +27,7 @@ export async function autoEmailSender(
   });
 
   await transporter.sendMail({
-    from: `${senderName} <${senderAddress}>`,
+    from: `${senderName} <${verifiedAddress}>`,
     to: recipient,
     subject,
     text,

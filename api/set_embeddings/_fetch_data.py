@@ -50,7 +50,7 @@ class MondayBoardFetcher:
     return f"""query {{
       boards(ids: {self.BOARD_ID}) {{
         name
-        items_page (limit: 100, {query_params_str}{',' if query_params_str and cursor_str else ''}{cursor_str}) {{
+        items_page (limit: 500, {query_params_str}{',' if query_params_str and cursor_str else ''}{cursor_str}) {{
           cursor
           items {{
             id 
@@ -114,7 +114,7 @@ class MondayBoardFetcher:
     def get_col_val(columns_dict, col_id, default=""):
       val = columns_dict.get(col_id)
       return default if (val is None or val == "NA" or val == "") else val
-    
+
     # Organize data into a list of dictionary for upserting
     adoptee_data_dict = {}    # Use dict to avoid duplicates
     for item in full_bios:

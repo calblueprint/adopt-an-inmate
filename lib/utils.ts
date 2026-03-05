@@ -66,8 +66,8 @@ export const sleep = async (ms: number) => {
  * Throw an error if the condition is false
  * with an optionally provided error message.
  */
-export const assert = (cond: boolean, msg?: string) => {
-  if (!cond) throw new Error(msg ?? 'Assertion failed');
+export const assert = (cond: boolean, msg?: unknown) => {
+  if (!cond) throw msg;
 };
 
 /**

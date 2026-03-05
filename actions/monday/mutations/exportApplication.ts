@@ -5,6 +5,7 @@ import Logger from '@/actions/logging';
 import { CONFIG } from '@/config';
 import { capitalize } from '@/lib/formatters';
 import { getSupabaseServerClient } from '@/lib/supabase';
+import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
 import { assert, getEnvVar } from '@/lib/utils';
 import { ProfileAndApplication } from '@/types/schema';
 import { mondayApiClient } from '../core';
@@ -386,6 +387,19 @@ const exportApplication = async (appId: string) => {
     // the data reached the admins. If the push fails once,
     // chances are, it will fail again - the cause is likely permanent
     // and should be critical cause to investigate.
+  }
+
+  // mark adoptees as OFC
+  const supabaseService = await dangerous_getSupabaseServiceClient();
+  const { error: updateAdopteesError } = await supabaseService
+    .from('adoptee_vector_test')
+    .update({ status: 'OUT_FOR_CONSIDERATION' })
+    .in('id', appData.ranked_cards as Array<string>);
+
+  if (updateAdopteesError) {
+    Logger.error(
+      `[CRITICAL] Error trying to update adoptees for ${appId}: ${updateAdopteesError}`,
+    );
   }
 
   return { success: true };

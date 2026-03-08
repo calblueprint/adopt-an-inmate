@@ -9,6 +9,7 @@ export async function GET() {
     state: 'California',
     user_id: 'asd',
     veteran_status: false,
+    monday_id: null,
   });
 
   if (success) return new Response('Row inserted successfully.');

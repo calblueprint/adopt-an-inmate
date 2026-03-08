@@ -99,7 +99,6 @@ export type Database = {
       }
       adoptee_vector_test: {
         Row: {
-          adopted: boolean | null
           bio: string | null
           dob: string | null
           embedding: string | null
@@ -107,13 +106,14 @@ export type Database = {
           first_name: string | null
           gender: string | null
           id: string
+          inmate_id: string
           last_name: string | null
           offense: string | null
           state: string | null
+          status: Database["public"]["Enums"]["adoptee_status"]
           veteran_status: string | null
         }
         Insert: {
-          adopted?: boolean | null
           bio?: string | null
           dob?: string | null
           embedding?: string | null
@@ -121,13 +121,14 @@ export type Database = {
           first_name?: string | null
           gender?: string | null
           id: string
+          inmate_id: string
           last_name?: string | null
           offense?: string | null
           state?: string | null
+          status?: Database["public"]["Enums"]["adoptee_status"]
           veteran_status?: string | null
         }
         Update: {
-          adopted?: boolean | null
           bio?: string | null
           dob?: string | null
           embedding?: string | null
@@ -135,9 +136,11 @@ export type Database = {
           first_name?: string | null
           gender?: string | null
           id?: string
+          inmate_id?: string
           last_name?: string | null
           offense?: string | null
           state?: string | null
+          status?: Database["public"]["Enums"]["adoptee_status"]
           veteran_status?: string | null
         }
         Relationships: []
@@ -145,8 +148,11 @@ export type Database = {
       adopter_applications_dummy: {
         Row: {
           adopter_uuid: string
+          age_pref: number[] | null
           app_uuid: string
+          exported_to_monday: boolean
           gender_pref: string | null
+          monday_id: string | null
           offense_pref: string[] | null
           personal_bio: string | null
           ranked_cards: Json | null
@@ -156,8 +162,11 @@ export type Database = {
         }
         Insert: {
           adopter_uuid: string
+          age_pref?: number[] | null
           app_uuid?: string
+          exported_to_monday?: boolean
           gender_pref?: string | null
+          monday_id?: string | null
           offense_pref?: string[] | null
           personal_bio?: string | null
           ranked_cards?: Json | null
@@ -167,8 +176,11 @@ export type Database = {
         }
         Update: {
           adopter_uuid?: string
+          age_pref?: number[] | null
           app_uuid?: string
+          exported_to_monday?: boolean
           gender_pref?: string | null
+          monday_id?: string | null
           offense_pref?: string[] | null
           personal_bio?: string | null
           ranked_cards?: Json | null
@@ -186,11 +198,33 @@ export type Database = {
           },
         ]
       }
+      adopter_monday_ids: {
+        Row: {
+          adopter_email: string
+          date_added: string
+          group: string
+          monday_id: string
+        }
+        Insert: {
+          adopter_email: string
+          date_added: string
+          group: string
+          monday_id: string
+        }
+        Update: {
+          adopter_email?: string
+          date_added?: string
+          group?: string
+          monday_id?: string
+        }
+        Relationships: []
+      }
       adopter_profiles: {
         Row: {
           date_of_birth: string
           first_name: string
           last_name: string
+          monday_id: string | null
           pronouns: string
           state: string
           user_id: string
@@ -200,6 +234,7 @@ export type Database = {
           date_of_birth: string
           first_name: string
           last_name: string
+          monday_id?: string | null
           pronouns: string
           state: string
           user_id?: string
@@ -209,6 +244,7 @@ export type Database = {
           date_of_birth?: string
           first_name?: string
           last_name?: string
+          monday_id?: string | null
           pronouns?: string
           state?: string
           user_id?: string
@@ -249,7 +285,6 @@ export type Database = {
           age: number
           bio: string
           embedding: string
-          facility: string
           first_name: string
           gender: string
           id: string
@@ -260,9 +295,27 @@ export type Database = {
           veteran_status: string
         }[]
       }
+      get_user_and_application: {
+        Args: { app_id: string }
+        Returns: {
+          adopter_monday_id: string
+          date_of_birth: string
+          exported_to_monday: boolean
+          first_name: string
+          gender_pref: string
+          last_name: string
+          personal_bio: string
+          pronouns: string
+          ranked_cards: Json
+          state: string
+          user_id: string
+          veteran_status: string
+        }[]
+      }
       transfer_tables: { Args: never; Returns: undefined }
     }
     Enums: {
+      adoptee_status: "WAIT_LISTED" | "OUT_FOR_CONSIDERATION"
       status_vals: "incomplete" | "pending" | "accepted" | "rejected" | "ended"
     }
     CompositeTypes: {
@@ -391,6 +444,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      adoptee_status: ["WAIT_LISTED", "OUT_FOR_CONSIDERATION"],
       status_vals: ["incomplete", "pending", "accepted", "rejected", "ended"],
     },
   },

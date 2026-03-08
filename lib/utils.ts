@@ -141,6 +141,7 @@ export function getResumeStageAndQuestion(app: AdopterApplication): {
     app.return_explanation != null && app.return_explanation.trim() !== '';
 
   if (hasBio) {
+    //TODO: update routing & other logic to remove offense, reason + add age
     if (!hasGender) return { stage: 1, question: 1 };
     if (!hasOffense) return { stage: 1, question: 2 };
     if (!hasReason) return { stage: 1, question: 3 };

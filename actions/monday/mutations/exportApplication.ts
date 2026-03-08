@@ -344,7 +344,9 @@ const exportApplication = async (appId: string) => {
     }
   }
 
-  // execute remaining supplementary queries
+  // execute remaining supplementary queries to:
+  // - create subitem, which corresponds with application
+  // - update adoptee status on Monday to OFC
   const createSubitemQuery = getQueryCreateSubItem(
     appData,
     mainItemId,
@@ -389,7 +391,7 @@ const exportApplication = async (appId: string) => {
     // and should be critical cause to investigate.
   }
 
-  // mark adoptees as OFC
+  // mark adoptees as OFC on Supabase
   const supabaseService = await dangerous_getSupabaseServiceClient();
   const { error: updateAdopteesError } = await supabaseService
     .from('adoptee_vector_test')

@@ -1,17 +1,10 @@
-import { createRow } from '@/actions/monday/mutation';
+import exportApplication from '@/actions/monday/mutations/exportApplication';
 
 export async function GET() {
-  const { success, error } = await createRow({
-    date_of_birth: new Date().toISOString().split('T')[0],
-    first_name: 'First',
-    last_name: 'Last',
-    pronouns: 'he/him',
-    state: 'California',
-    user_id: 'asd',
-    veteran_status: false,
-    monday_id: null,
-  });
+  const { success, error } = await exportApplication(
+    '0c2650b0-f188-4253-8182-735f9eeb35cf',
+  );
 
-  if (success) return new Response('Row inserted successfully.');
+  if (success) return new Response('Success.');
   return new Response(`${new String(error)}`);
 }

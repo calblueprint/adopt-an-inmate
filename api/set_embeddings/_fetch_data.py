@@ -50,7 +50,7 @@ class MondayBoardFetcher:
     return f"""query {{
       boards(ids: {self.BOARD_ID}) {{
         name
-        items_page (limit: 100, {query_params_str}{',' if query_params_str and cursor_str else ''}{cursor_str}) {{
+        items_page (limit: 500, {query_params_str}{',' if query_params_str and cursor_str else ''}{cursor_str}) {{
           cursor
           items {{
             id 
@@ -86,7 +86,8 @@ class MondayBoardFetcher:
           for col in item["column_values"]:
             column_data[col["id"]] = col["text"]
           item_data = {
-            "id": item["name"],
+            "id": item["id"],
+            "name": item["name"],
             "columns": column_data
           }
           adoptee_batch.append(item_data)
@@ -113,7 +114,7 @@ class MondayBoardFetcher:
     def get_col_val(columns_dict, col_id, default=""):
       val = columns_dict.get(col_id)
       return default if (val is None or val == "NA" or val == "") else val
-    
+
     # Organize data into a list of dictionary for upserting
     adoptee_data_dict = {}    # Use dict to avoid duplicates
     for item in full_bios:
@@ -121,6 +122,7 @@ class MondayBoardFetcher:
       columns = item["columns"]
       record = {
         "id": record_id,
+        "inmate_id": item["name"],
         "first_name": get_col_val(columns, MONDAY_COLUMN_IDS["first_name"]),
         "last_name": get_col_val(columns, MONDAY_COLUMN_IDS["last_name"]),
         "bio": get_col_val(columns, MONDAY_COLUMN_IDS["bio"]),

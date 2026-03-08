@@ -281,7 +281,6 @@ export type Database = {
           query_embedding: string
         }
         Returns: {
-          adopted: boolean
           age: number
           bio: string
           embedding: string

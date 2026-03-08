@@ -1,35 +1,37 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Logger from '@/actions/logging';
-import { fetchAdopteeCardsInfo } from '@/actions/queries/query';
 import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { RankedAdopteeMatch } from '@/types/schema';
 import MatchingCard from './MatchingCard';
 
 interface MatchingSelectScreenProps {
+  matchCards: RankedAdopteeMatch[];
   onTransitionToReview: (rankedIds: string[]) => void;
 }
 
 export default function MatchingSelectScreen({
+  matchCards,
   onTransitionToReview,
 }: MatchingSelectScreenProps) {
   const { appState } = useApplicationContext();
   const [rankedIds, setRankedIds] = useState<string[]>([]);
-  const [matchCards, setMatchCards] = useState<RankedAdopteeMatch[]>([]);
 
-  useEffect(() => {
-    if (!appState.matches) return;
-    fetchAdopteeCardsInfo(appState.matches).then(setMatchCards);
-  }, [appState.matches]);
-
+  /**
+   * Toggles the rank of an adoptee.
+   * If ranked, removes it from rankedIds.
+   * If unranked, adds it to the end of rankedIds.
+   */
   const handleRankToggle = (id: string) => {
     setRankedIds(prevIds => {
       const index = prevIds.indexOf(id);
       if (index > -1) {
+        // unrank: filter out the id to remove it
         return prevIds.filter(rankedId => rankedId !== id);
       } else {
+        // rank: add id
         return [...prevIds, id];
       }
     });
@@ -42,10 +44,11 @@ export default function MatchingSelectScreen({
       );
       return;
     }
+
     onTransitionToReview(rankedIds);
   };
 
-  const isNextDisabled = rankedIds.length != 4;
+  const isNextDisabled = rankedIds.length != 4; // disable next if not all 4 ranked
 
   return (
     <div className="flex w-full flex-col gap-12 pt-8">
@@ -59,6 +62,7 @@ export default function MatchingSelectScreen({
       <div className="flex flex-col gap-4">
         <div className="flex w-full gap-8 px-12">
           {matchCards.map(m => {
+            // calculate current rank based on array index
             const rankIndex = rankedIds.indexOf(m.id);
             const currentRank = rankIndex > -1 ? rankIndex + 1 : undefined;
             return (

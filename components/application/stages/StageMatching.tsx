@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { findMatches } from '@/actions/matching';
+import { fetchAdopteeCardsInfo } from '@/actions/queries/query';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { RankedAdopteeMatch } from '@/types/schema';
 import MatchingLoading from '../matching/MatchingLoading';
 import MatchingReviewScreen from '../matching/MatchingReviewScreen';
 import MatchingSelectScreen from '../matching/MatchingSelectScreen';
@@ -13,6 +15,7 @@ export default function StageMatching() {
   const [subStage, setSubStage] = useState<'select' | 'review'>('select');
   const [rankedIds, setRankedIds] = useState<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [matchCards, setMatchCards] = useState<RankedAdopteeMatch[]>([]);
   const loadStarted = useRef(false);
 
   useEffect(() => {
@@ -34,15 +37,21 @@ export default function StageMatching() {
 
       // check if app already has matches
       if (appState.matches) {
+        // fetch full card info from existing IDs
+        const cards = await fetchAdopteeCardsInfo(appState.matches);
+        setMatchCards(cards);
         setIsLoaded(true);
         return;
       }
 
       // get existing match or find matches if none exist
-      const { data: matches, error } = await findMatches(appState.appId);
+      const { data: matchIds, error } = await findMatches(appState.appId);
       if (error) throw new Error(error);
 
-      setAppState(prev => ({ ...prev, matches }));
+      // fetch full card info and store IDs in appState
+      const cards = await fetchAdopteeCardsInfo(matchIds!);
+      setMatchCards(cards);
+      setAppState(prev => ({ ...prev, matches: matchIds }));
       setIsLoaded(true);
     };
 
@@ -69,11 +78,18 @@ export default function StageMatching() {
   if (isLoaded) {
     if (subStage === 'select') {
       return (
-        <MatchingSelectScreen onTransitionToReview={handleTransitionToReview} />
+        <MatchingSelectScreen
+          matchCards={matchCards}
+          onTransitionToReview={handleTransitionToReview}
+        />
       );
     } else if (subStage === 'review') {
       return (
-        <MatchingReviewScreen ranks={rankedIds} onBack={handleBackToSelect} />
+        <MatchingReviewScreen
+          matchCards={matchCards}
+          ranks={rankedIds}
+          onBack={handleBackToSelect}
+        />
       );
     }
   }

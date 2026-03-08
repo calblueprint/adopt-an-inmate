@@ -1,7 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { fetchAdopteeCardsInfo } from '@/actions/queries/query';
+import { useState } from 'react';
 import { Button } from '@/components/Button';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
@@ -11,36 +10,36 @@ import { RankedAdopteeMatch } from '@/types/schema';
 import MatchingCard from './MatchingCard';
 
 interface MatchingReviewScreenProps {
+  matchCards: RankedAdopteeMatch[];
   ranks: string[];
   onBack: () => void;
 }
 
 export default function MatchingReviewScreen({
+  matchCards,
   ranks,
   onBack,
 }: MatchingReviewScreenProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [rankedMatches, setRankedMatches] = useState<RankedAdopteeMatch[]>([]);
-  const { appState } = useApplicationContext();
   const { advanceToStage, upsertAppInfo } = useApplicationNavigation();
-
-  useEffect(() => {
-    if (ranks.length === 0) return;
-    fetchAdopteeCardsInfo(ranks).then(setRankedMatches);
-  }, [ranks]);
 
   const nextStage = async () => {
     setIsLoading(true);
 
     upsertAppInfo({
       status: 'pending',
-      ranked_cards: rankedMatches,
+      ranked_cards: ranks, // upsert only IDs
       time_submitted: new Date().toISOString(),
-    });
+    }); //new upsert helper
 
     advanceToStage(ApplicationStage.SUBMITTED);
     setIsLoading(false);
   };
+
+  // derive ranked full card objects from ranks and matchCards
+  const rankedMatches: RankedAdopteeMatch[] = ranks
+    .map(rankedId => matchCards.find(m => m.id === rankedId))
+    .filter((match): match is RankedAdopteeMatch => !!match);
 
   return (
     <div className="flex w-full flex-col gap-12 pt-8">

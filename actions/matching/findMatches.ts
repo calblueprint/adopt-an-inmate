@@ -3,7 +3,6 @@
 import { InferenceClient } from '@huggingface/inference';
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { assertEnvVarExists } from '@/lib/utils';
-import { RankedAdopteeMatch } from '@/types/schema';
 import Logger from '../logging';
 import { fetchTopK } from '../queries/query';
 
@@ -76,14 +75,7 @@ export const findMatches = async (appId: string) => {
     userProfile.state,
   );
 
-  // const rankedMatches: RankedAdopteeMatch[] = matches.map(m => ({
-  //   id: m.id,
-  //   age: m.age,
-  //   bio: m.bio,
-  //   first_name: m.first_name,
-  //   gender: m.gender,
-  //   state: m.state,
-  // }));
+  if (!matches) return { data: null, error: 'An unexpected error occurred' };
   const matchIds: string[] = matches.map(m => m.id);
 
   // update application

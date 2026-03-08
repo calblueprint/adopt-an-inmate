@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/Button';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import { ApplicationStage } from '@/types/enums';
 import { RankedAdopteeMatch } from '@/types/schema';

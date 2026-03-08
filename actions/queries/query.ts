@@ -100,18 +100,17 @@ export async function fetchAdopteeCardsInfo(
     throw new Error(`Error fetching adoptee cards info: ${error.message}`);
   }
 
+  //calculates age from dob
   const calculateAge = (dob: string): number => {
     const birth = new Date(dob);
     const today = new Date();
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birth.getDate())
-    ) {
-      age--;
-    }
-    return age;
+    const birthdayThisYear = new Date(
+      today.getFullYear(),
+      birth.getMonth(),
+      birth.getDate(),
+    );
+    const age = today.getFullYear() - birth.getFullYear();
+    return today < birthdayThisYear ? age - 1 : age;
   };
 
   // preserve the original ranking order

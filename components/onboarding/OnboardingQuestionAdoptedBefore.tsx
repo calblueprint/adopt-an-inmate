@@ -135,19 +135,29 @@ export default function OnboardingQuestionAdoptedBefore() {
               <button
                 type="button"
                 onClick={() => setWhyOpen(prev => !prev)}
-                className={`flex w-full items-center justify-between rounded-lg border px-3 py-2 text-sm transition-colors ${
-                  why
-                    ? 'border-red-12 text-gray-12'
-                    : 'border-gray-7 text-gray-10'
-                }`}
+                className="flex w-full items-center justify-between rounded-lg border border-red-12 px-3 py-2 text-sm transition-colors"
               >
-                {why
-                  ? WHY_OPTIONS.find(o => o.value === why)?.label
-                  : 'Select Reason...'}
-                <span className="text-gray-10">{whyOpen ? '▲' : '▼'}</span>
+                <span className={why ? 'text-gray-12' : 'text-gray-10'}>
+                  {why
+                    ? WHY_OPTIONS.find(o => o.value === why)?.label
+                    : 'Select Reason...'}
+                </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="7"
+                  viewBox="0 0 16 7"
+                  fill="none"
+                  className={`transition-transform ${whyOpen ? 'rotate-180' : ''}`}
+                >
+                  <path
+                    d="M8 6.50023C7.93442 6.50103 7.86941 6.4881 7.80913 6.46227C7.74885 6.43643 7.69465 6.39827 7.65 6.35023L3.15 1.85023C2.95 1.65023 2.95 1.34023 3.15 1.14023C3.35 0.940234 3.66 0.940234 3.86 1.14023L8.01 5.29023L12.15 1.15023C12.35 0.950234 12.66 0.950234 12.86 1.15023C13.06 1.35023 13.06 1.66023 12.86 1.86023L8.36 6.36023C8.26 6.46023 8.13 6.51023 8.01 6.51023L8 6.50023Z"
+                    fill="#81838D"
+                  />
+                </svg>
               </button>
               {whyOpen && (
-                <div className="absolute z-10 mt-1 w-full rounded-lg border border-gray-7 bg-white shadow-md">
+                <div className="absolute z-10 mt-1 w-full rounded-lg border border-red-12 bg-white shadow-md">
                   {WHY_OPTIONS.map(option => (
                     <button
                       key={option.value}

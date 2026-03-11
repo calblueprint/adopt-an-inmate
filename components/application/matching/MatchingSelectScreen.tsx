@@ -4,13 +4,16 @@ import { useState } from 'react';
 import Logger from '@/actions/logging';
 import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import { RankedAdopteeMatch } from '@/types/schema';
 import MatchingCard from './MatchingCard';
 
 interface MatchingSelectScreenProps {
+  matchCards: RankedAdopteeMatch[];
   onTransitionToReview: (rankedIds: string[]) => void;
 }
 
 export default function MatchingSelectScreen({
+  matchCards,
   onTransitionToReview,
 }: MatchingSelectScreenProps) {
   const { appState } = useApplicationContext();
@@ -58,7 +61,7 @@ export default function MatchingSelectScreen({
 
       <div className="flex flex-col gap-4">
         <div className="flex w-full gap-8 px-12">
-          {appState.matches?.map(m => {
+          {matchCards.map(m => {
             // calculate current rank based on array index
             const rankIndex = rankedIds.indexOf(m.id);
             const currentRank = rankIndex > -1 ? rankIndex + 1 : undefined;

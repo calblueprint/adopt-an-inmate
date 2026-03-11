@@ -2,7 +2,11 @@
 
 import { autoEmailSender } from '@/actions/emails/email';
 import { getSupabaseServerClient } from '@/lib/supabase';
-import { AdopteeMatch, AdopterApplicationUpdate } from '@/types/schema';
+import {
+  AdopteeMatch,
+  AdopterApplicationUpdate,
+  RankedAdopteeMatch,
+} from '@/types/schema';
 
 /* Fetch top k (by simliaity) adoptee rows with hierarchical filtering:
  * Start with all filters applied. If no results, progressively drop filters
@@ -82,6 +86,51 @@ export async function upsertApplication(
 
   return data;
 }
+
+export async function fetchAdopteeCardsInfo(
+  ids: string[],
+): Promise<RankedAdopteeMatch[]> {
+  const supabase = await getSupabaseServerClient();
+
+  const { data, error } = await supabase
+    .from('adoptee_vector_test')
+    .select('id, dob, bio, first_name, gender, state')
+    .in('id', ids);
+
+  if (error) {
+    throw new Error(`Error fetching adoptee cards info: ${error.message}`);
+  }
+
+  //calculates age from dob
+  const calculateAge = (dob: string): number => {
+    const birth = new Date(dob);
+    const today = new Date();
+    const birthdayThisYear = new Date(
+      today.getFullYear(),
+      birth.getMonth(),
+      birth.getDate(),
+    );
+    const age = today.getFullYear() - birth.getFullYear();
+    return today < birthdayThisYear ? age - 1 : age;
+  };
+
+  // preserve the original ranking order
+  return ids
+    .map(id => {
+      const row = data.find(r => r.id === id);
+      if (!row) return undefined;
+      return {
+        id: row.id,
+        age: row.dob ? calculateAge(row.dob) : null,
+        bio: row.bio,
+        first_name: row.first_name,
+        gender: row.gender,
+        state: row.state,
+      } as RankedAdopteeMatch;
+    })
+    .filter((row): row is RankedAdopteeMatch => row !== undefined);
+}
+
 //this function is used to submit the application and send an email to the adopter
 export async function submitApplication(
   app: AdopterApplicationUpdate & {

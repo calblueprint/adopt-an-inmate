@@ -29,7 +29,7 @@ export default async function ApplicationDetailPage({
     .select()
     .eq('app_uuid', appId)
     .eq('adopter_uuid', user.id)
-    .eq('status', 'incomplete')
+    //.eq('status', 'incomplete')
     .maybeSingle();
 
   if (getAppError) {

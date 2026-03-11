@@ -3,23 +3,23 @@
 import { useState } from 'react';
 import { Button } from '@/components/Button';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import { ApplicationStage } from '@/types/enums';
 import { RankedAdopteeMatch } from '@/types/schema';
 import MatchingCard from './MatchingCard';
 
 interface MatchingReviewScreenProps {
+  matchCards: RankedAdopteeMatch[];
   ranks: string[];
   onBack: () => void;
 }
 
 export default function MatchingReviewScreen({
+  matchCards,
   ranks,
   onBack,
 }: MatchingReviewScreenProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { appState } = useApplicationContext();
   const { advanceToStage, upsertAppInfo } = useApplicationNavigation();
 
   const nextStage = async () => {
@@ -27,7 +27,7 @@ export default function MatchingReviewScreen({
 
     upsertAppInfo({
       status: 'pending',
-      ranked_cards: rankedMatches,
+      ranked_cards: ranks, // upsert only IDs
       time_submitted: new Date().toISOString(),
     }); //new upsert helper
 
@@ -35,10 +35,9 @@ export default function MatchingReviewScreen({
     setIsLoading(false);
   };
 
-  const allMatches = appState.matches || [];
-
+  // derive ranked full card objects from ranks and matchCards
   const rankedMatches: RankedAdopteeMatch[] = ranks
-    .map(rankedId => allMatches.find(m => m.id === rankedId))
+    .map(rankedId => matchCards.find(m => m.id === rankedId))
     .filter((match): match is RankedAdopteeMatch => !!match);
 
   return (

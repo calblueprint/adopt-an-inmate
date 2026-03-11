@@ -6,15 +6,19 @@ import Logo from '@/components/Logo';
 import { ApplicationContextProvider } from '@/contexts/ApplicationContext';
 import { getAuthenticatedUser } from '@/lib/auth/get_user';
 import { getSupabaseServerClient } from '@/lib/supabase';
+import { getResumeStageAndQuestion } from '@/lib/utils';
 import { ApplicationStage } from '@/types/enums';
 import { FormState } from '@/types/types';
 
 export default async function ApplicationDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ appId: string }>;
+  searchParams: Promise<{ stage?: string; q?: string }>;
 }) {
   const { appId } = await params;
+  const resolvedSearchParams = await searchParams;
 
   const supabase = await getSupabaseServerClient();
 
@@ -41,6 +45,13 @@ export default async function ApplicationDetailPage({
     );
     notFound();
   }
+
+  // Use stage from URL if present, otherwise compute from app data
+  const urlStage = resolvedSearchParams?.stage;
+  const defaultStage =
+    urlStage !== undefined && urlStage !== ''
+      ? parseInt(urlStage, 10)
+      : (getResumeStageAndQuestion(appData).stage as ApplicationStage);
 
   const predefinedOffenses = ['Violent offense', 'Harm-related offense'];
   const offensePref = appData.offense_pref ?? [];
@@ -81,7 +92,7 @@ export default async function ApplicationDetailPage({
             stillInCorrespondence: false,
             rankedMatches: null,
           }}
-          defaultStage={ApplicationStage.PRE}
+          defaultStage={defaultStage}
         >
           <DeciderStage />
         </ApplicationContextProvider>

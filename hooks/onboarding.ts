@@ -48,6 +48,7 @@ export const useSubmitOnboarding = () => {
       pronouns: info.pronouns,
       state: info.state,
       veteran_status: info.isVeteran,
+      monday_id: null,
     };
 
     await upsertProfile(profile);

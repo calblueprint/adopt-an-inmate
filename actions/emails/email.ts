@@ -1,17 +1,25 @@
 import nodemailer from 'nodemailer';
 
 export async function autoEmailSender(
-  senderAddress: string,
-  senderAppPassword: string,
-  senderName: string,
   text: string,
   subject: string,
   recipient: string,
 ) {
+  const senderAddress = process.env.BREVO_SMTP_USER;
+  const senderAppPassword = process.env.BREVO_SMTP_KEY;
+  const senderName = process.env.EMAIL_SENDER_NAME ?? 'Adopt an Inmate Team';
+  const verifiedAddress = 'adopt@adoptaninmate.org';
+
+  if (!senderAddress || !senderAppPassword) {
+    throw new Error(
+      'Missing email configuration: BREVO_SMTP_USER and BREVO_SMTP_KEY must be set in environment variables.',
+    );
+  }
+
   const transporter = nodemailer.createTransport({
-    secure: true,
-    host: 'smtp.gmail.com',
-    port: 465,
+    host: 'smtp-relay.brevo.com',
+    port: 587,
+    secure: false,
     auth: {
       user: senderAddress,
       pass: senderAppPassword,
@@ -19,10 +27,10 @@ export async function autoEmailSender(
   });
 
   await transporter.sendMail({
-    from: `${senderName} <${senderAddress}>`,
+    from: `${senderName} <${verifiedAddress}>`,
     to: recipient,
-    subject: subject,
-    text: text,
+    subject,
+    text,
   });
 }
 

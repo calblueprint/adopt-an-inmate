@@ -63,10 +63,26 @@ export const sleep = async (ms: number) => {
 };
 
 /**
+ * Throw an error if the condition is false
+ * with an optionally provided error message.
+ */
+export const assert = (cond: boolean, msg?: unknown) => {
+  if (!cond) throw msg;
+};
+
+/**
  * Asserts that an environment variable exists.
  */
 export const assertEnvVarExists = (key: string) => {
   if (!process.env[key]) throw new Error(`Could not find ${key}, is it set?`);
+};
+
+/**
+ * Safely gets an environment variable. If it doesn't exist, throw an error.
+ */
+export const getEnvVar = (key: string) => {
+  assertEnvVarExists(key);
+  return process.env[key] as string;
 };
 
 /**

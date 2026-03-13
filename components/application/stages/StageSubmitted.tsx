@@ -13,10 +13,10 @@ export default function StageSubmitted() {
         </div>
         <div className="flex flex-col gap-14">
           <div className="flex flex-col gap-2">
-            <h1 className="text-center text-[32px] leading-normal text-gray-12">
+            <h1 className="text-center text-[2rem] leading-normal text-gray-12">
               Thank you!
             </h1>
-            <p className="text-center text-[14px] leading-normal text-gray-11">
+            <p className="text-center text-sm leading-normal text-gray-11">
               Thank you for submitting your application. Please check your email
               for next steps and updates.
             </p>

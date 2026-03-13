@@ -1,6 +1,3 @@
-import { findMatches } from '@/actions/matching';
-import { fetchAdopteeCardsInfo } from '@/actions/queries/query';
-
 /**
  * Test route for the findMatches and fetchAdopteeCardsInfo functions.
  * Given an appId, it finds the top 4 matching adoptee IDs
@@ -11,17 +8,18 @@ import { fetchAdopteeCardsInfo } from '@/actions/queries/query';
  * Requires the user to be logged in
  * for development/testing purposes only
  */
+export async function GET() {
+  return new Response('Forbidden');
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const appId = searchParams.get('appId');
+  // const { searchParams } = new URL(request.url);
+  // const appId = searchParams.get('appId');
 
-  if (!appId) return Response.json({ error: 'Missing appId' }, { status: 400 });
+  // if (!appId) return Response.json({ error: 'Missing appId' }, { status: 400 });
 
-  const { data: ids, error } = await findMatches(appId);
-  if (error) return Response.json({ error });
+  // const { data: ids, error } = await findMatches(appId);
+  // if (error) return Response.json({ error });
 
-  const cards = await fetchAdopteeCardsInfo(ids!);
-  return Response.json(cards);
+  // const cards = await fetchAdopteeCardsInfo(ids!);
+  // return Response.json(cards);
 }
 //http://localhost:3000/api/test-matches?appId=<appId>

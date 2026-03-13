@@ -18,7 +18,7 @@ export default function OnboardingQuestionAdoptedBefore() {
 
   const [adoptedBefore, setAdoptedBefore] = useState<'yes' | 'no' | null>(null);
   const [stillActive, setStillActive] = useState<'yes' | 'no' | null>(null);
-  const [howMany, setHowMany] = useState<number | null>(null);
+  const [howMany, setHowMany] = useState<string>('');
   const [why, setWhy] = useState<string | null>(null);
   const [whyOpen, setWhyOpen] = useState(false);
 
@@ -26,7 +26,7 @@ export default function OnboardingQuestionAdoptedBefore() {
     if (!adoptedBefore) return false;
     if (adoptedBefore === 'no') return true;
     if (!stillActive) return false;
-    if (stillActive === 'yes') return howMany !== null;
+    if (stillActive === 'yes') return howMany.trim() !== '';
     if (stillActive === 'no') return why !== null;
     return false;
   };
@@ -52,7 +52,7 @@ export default function OnboardingQuestionAdoptedBefore() {
             onChange={() => {
               setAdoptedBefore('yes');
               setStillActive(null);
-              setHowMany(null);
+              setHowMany('');
               setWhy(null);
             }}
           >
@@ -65,7 +65,7 @@ export default function OnboardingQuestionAdoptedBefore() {
             onChange={() => {
               setAdoptedBefore('no');
               setStillActive(null);
-              setHowMany(null);
+              setHowMany('');
               setWhy(null);
             }}
           >
@@ -95,7 +95,7 @@ export default function OnboardingQuestionAdoptedBefore() {
                 checked={stillActive === 'no'}
                 onChange={() => {
                   setStillActive('no');
-                  setHowMany(null);
+                  setHowMany('');
                 }}
               >
                 <p>No</p>
@@ -106,24 +106,16 @@ export default function OnboardingQuestionAdoptedBefore() {
 
         {/* How many? */}
         {adoptedBefore === 'yes' && stillActive === 'yes' && (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             <p className="text-sm text-gray-11">How many?</p>
-            <div className="flex gap-2">
-              {[1, 2].map(n => (
-                <button
-                  key={n}
-                  type="button"
-                  onClick={() => setHowMany(n)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-md border transition-colors ${
-                    howMany === n
-                      ? 'border-red-12 bg-red-2 text-red-12'
-                      : 'border-gray-7 text-gray-11 hover:border-gray-9'
-                  }`}
-                >
-                  {n}
-                </button>
-              ))}
-            </div>
+            <input
+              type="number"
+              min={1}
+              value={howMany}
+              onChange={e => setHowMany(e.target.value)}
+              placeholder="Enter a number"
+              className="w-full rounded-lg border border-gray-7 px-3 py-2 text-sm text-gray-12 transition-colors outline-none placeholder:text-gray-10 focus:border-red-12"
+            />
           </div>
         )}
 
@@ -186,7 +178,7 @@ export default function OnboardingQuestionAdoptedBefore() {
           disabled={!isComplete()}
           onClick={handleSubmit}
         >
-          Next
+          Submit
         </Button>
       </div>
     </div>

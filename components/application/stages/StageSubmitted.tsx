@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import heartIcon from '@/assets/images/heart.svg';
 import { ButtonLink } from '@/components/Button';

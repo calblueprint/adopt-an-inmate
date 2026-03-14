@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getNewApplicationId } from '@/actions/applications/newApplication';
+import { createApplication } from '@/actions/applications/createApplication';
 import { Button } from '../Button';
 import LoadingSpinner from '../LoadingSpinner';
 
@@ -13,14 +13,14 @@ export default function NewApplicationButton() {
   const createApp = async () => {
     setIsCreating(true);
 
-    const { data, error } = await getNewApplicationId();
-    if (error || !data) {
+    const { data: appId, error } = await createApplication();
+    if (error || !appId) {
       setIsCreating(false);
       return;
     }
 
     // successful; redirect to app at correct stage/question
-    router.push(`/app/${data.app_uuid}?stage=${data.stage}&q=${data.question}`);
+    router.push(`/app/${appId}`);
   };
 
   return (

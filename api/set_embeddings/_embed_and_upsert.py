@@ -36,7 +36,7 @@ def upsert_embeddings(data: list, batch_size=64):
         for j, row in enumerate(batch):
             metadata = {k: row.get(k, "") for k in [
                 "first_name", "last_name", "bio", "gender", 
-                "dob", "veteran_status", "offense", "state", "adopted"
+                "dob", "veteran_status", "offense", "state", "adopted", "inmate_id"
             ]}
             records.append((ids[j], embeddings[j], metadata))
 

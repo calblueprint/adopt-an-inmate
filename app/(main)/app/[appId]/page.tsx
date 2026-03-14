@@ -4,7 +4,7 @@ import Logger from '@/actions/logging';
 import DeciderStage from '@/components/application/DeciderStage';
 import Logo from '@/components/Logo';
 import { ApplicationContextProvider } from '@/contexts/ApplicationContext';
-import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { getSupabaseServerClient } from '@/lib/supabase';
 import { getResumeStageAndQuestion } from '@/lib/utils';
 import { ApplicationStage } from '@/types/enums';
 import { FormState } from '@/types/types';
@@ -16,7 +16,7 @@ export default async function ApplicationDetailPage({
 }) {
   const { appId } = await params;
 
-  const supabase = getSupabaseBrowserClient();
+  const supabase = await getSupabaseServerClient();
   const {
     data: { user },
     error: getUserError,

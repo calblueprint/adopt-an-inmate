@@ -4,25 +4,27 @@ import Logger from '@/actions/logging';
 import DeciderStage from '@/components/application/DeciderStage';
 import Logo from '@/components/Logo';
 import { ApplicationContextProvider } from '@/contexts/ApplicationContext';
-import { getAuthenticatedUser } from '@/lib/auth/get_user';
-import { getSupabaseServerClient } from '@/lib/supabase';
+import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { getResumeStageAndQuestion } from '@/lib/utils';
 import { ApplicationStage } from '@/types/enums';
 import { FormState } from '@/types/types';
 
 export default async function ApplicationDetailPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ appId: string }>;
-  searchParams: Promise<{ stage?: string; q?: string }>;
 }) {
   const { appId } = await params;
-  const resolvedSearchParams = await searchParams;
 
-  const supabase = await getSupabaseServerClient();
+  const supabase = getSupabaseBrowserClient();
+  const {
+    data: { user },
+    error: getUserError,
+  } = await supabase.auth.getUser();
 
-  const user = await getAuthenticatedUser();
+  if (!user || getUserError) {
+    notFound();
+  }
 
   const { data: appData, error: getAppError } = await supabase
     .from('adopter_applications_dummy')
@@ -41,17 +43,14 @@ export default async function ApplicationDetailPage({
 
   if (!appData) {
     Logger.error(
-      `User ${user.id} attempted to access application ${appId} with unauthorized status`,
+      `User ${user.id} attempted to access application ${appId}, but no such application was found`,
     );
     notFound();
   }
 
-  // Use stage from URL if present, otherwise compute from app data
-  const urlStage = resolvedSearchParams?.stage;
-  const defaultStage =
-    urlStage !== undefined && urlStage !== ''
-      ? parseInt(urlStage, 10)
-      : (getResumeStageAndQuestion(appData).stage as ApplicationStage);
+  // compute initial stage from app data
+  const initialStage = getResumeStageAndQuestion(appData)
+    .stage as ApplicationStage;
 
   const predefinedOffenses = ['Violent offense', 'Harm-related offense'];
   const offensePref = appData.offense_pref ?? [];
@@ -92,7 +91,7 @@ export default async function ApplicationDetailPage({
             stillInCorrespondence: false,
             rankedMatches: null,
           }}
-          defaultStage={defaultStage}
+          defaultStage={initialStage}
         >
           <DeciderStage />
         </ApplicationContextProvider>

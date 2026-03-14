@@ -6,3 +6,6 @@
 .env.keys
 .env.local
 .env.*.local
+
+# dev match test route
+/app/api/test-matches/*

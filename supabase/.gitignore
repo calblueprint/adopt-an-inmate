@@ -7,5 +7,5 @@
 .env.local
 .env.*.local
 
-# dev test routes
+# dev match test route
 /app/api/test-matches/*

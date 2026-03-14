@@ -1,3 +1,5 @@
+//TODO: this file is pretty similar to the in-built onboarding guard in middleware.ts, should remove this
+
 'use client';
 
 import { useEffect } from 'react';

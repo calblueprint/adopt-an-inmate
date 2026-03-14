@@ -85,7 +85,7 @@ export default function OnboardingQuestionVeteran() {
           loadingClassName="text-white"
           loading={isSubmitting}
         >
-          Submit
+          Next
         </AsyncButton>
       </div>
     </form>

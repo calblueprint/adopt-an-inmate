@@ -1,3 +1,6 @@
+'use client';
+
+import { useSearchParams } from 'next/navigation';
 import QuestionDecider from '@/components/questions/QuestionDecider';
 import { QuestionsContextProvider } from '@/contexts/QuestionsContext';
 import ProgressBar from '../../questions/ProgressBar';
@@ -6,6 +9,9 @@ import QuestionSeekingRomance from '../pre/QuestionSeekingRomance';
 import QuestionSuccess from '../pre/QuestionSuccess';
 
 export default function StagePre() {
+  const searchParams = useSearchParams();
+  const initialQ = parseInt(searchParams.get('q') ?? '0', 10);
+
   return (
     <div className="flex w-9/10 flex-col gap-6 rounded-lg bg-gray-1 p-8 sm:w-[clamp(400px,50%,500px)]">
       <QuestionsContextProvider
@@ -14,6 +20,7 @@ export default function StagePre() {
           <QuestionIncarcerated key="incarcerated" />,
           <QuestionSuccess key="success" />,
         ]}
+        initialQuestionsCompleted={initialQ}
       >
         <ProgressBar />
         <QuestionDecider />

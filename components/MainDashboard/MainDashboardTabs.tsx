@@ -1,16 +1,23 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Tabs } from 'radix-ui';
+import { LuBell } from 'react-icons/lu';
+import { useSearchParams } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { appIsActive } from '@/lib/utils';
 import { AdopterApplication } from '@/types/schema';
 import LoadingSpinner from '../LoadingSpinner';
 import ApplicationCard from './ApplicationCard';
+import CreateApplicationCard from './CreateApplicationCard';
 
 export default function MainDashBoardTabs() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  const showHistory = tabParam === 'history';
+
   const loadStarted = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [displayName, setDisplayName] = useState('Application');
   const [activeApplications, setActiveApplications] = useState<
     AdopterApplication[]
   >([]);
@@ -22,20 +29,28 @@ export default function MainDashBoardTabs() {
     if (loadStarted.current) return;
 
     const loadData = async () => {
-      // get user
       const supabase = getSupabaseBrowserClient();
       const {
         data: { user },
         error: getUserError,
       } = await supabase.auth.getUser();
 
-      // Next.js will handle routing to error page
       if (getUserError) throw new Error(getUserError.message);
-
-      // not logged in: redirect should be handled by layout
       if (!user) return;
 
-      // fetch user applications
+      const { data: profileData } = await supabase
+        .from('adopter_profiles')
+        .select('first_name, last_name')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (profileData?.first_name)
+        setDisplayName(
+          [profileData.first_name, profileData.last_name]
+            .filter(Boolean)
+            .join(' '),
+        );
+
       const { data: applicationsData, error: fetchApplicationsError } =
         await supabase
           .from('adopter_applications_dummy')
@@ -66,46 +81,38 @@ export default function MainDashBoardTabs() {
     loadStarted.current = true;
   }, []);
 
+  const applications = showHistory ? inactiveApplications : activeApplications;
+
   return isLoading ? (
-    <div className="grid h-full w-full place-items-center">
+    <div className="grid h-32 w-full place-items-center">
       <LoadingSpinner size="24" />
     </div>
   ) : (
-    <Tabs.Root className="w-full" defaultValue="active">
-      <Tabs.List
-        className="justify-items-center border-b-2 border-b-gray-300"
-        aria-label="Manage your account"
-      >
-        <div className="flex w-full">
-          <Tabs.Trigger
-            className="-mb-0.5 flex-1 cursor-pointer border-b-2 border-b-transparent px-4 pb-2 text-gray-400 transition-colors data-[state=active]:border-b-cyan-9 data-[state=active]:text-cyan-9"
-            value="active"
-          >
-            Active Applications
-          </Tabs.Trigger>
+    <div className="flex w-full flex-col gap-6">
+      {/* Header: Applications title + notifications bell */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-12">Applications</h1>
+        <button
+          type="button"
+          className="relative rounded p-2 text-gray-10 hover:bg-gray-2 hover:text-gray-12"
+          aria-label="Notifications"
+        >
+          <LuBell className="h-5 w-5" />
+          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-9" />
+        </button>
+      </div>
 
-          <Tabs.Trigger
-            className="-mb-0.5 flex-1 cursor-pointer border-b-2 border-b-transparent px-4 pb-2 text-gray-400 transition-colors data-[state=active]:border-b-cyan-9 data-[state=active]:text-cyan-9"
-            value="inactive"
-          >
-            Inactive Applications
-          </Tabs.Trigger>
-        </div>
-      </Tabs.List>
-      <Tabs.Content className="w-full pt-9" value="active">
-        <div className="flex flex-row flex-wrap gap-x-12 gap-y-14">
-          {activeApplications.map(app => (
-            <ApplicationCard key={app.app_uuid} app={app} />
-          ))}
-        </div>
-      </Tabs.Content>
-      <Tabs.Content className="w-full pt-9" value="inactive">
-        <div className="flex flex-row flex-wrap gap-x-12 gap-y-14">
-          {inactiveApplications.map(app => (
-            <ApplicationCard key={app.app_uuid} app={app} />
-          ))}
-        </div>
-      </Tabs.Content>
-    </Tabs.Root>
+      {/* Cards grid: Create card + application cards */}
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,13.75rem))] gap-4">
+        {!showHistory && <CreateApplicationCard />}
+        {applications.map(app => (
+          <ApplicationCard
+            key={app.app_uuid}
+            app={app}
+            displayName={displayName}
+          />
+        ))}
+      </div>
+    </div>
   );
 }

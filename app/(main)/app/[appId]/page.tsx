@@ -11,10 +11,13 @@ import { FormState } from '@/types/types';
 
 export default async function ApplicationDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ appId: string }>;
+  searchParams: Promise<{ stage?: string; q?: string }>;
 }) {
   const { appId } = await params;
+  const resolvedSearchParams = await searchParams;
 
   const supabase = await getSupabaseServerClient();
   const {
@@ -47,9 +50,15 @@ export default async function ApplicationDetailPage({
     notFound();
   }
 
-  // compute initial stage from app data
-  const initialStage = getResumeStageAndQuestion(appData)
-    .stage as ApplicationStage;
+  const resume = getResumeStageAndQuestion(appData);
+  const urlStageRaw = resolvedSearchParams?.stage;
+  const parsedStage =
+    urlStageRaw !== undefined && urlStageRaw !== ''
+      ? parseInt(urlStageRaw, 10)
+      : NaN;
+  const defaultStage = Number.isNaN(parsedStage)
+    ? (resume.stage as ApplicationStage)
+    : (parsedStage as ApplicationStage);
 
   return (
     <div className="flex min-h-svh w-full flex-col items-center justify-between">
@@ -73,7 +82,7 @@ export default async function ApplicationDetailPage({
             stillInCorrespondence: false,
             rankedMatches: null,
           }}
-          defaultStage={initialStage}
+          defaultStage={defaultStage}
         >
           <DeciderStage />
         </ApplicationContextProvider>

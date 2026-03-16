@@ -1,0 +1,125 @@
+'use client';
+
+import { useMemo } from 'react';
+import {
+  LuBell,
+  LuClock,
+  LuHeart,
+  LuInfo,
+  LuLayoutDashboard,
+  LuUser,
+} from 'react-icons/lu';
+import { TbLogout } from 'react-icons/tb';
+import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { signOut } from '@/actions/auth';
+import Logo from '@/components/Logo';
+import { useProfile } from '@/contexts/ProfileProvider';
+import { cn } from '@/lib/utils';
+
+const NAV_LINKS = [
+  { href: '/', label: 'Dashboard', icon: LuLayoutDashboard },
+  { href: '/?tab=history', label: 'History', icon: LuClock },
+  { href: '/profile', label: 'Profile', icon: LuUser },
+  { href: '#', label: 'Donate', icon: LuHeart },
+  { href: '#', label: 'Learn More', icon: LuInfo },
+] as const;
+
+export default function Sidebar() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const tab = searchParams.get('tab');
+  const router = useRouter();
+  const { profileData } = useProfile();
+
+  const displayName = useMemo(
+    () => profileData?.first_name || 'User',
+    [profileData?.first_name],
+  );
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) alert(error.message);
+    else router.push('/');
+  };
+
+  const isActive = (label: string, href: string) => {
+    if (label === 'Dashboard')
+      return (
+        (pathname === '/' || pathname.startsWith('/app')) && tab !== 'history'
+      );
+    if (label === 'History') return pathname === '/' && tab === 'history';
+    return pathname.startsWith(href);
+  };
+
+  return (
+    <aside className="flex h-full w-60 flex-col border-r border-gray-4 bg-white">
+      {/* Logo */}
+      <Link href="/" className="flex items-center gap-2 px-6 py-5">
+        <Logo compact />
+      </Link>
+
+      {/* Greeting + notification bell */}
+      <div className="flex items-center justify-between gap-2 px-6 pb-2">
+        <div>
+          <p className="text-lg font-bold text-gray-12">Hi {displayName}</p>
+          <p className="text-sm text-gray-10">Adopter</p>
+        </div>
+        <Link
+          href="/notifications"
+          className="relative rounded p-1.5 text-gray-10 hover:bg-gray-2 hover:text-gray-12"
+          aria-label="Notifications"
+        >
+          <LuBell className="h-5 w-5" />
+          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-9" />
+        </Link>
+      </div>
+
+      <div className="border-t border-gray-4" />
+
+      {/* Nav links */}
+      <nav className="flex flex-1 flex-col gap-0.5 px-3 py-4">
+        {NAV_LINKS.map(({ href, label, icon: Icon }) => {
+          const active = isActive(label, href);
+          return (
+            <Link
+              key={label}
+              href={href}
+              className={cn(
+                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                active
+                  ? 'bg-red-2 text-red-12'
+                  : 'text-gray-11 hover:bg-gray-2 hover:text-gray-12',
+              )}
+            >
+              <Icon className="h-5 w-5 shrink-0" />
+              {label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* User profile + logout */}
+      <div className="border-t border-gray-4 px-4 py-4">
+        <div className="flex items-center justify-between gap-3 rounded-lg bg-gray-2 px-3 py-2">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 shrink-0 rounded-full bg-gray-5" />
+            <span className="truncate text-sm font-medium text-gray-12">
+              {[profileData?.first_name, profileData?.last_name]
+                .filter(Boolean)
+                .join(' ') || 'Profile'}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={handleSignOut}
+            className="rounded p-1.5 text-gray-9 transition-colors hover:bg-red-2 hover:text-red-12"
+            aria-label="Logout"
+          >
+            <TbLogout className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+    </aside>
+  );
+}

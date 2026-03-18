@@ -14,7 +14,7 @@ export interface FormState {
   whyEnded?: string;
   offensePreference: string[] | null;
   offenseOther: string | null;
-  agePreference: string;
+  agePreference: number[] | null;
 }
 
 export interface EmailPasswordCredentials {

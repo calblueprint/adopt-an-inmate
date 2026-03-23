@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import Logger from '@/actions/logging';
-import { getSupabaseServerClient } from '@/lib/supabase';
+import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
 import { assertEnvVarExists, getEnvVar } from '@/lib/utils';
 import { ApplicationStatusEnum } from '@/types/schema';
 
@@ -23,7 +23,6 @@ export async function POST(request: NextRequest) {
 
   // parse events
   const data = await request.json();
-  console.log(data);
 
   let appMondayId: string;
   let status: ApplicationStatusEnum;
@@ -45,12 +44,12 @@ export async function POST(request: NextRequest) {
     return Response.json({ data });
   }
 
-  console.log(
+  Logger.log(
     `Updating application with Monday ID ${appMondayId} to status ${status}`,
   );
 
   // update app status
-  const supabase = await getSupabaseServerClient();
+  const supabase = await dangerous_getSupabaseServiceClient();
   const { error: updateError } = await supabase
     .from('adopter_applications_dummy')
     .update({ status })

@@ -31,15 +31,15 @@ export default function MainQuestionReview() {
   };
 
   return (
-    <div className="flex h-[37rem] w-[27rem] flex-col gap-[0.5rem]">
+    <div className="flex h-[37rem] w-[27rem] flex-col gap-2">
       <div className="flex items-center justify-between">
-        <header className="flex flex-col gap-2 font-golos text-[1.75rem] leading-normal font-[500] font-medium text-[var(--color-gray-12)]">
+        <header className="flex flex-col gap-2">
           <h1>Review and Submit</h1>
         </header>
         <div className="flex items-center gap-2">
           <CustomLink
             href="#"
-            className="underline-offset font-golos text-[0.9375rem] font-semibold text-[var(--color-cyan-11)] decoration-solid decoration-auto"
+            className="font-semibold text-cyan-11 decoration-solid underline-offset-4"
             onClick={e => {
               e.preventDefault();
             }}
@@ -60,86 +60,68 @@ export default function MainQuestionReview() {
             />
           </svg>
         </div>
-
-        <div className="flex flex-col gap-[1.44rem]"></div>
       </div>
 
       {/* Scrollable Text Box*/}
-      <div className="flex-1 space-y-[1.44rem] overflow-x-hidden overflow-y-auto">
-        <div className="flex flex-col gap-[1.19rem]">
-          <div className="flex flex-col gap-[0.38]">
-            <p className="text-[0.78844rem] leading-normal font-[600] font-medium text-[var(--color-gray-8)]">
-              First Name
-            </p>
-            <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
+      <div className="flex-1 space-y-6 overflow-x-hidden overflow-y-auto">
+        <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">First Name</p>
+            <p className="text-gray-12">
               {profileData?.first_name ?? (profileReady ? '' : 'Loading...')}
             </p>
           </div>
-          <div className="flex flex-col gap-[0.38]">
-            <p className="text-[0.78844rem] leading-normal font-[600] font-medium text-[var(--color-gray-8)]">
-              Last Name
-            </p>
-            <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">Last Name</p>
+            <p className="text-gray-12">
               {profileData?.last_name ?? (profileReady ? '' : 'Loading...')}
             </p>
           </div>
-          <div className="flex flex-col gap-[0.38]">
-            <p className="text-[0.78844rem] leading-normal font-[600] font-medium text-[var(--color-gray-8)]">
-              Date of Birth
-            </p>
-            <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">Date of Birth</p>
+            <p className="text-gray-12">
               {profileData?.date_of_birth ?? (profileReady ? '' : 'Loading...')}
             </p>
           </div>
-          <div className="flex flex-col gap-[0.38]">
-            <p className="text-[0.78844rem] leading-normal font-[600] font-medium text-[var(--color-gray-8)]">
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">
               Preferred Pronouns
             </p>
-            <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
+            <p className="text-gray-12">
               {profileData?.pronouns ?? (profileReady ? '' : 'Loading...')}
             </p>
           </div>
-          <div className="flex flex-col gap-[0.38]">
-            <p className="text-[0.78844rem] leading-normal font-[600] font-medium text-[var(--color-gray-8)]">
-              Gender
-            </p>
-            <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
-              Placeholder
-            </p>
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">Gender</p>
+            <p className="text-gray-12">Placeholder</p>
           </div>
-
-          <div className="flex flex-col gap-[0.38]">
-            <p className="text-[0.78844rem] leading-normal font-[600] font-medium text-[var(--color-gray-8)]">
-              Personal bio
-            </p>
-            <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
-              {appState.form.bio}
-            </p>
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">Personal bio</p>
+            <p className="text-gray-12">{appState.form.bio}</p>
           </div>
-          <div className="flex flex-col gap-[0.38]">
-            <p className="text-[0.78844rem] leading-normal font-[600] font-medium text-[var(--color-gray-8)]">
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">
               Gender preference
             </p>
-            <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
+            <p className="text-gray-12">
               {formatGenderPreference(appState.form.genderPreference)}
             </p>
           </div>
-          <div className="flex flex-col gap-[0.38]">
-            <p className="text-[0.78844rem] leading-normal font-[600] font-medium text-[var(--color-gray-8)]">
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">
               Offenses not preferred
             </p>
-            <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
+            <p className="text-gray-12">
               {formatOffensePreference(appState.form.offensePreference)}
             </p>
           </div>
-
-          <div className="flex flex-col gap-[0.38]">
-            <p className="text-[0.78844rem] leading-normal font-[600] font-medium text-[var(--color-gray-8)]">
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">
               {appState.stillInCorrespondence
                 ? 'Reason for adopting'
                 : 'Why it ended'}
             </p>
-            <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
+            <p className="text-gray-12">
               {(appState.stillInCorrespondence
                 ? appState.form.whyAdopting
                 : appState.form.whyEnded) || 'N/A'}

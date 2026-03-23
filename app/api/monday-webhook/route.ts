@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
 
   // parse events
   const data = await request.json();
+  console.log(data);
 
   let appMondayId: string;
   let status: ApplicationStatusEnum;
@@ -43,6 +44,10 @@ export async function POST(request: NextRequest) {
     Logger.error(`Error parsing webhook data: ${error}`);
     return Response.json({ data });
   }
+
+  console.log(
+    `Updating application with Monday ID ${appMondayId} to status ${status}`,
+  );
 
   // update app status
   const supabase = await getSupabaseServerClient();

@@ -25,3 +25,5 @@ export type AdopterApplicationUpdate = Omit<
   Partial<AdopterApplication>,
   'adopter_uuid' | 'app_uuid'
 >;
+
+export type ApplicationStatusEnum = Database['public']['Enums']['status_vals'];

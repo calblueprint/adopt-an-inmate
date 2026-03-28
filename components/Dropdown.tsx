@@ -31,9 +31,9 @@ export default function Dropdown({
       <button
         type="button"
         onClick={() => setOpen(prev => !prev)}
-        className="flex w-full items-center justify-between rounded-lg border border-gray-7 bg-white px-3 py-2 text-sm transition-colors focus:ring-2 focus:ring-red-12 focus:outline-none"
+        className="flex w-full items-center justify-between rounded-lg border border-red-12 px-3 py-2 text-sm transition-colors"
       >
-        <span className={cn(value ? 'text-gray-12' : 'text-gray-10')}>
+        <span className={value ? 'text-gray-12' : 'text-gray-10'}>
           {selected?.label || placeholder}
         </span>
 
@@ -46,7 +46,7 @@ export default function Dropdown({
       </button>
 
       {open && (
-        <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-lg border border-gray-7 bg-white shadow-md">
+        <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-lg border border-red-12 bg-white shadow-md">
           {options.map(option => (
             <button
               key={option.value}
@@ -55,7 +55,7 @@ export default function Dropdown({
                 onChange(option.value);
                 setOpen(false);
               }}
-              className="w-full px-3 py-2 text-left text-sm transition-colors hover:bg-red-2 hover:text-red-12"
+              className="w-full px-3 py-2 text-left text-sm hover:bg-red-2 hover:text-red-12"
             >
               {option.label}
             </button>

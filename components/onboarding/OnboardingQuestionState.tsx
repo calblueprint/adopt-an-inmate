@@ -31,6 +31,7 @@ export default function OnboardingQuestionState() {
   };
 
   return (
+    // TODO: use styled dropdown component
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <header className="flex flex-col gap-2">
         <h1>What state are you from?</h1>

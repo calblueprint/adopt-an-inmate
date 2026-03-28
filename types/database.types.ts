@@ -155,10 +155,11 @@ export type Database = {
           monday_id: string | null
           offense_pref: string[] | null
           personal_bio: string | null
-          ranked_cards: Json | null
+          ranked_cards: string[] | null
           return_explanation: string | null
           status: Database["public"]["Enums"]["status_vals"]
-          time_submitted: string
+          time_created: string
+          time_submitted: string | null
         }
         Insert: {
           adopter_uuid: string
@@ -169,10 +170,11 @@ export type Database = {
           monday_id?: string | null
           offense_pref?: string[] | null
           personal_bio?: string | null
-          ranked_cards?: Json | null
+          ranked_cards?: string[] | null
           return_explanation?: string | null
           status?: Database["public"]["Enums"]["status_vals"]
-          time_submitted?: string
+          time_created?: string
+          time_submitted?: string | null
         }
         Update: {
           adopter_uuid?: string
@@ -183,10 +185,11 @@ export type Database = {
           monday_id?: string | null
           offense_pref?: string[] | null
           personal_bio?: string | null
-          ranked_cards?: Json | null
+          ranked_cards?: string[] | null
           return_explanation?: string | null
           status?: Database["public"]["Enums"]["status_vals"]
-          time_submitted?: string
+          time_created?: string
+          time_submitted?: string | null
         }
         Relationships: [
           {
@@ -225,6 +228,10 @@ export type Database = {
           first_name: string
           last_name: string
           monday_id: string | null
+          num_past_active: number | null
+          past_inactive_reason:
+            | Database["public"]["Enums"]["inactive_reason"]
+            | null
           pronouns: string
           state: string
           user_id: string
@@ -235,6 +242,10 @@ export type Database = {
           first_name: string
           last_name: string
           monday_id?: string | null
+          num_past_active?: number | null
+          past_inactive_reason?:
+            | Database["public"]["Enums"]["inactive_reason"]
+            | null
           pronouns: string
           state: string
           user_id?: string
@@ -245,6 +256,10 @@ export type Database = {
           first_name?: string
           last_name?: string
           monday_id?: string | null
+          num_past_active?: number | null
+          past_inactive_reason?:
+            | Database["public"]["Enums"]["inactive_reason"]
+            | null
           pronouns?: string
           state?: string
           user_id?: string
@@ -305,7 +320,7 @@ export type Database = {
           last_name: string
           personal_bio: string
           pronouns: string
-          ranked_cards: Json
+          ranked_cards: string[]
           state: string
           user_id: string
           veteran_status: string
@@ -315,7 +330,15 @@ export type Database = {
     }
     Enums: {
       adoptee_status: "WAIT_LISTED" | "OUT_FOR_CONSIDERATION"
-      status_vals: "incomplete" | "pending" | "accepted" | "rejected" | "ended"
+      inactive_reason: "ENDED" | "INMATE_CANCELLED" | "NPO_CANCELLED" | "OTHER"
+      status_vals:
+        | "INCOMPLETE"
+        | "PENDING"
+        | "ACCEPTED"
+        | "REJECTED"
+        | "ENDED"
+        | "PENDING_CONFIRMATION"
+        | "REAPPLY"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -444,7 +467,16 @@ export const Constants = {
   public: {
     Enums: {
       adoptee_status: ["WAIT_LISTED", "OUT_FOR_CONSIDERATION"],
-      status_vals: ["incomplete", "pending", "accepted", "rejected", "ended"],
+      inactive_reason: ["ENDED", "INMATE_CANCELLED", "NPO_CANCELLED", "OTHER"],
+      status_vals: [
+        "INCOMPLETE",
+        "PENDING",
+        "ACCEPTED",
+        "REJECTED",
+        "ENDED",
+        "PENDING_CONFIRMATION",
+        "REAPPLY",
+      ],
     },
   },
 } as const

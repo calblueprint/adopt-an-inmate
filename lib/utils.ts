@@ -121,7 +121,7 @@ export const calculateAge = (dob: Date | string): number => {
  * active, false otherwise.
  */
 export const appIsActive = (app: AdopterApplication) => {
-  return !(app.status === 'rejected' || app.status === 'ended');
+  return !(app.status === 'REJECTED' || app.status === 'ENDED');
 };
 
 /**
@@ -139,7 +139,7 @@ export function getResumeStageAndQuestion(app: AdopterApplication): {
   question: number;
 } {
   // Non-incomplete: show submitted/info view
-  if (app.status !== 'incomplete') {
+  if (app.status !== 'INCOMPLETE') {
     return { stage: 3, question: 0 }; // SUBMITTED
   }
 

@@ -46,10 +46,6 @@ export const checkCreationConstraints = async (user: User) => {
     return { data: false, error: 'An unexpected error occurred.' };
   }
 
-  if (!appsData || appsData.length === 0) {
-    return { data: true, error: null };
-  }
-
   // constraint: check number of active adoptees
   const numActiveApps = appsData.filter(
     app => app.status === 'ACCEPTED',
@@ -61,6 +57,10 @@ export const checkCreationConstraints = async (user: User) => {
       data: false,
       error: 'User already has at least two past active adoptees',
     };
+  }
+
+  if (!appsData || appsData.length === 0) {
+    return { data: true, error: null };
   }
 
   const now = new Date();

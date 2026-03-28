@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { LuCake, LuMapPin, LuUser } from 'react-icons/lu';
 import {
   closestCenter,
@@ -49,9 +49,10 @@ export default function MobileMatchingSelectScreen({
     useState<RankedAdopteeMatch[]>(initialMatches);
 
   // notify parent of initial order on mount so Next button is enabled by default
+  const initialMatchesRef = useRef(initialMatches);
   useEffect(() => {
-    onRankedIdsChange(initialMatches.map(m => m.id));
-  }, []);
+    onRankedIdsChange(initialMatchesRef.current.map(m => m.id));
+  }, [onRankedIdsChange]);
 
   const sensors = useSensors(useSensor(PointerSensor), useSensor(TouchSensor));
 

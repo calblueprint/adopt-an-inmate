@@ -13,7 +13,6 @@ import Logger from '../logging';
 export const checkCreationConstraints = async (user: User) => {
   const supabase = await getSupabaseServerClient();
 
-  // constraint: invalid ended reason
   const { data: profile, error: getProfileError } = await supabase
     .from('adopter_profiles')
     .select()
@@ -31,6 +30,11 @@ export const checkCreationConstraints = async (user: User) => {
     return { data: false, error: 'User has no profile.' };
   }
 
+  // constraint: invalid ended reason
+  if (profile.past_inactive_reason === 'NPO_CANCELLED') {
+    return { data: false, error: 'User has an invalid ended reason.' };
+  }
+
   // fetch applications
   const { data: appsData, error: getAppError } = await supabase
     .from('adopter_applications_dummy')
@@ -46,23 +50,38 @@ export const checkCreationConstraints = async (user: User) => {
     return { data: true, error: null };
   }
 
+  // constraint: check number of active adoptees
+  const numActiveApps = appsData.filter(
+    app => app.status === 'ACCEPTED',
+  ).length;
+  const totalActiveAdoptees = numActiveApps + (profile.num_past_active || 0);
+
+  if (totalActiveAdoptees >= 2) {
+    return {
+      data: false,
+      error: 'User already has at least two past active adoptees',
+    };
+  }
+
   const now = new Date();
 
   for (const app of appsData) {
     // constraint: was rejected
-    if (app.status === 'rejected') {
+    if (app.status === 'REJECTED') {
       return { data: false, error: 'Application was rejected, contact NPO.' };
     }
 
     // constraint: has existing app
     const existingStatus: AdopterApplication['status'][] = [
-      'incomplete',
-      'pending',
+      'INCOMPLETE',
+      'PENDING',
     ];
 
     if (existingStatus.includes(app.status)) {
       return { data: false, error: 'An application is already in progress.' };
     }
+
+    if (!app.time_submitted) continue;
 
     // constraint: 6mo recent
     const submittedTime = new Date(app.time_submitted);
@@ -123,7 +142,7 @@ export const createApplication = async () => {
     .from('adopter_applications_dummy')
     .insert({
       adopter_uuid: user.id,
-      status: 'incomplete',
+      status: 'INCOMPLETE',
     })
     .select()
     .maybeSingle();

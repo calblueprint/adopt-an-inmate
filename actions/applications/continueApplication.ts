@@ -26,6 +26,7 @@ export const continueApplication = async (appId: string) => {
     .from('adopter_applications_dummy')
     .select()
     .eq('app_uuid', appId)
+    .eq('status', 'INCOMPLETE')
     .maybeSingle();
 
   // error handling

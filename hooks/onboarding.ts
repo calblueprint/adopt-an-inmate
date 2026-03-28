@@ -49,6 +49,8 @@ export const useSubmitOnboarding = () => {
       state: info.state,
       veteran_status: info.isVeteran,
       monday_id: null,
+      past_inactive_reason: null,
+      num_past_active: null,
     };
 
     await upsertProfile(profile);

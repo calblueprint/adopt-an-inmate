@@ -41,7 +41,7 @@ export const getNewApplicationId = async (): Promise<{
     .from('adopter_applications_dummy')
     .select()
     .eq('adopter_uuid', user.id)
-    .eq('status', 'incomplete');
+    .eq('status', 'INCOMPLETE');
 
   if (getAppError) {
     Logger.error(`Error getting existing application: ${getAppError.message}`);
@@ -67,7 +67,7 @@ export const getNewApplicationId = async (): Promise<{
     .from('adopter_applications_dummy')
     .insert({
       adopter_uuid: user.id,
-      status: 'incomplete',
+      status: 'INCOMPLETE',
     })
     .select()
     .maybeSingle();

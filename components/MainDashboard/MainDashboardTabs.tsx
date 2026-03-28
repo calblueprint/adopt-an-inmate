@@ -48,8 +48,8 @@ export default function MainDashBoardTabs() {
       // sort by newest first
       const sortedApps = applicationsData.sort(
         (a, b) =>
-          new Date(b.time_submitted).getTime() -
-          new Date(a.time_submitted).getTime(),
+          new Date(b.time_created).getTime() -
+          new Date(a.time_created).getTime(),
       );
 
       // filter active and inactive applications

@@ -26,7 +26,7 @@ export default function MatchingReviewScreen({
     setIsLoading(true);
 
     upsertAppInfo({
-      status: 'pending',
+      status: 'PENDING',
       ranked_cards: ranks, // upsert only IDs
       time_submitted: new Date().toISOString(),
     }); //new upsert helper

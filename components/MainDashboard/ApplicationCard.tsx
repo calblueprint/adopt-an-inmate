@@ -12,7 +12,7 @@ export default function ApplicationCard({ app }: { app: AdopterApplication }) {
 
         <div className="flex flex-col pb-3 pl-3">
           <p className="font-medium text-red-12">
-            {formatAmericanTime(app.time_submitted)}
+            {formatAmericanTime(app.time_created)}
           </p>
           <p className="text-xs text-gray-10">
             Status: {capitalize(app.status)}

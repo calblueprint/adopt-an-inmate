@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { SlArrowDown } from 'react-icons/sl';
 import { useQuestionNavigaton } from '@/hooks/questions';
-import { Button } from '../Button';
+import AsyncButton from '../AsyncButton';
 import QuestionBack from '../questions/QuestionBack';
 import RadioCard from '../RadioCard';
 
@@ -31,10 +32,10 @@ export default function OnboardingQuestionAdoptedBefore() {
     return false;
   };
 
-  const handleSubmit = () => {
-    if (!isComplete()) return;
-    nextQuestion();
-  };
+  // const handleSubmit = () => {
+  //   if (!isComplete()) return;
+  //   nextQuestion();
+  // };
 
   return (
     <div className="space-y-6">
@@ -134,22 +135,14 @@ export default function OnboardingQuestionAdoptedBefore() {
                     ? WHY_OPTIONS.find(o => o.value === why)?.label
                     : 'Select Reason...'}
                 </span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="7"
-                  viewBox="0 0 16 7"
-                  fill="none"
-                  className={`transition-transform ${whyOpen ? 'rotate-180' : ''}`}
-                >
-                  <path
-                    d="M8 6.50023C7.93442 6.50103 7.86941 6.4881 7.80913 6.46227C7.74885 6.43643 7.69465 6.39827 7.65 6.35023L3.15 1.85023C2.95 1.65023 2.95 1.34023 3.15 1.14023C3.35 0.940234 3.66 0.940234 3.86 1.14023L8.01 5.29023L12.15 1.15023C12.35 0.950234 12.66 0.950234 12.86 1.15023C13.06 1.35023 13.06 1.66023 12.86 1.86023L8.36 6.36023C8.26 6.46023 8.13 6.51023 8.01 6.51023L8 6.50023Z"
-                    fill="#81838D"
-                  />
-                </svg>
+                <SlArrowDown
+                  className={`text-gray-10 transition-transform duration-200 ${
+                    whyOpen ? 'rotate-180' : ''
+                  }`}
+                />
               </button>
               {whyOpen && (
-                <div className="absolute z-10 mt-1 w-full rounded-lg border border-red-12 bg-white shadow-md">
+                <div className="absolute z-10 mt-1 w-full overflow-hidden rounded-lg border border-red-12 bg-white shadow-md">
                   {WHY_OPTIONS.map(option => (
                     <button
                       key={option.value}
@@ -172,14 +165,23 @@ export default function OnboardingQuestionAdoptedBefore() {
 
       <div className="flex items-center justify-between">
         <QuestionBack />
-        <Button
+        {/* <Button
           variant="primary"
           type="button"
           disabled={!isComplete()}
           onClick={handleSubmit}
         >
           Submit
-        </Button>
+        </Button> */}
+        <AsyncButton
+          variant="primary"
+          type="submit"
+          disabled={!isComplete()}
+          loadingClassName="text-white"
+          loading={false} // TODO: add `isSubmitting` when backend linked
+        >
+          Next
+        </AsyncButton>
       </div>
     </div>
   );

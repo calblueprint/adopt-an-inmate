@@ -52,7 +52,6 @@ export default function OnboardingQuestionVeteran() {
     setOnboardingInfo(prev => ({ ...prev, isVeteran }));
     await submitOnboardingInfo();
 
-    // this would navigate to the success screen
     nextQuestion();
   };
 

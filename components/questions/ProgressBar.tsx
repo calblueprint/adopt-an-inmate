@@ -22,7 +22,7 @@ export default function ProgressBar({
       className={cn('flex gap-1', currentQuestion >= numQuestions && 'hidden')}
     >
       {[...Array(numQuestions).keys()].map((k, idx) => (
-        <ProgressBarNode key={k} highlighted={idx < currentQuestion} />
+        <ProgressBarNode key={k} highlighted={idx <= currentQuestion} />
       ))}
     </div>
   );

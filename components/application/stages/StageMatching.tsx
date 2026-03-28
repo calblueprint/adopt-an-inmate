@@ -24,27 +24,21 @@ export default function StageMatching() {
 
     // find matches
     const loadMatches = async () => {
-      console.log('loadMatches started');
       const supabase = getSupabaseBrowserClient();
       const {
         data: { user },
         error: authError,
       } = await supabase.auth.getUser();
 
-      console.log('user:', user?.id);
       if (authError) throw new Error(authError.message);
 
       // not logged in: should be redirected
       if (!user) return;
 
-      console.log('appState.matches:', appState.matches);
-
       // check if app already has matches
       if (appState.matches) {
         // fetch full card info from existing IDs
         const cards = await fetchAdopteeCardsInfo(appState.matches);
-        console.log('cards from existing matches:', cards);
-        console.log('setting isLoaded from existing matches');
         setMatchCards(cards);
         setIsLoaded(true);
         return;
@@ -52,14 +46,10 @@ export default function StageMatching() {
 
       // get existing match or find matches if none exist
       const { data: matchIds, error } = await findMatches(appState.appId);
-      console.log('matchIds:', matchIds);
-      console.log('error:', error);
       if (error) throw new Error(error);
 
       // fetch full card info and store IDs in appState
       const cards = await fetchAdopteeCardsInfo(matchIds!);
-      console.log('cards from findMatches:', cards);
-      console.log('setting isLoaded from findMatches');
       setMatchCards(cards);
       setAppState(prev => ({ ...prev, matches: matchIds }));
       setIsLoaded(true);

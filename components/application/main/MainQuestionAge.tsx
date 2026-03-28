@@ -1,15 +1,12 @@
 'use client';
 
 import { Resolver, useForm } from 'react-hook-form';
-import { RiArrowDropDownLine } from 'react-icons/ri';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as Slider from '@radix-ui/react-slider';
 import z from 'zod';
 import { Button } from '@/components/Button';
-import ErrorMessage from '@/components/ErrorMessage';
 import QuestionBack from '@/components/questions/QuestionBack';
 import RadioCard from '@/components/RadioCard';
-import { TextArea } from '@/components/TextArea';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import { useQuestionNavigaton } from '@/hooks/questions';
@@ -33,14 +30,13 @@ export default function MainQuestionAge() {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
+    //formState: { errors },
   } = useForm<z.infer<typeof agePrefFormSchema>>({
     defaultValues: {
       hasAgePreference: appState.form.agePreference ? 'yes' : 'no',
       minAge: 18,
       maxAge: 80,
     },
-    // resolver: zodResolver(agePrefFormSchema),
     resolver: zodResolver(agePrefFormSchema) as Resolver<
       z.infer<typeof agePrefFormSchema>
     >,
@@ -57,9 +53,6 @@ export default function MainQuestionAge() {
   }: z.infer<typeof agePrefFormSchema>) => {
     const agePref: [number, number] | undefined =
       hasAgePreference === 'yes' ? [minAge ?? 18, maxAge ?? 81] : undefined;
-
-    upsertAppInfo({ age_pref: agePref });
-    nextQuestion();
 
     setAppState(prev => ({
       ...prev,

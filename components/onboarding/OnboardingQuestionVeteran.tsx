@@ -52,7 +52,6 @@ export default function OnboardingQuestionVeteran() {
     setOnboardingInfo(prev => ({ ...prev, isVeteran }));
     await submitOnboardingInfo();
 
-    // this would navigate to the success screen
     nextQuestion();
   };
 
@@ -85,7 +84,7 @@ export default function OnboardingQuestionVeteran() {
           loadingClassName="text-white"
           loading={isSubmitting}
         >
-          Submit
+          Next
         </AsyncButton>
       </div>
     </form>

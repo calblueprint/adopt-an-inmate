@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 import OnboardingComplete from '@/components/onboarding/OnboardingComplete';
+import OnboardingQuestionAdoptedBefore from '@/components/onboarding/OnboardingQuestionAdoptedBefore';
 import OnboardingQuestionDOB from '@/components/onboarding/OnboardingQuestionDOB';
 import OnboardingQuestionName from '@/components/onboarding/OnboardingQuestionName';
 import OnboardingQuestionPronouns from '@/components/onboarding/OnboardingQuestionPronouns';
@@ -28,6 +29,7 @@ export default function OnboardingPage() {
                 <OnboardingQuestionPronouns key="pronouns" />,
                 <OnboardingQuestionState key="state" />,
                 <OnboardingQuestionVeteran key="veteran" />,
+                <OnboardingQuestionAdoptedBefore key="adoptedBefore" />,
                 <OnboardingComplete key="complete" />,
               ]}
             >

@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { Button } from '@/components/Button';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { useApplicationNavigation } from '@/hooks/app-process';
+import useMediaQuery from '@/hooks/useMediaQuery';
 import { ApplicationStage } from '@/types/enums';
 import { RankedAdopteeMatch } from '@/types/schema';
 import MatchingCard from './MatchingCard';
+import MobileMatchingReviewScreen from './MobileMatchingReviewScreen';
 
 interface MatchingReviewScreenProps {
   matchCards: RankedAdopteeMatch[];
@@ -20,12 +22,18 @@ export default function MatchingReviewScreen({
   onBack,
 }: MatchingReviewScreenProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+  const [selectedMatch, setSelectedMatch] = useState<RankedAdopteeMatch | null>(
+    null,
+  );
+  const isMobile = useMediaQuery('(max-width: 640px)');
   const { advanceToStage, upsertAppInfo } = useApplicationNavigation();
 
   const nextStage = async () => {
     setIsLoading(true);
 
     upsertAppInfo({
+      //should it be pending or pending_confirmation?
       status: 'PENDING',
       ranked_cards: ranks, // upsert only IDs
       time_submitted: new Date().toISOString(),
@@ -35,10 +43,30 @@ export default function MatchingReviewScreen({
     setIsLoading(false);
   };
 
+  const handleReadMore = (match: RankedAdopteeMatch) => {
+    setSelectedMatch(match);
+    setIsPopUpOpen(true);
+  };
+
   // derive ranked full card objects from ranks and matchCards
   const rankedMatches: RankedAdopteeMatch[] = ranks
     .map(rankedId => matchCards.find(m => m.id === rankedId))
     .filter((match): match is RankedAdopteeMatch => !!match);
+
+  if (isMobile) {
+    return (
+      <MobileMatchingReviewScreen
+        rankedMatches={rankedMatches}
+        isLoading={isLoading}
+        selectedMatch={selectedMatch}
+        isPopUpOpen={isPopUpOpen}
+        onReadMore={handleReadMore}
+        onClosePopUp={() => setIsPopUpOpen(false)}
+        onBack={onBack}
+        onSubmit={nextStage}
+      />
+    );
+  }
 
   return (
     <div className="flex w-full flex-col gap-12 pt-8">

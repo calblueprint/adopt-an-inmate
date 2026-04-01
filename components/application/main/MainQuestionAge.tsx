@@ -52,15 +52,12 @@ export default function MainQuestionAge() {
     maxAge,
   }: z.infer<typeof agePrefFormSchema>) => {
     const agePref: [number, number] | undefined =
-      hasAgePreference === 'yes' ? [minAge ?? 18, maxAge ?? 81] : undefined;
+      hasAgePreference === 'yes' ? [minAge ?? 18, maxAge ?? 80] : undefined;
 
     setAppState(prev => ({
       ...prev,
       form: { ...prev.form, agePreference: agePref },
     }));
-
-    upsertAppInfo({ age_pref: agePref });
-    nextQuestion();
   };
 
   return (

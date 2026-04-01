@@ -1,3 +1,4 @@
+import EditProfileButton from '../EditProfileButton';
 import LogoutButton from './LogoutButton';
 import MainDashboardTabs from './MainDashboardTabs';
 import NewApplicationButton from './NewApplicationButton';
@@ -5,8 +6,9 @@ import NewApplicationButton from './NewApplicationButton';
 export default function MainDashboard() {
   return (
     <div className="mx-auto flex w-full max-w-400 flex-row justify-end gap-7 px-7">
-      <div className="min-w-61">
+      <div className="flex min-w-61 flex-col gap-2">
         <LogoutButton />
+        <EditProfileButton />
       </div>
 
       <div className="flex w-full flex-col gap-14 rounded-2xl bg-white p-16">

@@ -41,6 +41,19 @@ export function formatAmericanTime(dateParam: Date | string) {
 }
 
 /**
+ * Formats a timestamp string or a date object
+ * into an English date (e.g. Mar 28, 2026)
+ */
+export function formatDate(dateParam: Date | string) {
+  const date = new Date(dateParam);
+  return date.toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
+/**
  * Capitalize the first letter.
  */
 export function capitalize(s: string) {

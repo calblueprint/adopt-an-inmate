@@ -15,6 +15,10 @@ import { ApplicationWithAdoptees } from '@/types/schema';
 
 export default function ApplicationPreviewDialog() {
   const searchParams = useSearchParams();
+  const showPreview = useMemo(
+    () => searchParams.get('dialog') === 'preview',
+    [searchParams],
+  );
   const previewId = useMemo(() => searchParams.get('preview'), [searchParams]);
   const router = useRouter();
   const [appData, setAppData] = useState<ApplicationWithAdoptees>(null);
@@ -50,7 +54,7 @@ export default function ApplicationPreviewDialog() {
     return 'Admin is currently reviewing your application.';
   }, [appData]);
 
-  if (!previewId || !appData?.time_submitted) return null;
+  if (!(showPreview && previewId && appData?.time_submitted)) return null;
 
   // replace URL to / when modal closes
   const triggerNavigate = (open: boolean) => {

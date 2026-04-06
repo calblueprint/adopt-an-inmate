@@ -1,15 +1,19 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Dialog } from 'radix-ui';
 import { Button } from '../Button';
 
 export default function ConfirmationDialog() {
   const searchParams = useSearchParams();
-  const isConfirmation = searchParams.get('confirmation');
+  const showConfirmation = useMemo(
+    () => searchParams.get('dialog') === 'confirmation',
+    [searchParams],
+  );
   const router = useRouter();
 
-  if (isConfirmation !== 'true') return null;
+  if (!showConfirmation) return null;
 
   // replace URL to / when modal closes
   const triggerNavigate = (open: boolean) => {

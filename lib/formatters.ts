@@ -6,6 +6,11 @@ import { FormState } from '@/types/types';
  * display-appropriate string.
  */
 export function formatAppStatus(status: AdopterApplication['status']) {
+  // custom mapping
+  if (status === 'ACCEPTED') return 'Active';
+  if (status === 'PENDING_CONFIRMATION') return 'Pending';
+
+  // generic
   return capitalize(status.toLowerCase().replaceAll('_', ' '));
 }
 

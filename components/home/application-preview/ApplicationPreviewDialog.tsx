@@ -5,14 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Dialog } from 'radix-ui';
 import { getApplicationWithAdoptees } from '@/actions/applications/getApplicationWithAdoptees';
 import Logger from '@/actions/logging';
-import {
-  formatAmericanTime,
-  formatAppStatus,
-  formatDate,
-} from '@/lib/formatters';
+import { formatAmericanTime, formatDate } from '@/lib/formatters';
 import { AdopterApplication, ApplicationWithAdoptees } from '@/types/schema';
 import { AdopterApplicationFormValues } from './AdopterApplicationFormValues';
 import ConfirmationControls from './ConfirmationControls';
+import StatusPill from './StatusPill';
 
 export default function ApplicationPreviewDialog() {
   const searchParams = useSearchParams();
@@ -99,9 +96,7 @@ export default function ApplicationPreviewDialog() {
 
               {/* status & msg */}
               <div className="flex flex-wrap items-center gap-3 text-sm">
-                <p className="rounded-lg bg-yellow-6 px-2 py-0.5 shadow-sm">
-                  {formatAppStatus(appData.status)}
-                </p>
+                <StatusPill status={appData.status} />
                 <p className="font-bold text-gray-11 italic">{statusText}</p>
               </div>
 

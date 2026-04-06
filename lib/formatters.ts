@@ -4,24 +4,20 @@ import { FormState } from '@/types/types';
  * Formats a gender preference value into a
  * display-appropriate string.
  */
-export function formatGenderPreference(
-  genderPreference?: FormState['genderPreference'],
-) {
+export function formatGenderPreference(genderPreference?: string | null) {
   if (!genderPreference) return 'N/A';
 
-  const mapper: Record<typeof genderPreference, string> = {
-    female: 'Female',
-    male: 'Male',
-    no_preference: 'No preference',
-  };
+  if (genderPreference === 'no_preference') return 'No preference';
 
-  return mapper[genderPreference];
+  return capitalize(genderPreference);
 }
 
 export function formatAgePreference(
   agePreference?: FormState['agePreference'],
 ) {
   if (!agePreference || agePreference.length === 0) return 'N/A';
+  if (agePreference.length > 2) return 'Error';
+  if (agePreference.length === 1) return agePreference[0];
 
   // return agePreference;
   return `${agePreference[0]} - ${agePreference[1]}`;

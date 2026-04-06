@@ -5,6 +5,7 @@ export async function GET() {
     date_of_birth: new Date().toISOString().split('T')[0],
     first_name: 'First',
     last_name: 'Last',
+    monday_id: null,
     pronouns: 'he/him',
     state: 'California',
     user_id: 'asd',

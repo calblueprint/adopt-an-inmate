@@ -21,6 +21,7 @@ export const createRow = async (profile: Profile) => {
     state: 'location_mkxage9t',
     veteran_status: 'dropdown_mkxa18jg',
     user_id: '', // blank on purpose
+    monday_id: '', // not sent to this board
   };
 
   // process veteran status from boolean to "yes" or "no"

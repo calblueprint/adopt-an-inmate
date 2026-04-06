@@ -45,6 +45,7 @@ export const useSubmitOnboarding = () => {
       date_of_birth: info.dob.toUTCString(),
       first_name: info.firstName,
       last_name: info.lastName,
+      monday_id: null,
       pronouns: info.pronouns,
       state: info.state,
       veteran_status: info.isVeteran,

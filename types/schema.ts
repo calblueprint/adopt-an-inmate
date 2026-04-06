@@ -10,6 +10,9 @@ export type Profile = PublicTable<'adopter_profiles'>;
 // TODO: update table name when no longer in testing
 export type AdopterApplication = PublicTable<'adopter_applications_dummy'>;
 
+export type ProfileAndApplication =
+  PublicFunctions['get_user_and_application']['Returns'][number];
+
 export type AdopteeMatch =
   PublicFunctions['find_top_k_filtered']['Returns'][number];
 

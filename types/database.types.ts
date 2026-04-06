@@ -105,11 +105,14 @@ export type Database = {
           embedding: string | null
           facility: string | null
           first_name: string | null
+          formerly_adopted: boolean | null
           gender: string | null
           id: string
+          inmate_id: string
           last_name: string | null
           offense: string | null
           state: string | null
+          status: Database["public"]["Enums"]["adoptee_status"] | null
           veteran_status: string | null
         }
         Insert: {
@@ -119,11 +122,14 @@ export type Database = {
           embedding?: string | null
           facility?: string | null
           first_name?: string | null
+          formerly_adopted?: boolean | null
           gender?: string | null
           id: string
+          inmate_id: string
           last_name?: string | null
           offense?: string | null
           state?: string | null
+          status?: Database["public"]["Enums"]["adoptee_status"] | null
           veteran_status?: string | null
         }
         Update: {
@@ -133,11 +139,14 @@ export type Database = {
           embedding?: string | null
           facility?: string | null
           first_name?: string | null
+          formerly_adopted?: boolean | null
           gender?: string | null
           id?: string
+          inmate_id?: string
           last_name?: string | null
           offense?: string | null
           state?: string | null
+          status?: Database["public"]["Enums"]["adoptee_status"] | null
           veteran_status?: string | null
         }
         Relationships: []
@@ -146,7 +155,9 @@ export type Database = {
         Row: {
           adopter_uuid: string
           app_uuid: string
+          exported_to_monday: boolean
           gender_pref: string | null
+          monday_id: string | null
           offense_pref: string[] | null
           personal_bio: string | null
           ranked_cards: Json | null
@@ -157,7 +168,9 @@ export type Database = {
         Insert: {
           adopter_uuid: string
           app_uuid?: string
+          exported_to_monday?: boolean
           gender_pref?: string | null
+          monday_id?: string | null
           offense_pref?: string[] | null
           personal_bio?: string | null
           ranked_cards?: Json | null
@@ -168,7 +181,9 @@ export type Database = {
         Update: {
           adopter_uuid?: string
           app_uuid?: string
+          exported_to_monday?: boolean
           gender_pref?: string | null
+          monday_id?: string | null
           offense_pref?: string[] | null
           personal_bio?: string | null
           ranked_cards?: Json | null
@@ -191,6 +206,7 @@ export type Database = {
           date_of_birth: string
           first_name: string
           last_name: string
+          monday_id: string | null
           pronouns: string
           state: string
           user_id: string
@@ -200,6 +216,7 @@ export type Database = {
           date_of_birth: string
           first_name: string
           last_name: string
+          monday_id?: string | null
           pronouns: string
           state: string
           user_id?: string
@@ -209,6 +226,7 @@ export type Database = {
           date_of_birth?: string
           first_name?: string
           last_name?: string
+          monday_id?: string | null
           pronouns?: string
           state?: string
           user_id?: string
@@ -260,9 +278,27 @@ export type Database = {
           veteran_status: string
         }[]
       }
+      get_user_and_application: {
+        Args: { app_id: string }
+        Returns: {
+          adopter_monday_id: string | null
+          date_of_birth: string
+          exported_to_monday: boolean
+          first_name: string
+          gender_pref: string
+          last_name: string
+          personal_bio: string
+          pronouns: string
+          ranked_cards: string[]
+          state: string
+          user_id: string
+          veteran_status: boolean
+        }[]
+      }
       transfer_tables: { Args: never; Returns: undefined }
     }
     Enums: {
+      adoptee_status: "WAIT_LISTED" | "OUT_FOR_CONSIDERATION"
       status_vals: "incomplete" | "pending" | "accepted" | "rejected" | "ended"
     }
     CompositeTypes: {

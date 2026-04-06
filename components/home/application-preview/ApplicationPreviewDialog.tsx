@@ -5,7 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Dialog } from 'radix-ui';
 import { getApplicationWithAdoptees } from '@/actions/applications/getApplicationWithAdoptees';
 import Logger from '@/actions/logging';
-import { formatAmericanTime, formatDate } from '@/lib/formatters';
+import {
+  formatAmericanTime,
+  formatDate,
+  formatEndedMessage,
+} from '@/lib/formatters';
 import { AdopterApplication, ApplicationWithAdoptees } from '@/types/schema';
 import { AdopterApplicationFormValues } from './AdopterApplicationFormValues';
 import ConfirmationControls from './ConfirmationControls';
@@ -56,6 +60,14 @@ export default function ApplicationPreviewDialog() {
         return 'We are still reviewing your application!';
       case 'PENDING_CONFIRMATION':
         return "You've been matched! Confirm to accept below.";
+      case 'REAPPLY':
+        return appData.matched
+          ? "We didn't receive confirmation in time, please reapply."
+          : 'We found an issue with your application, please reapply.';
+      case 'REJECTED':
+        return 'You are blocked from creating future applications. Contact us to fix this.';
+      case 'ENDED':
+        return formatEndedMessage(appData.time_ended, appData.ended_reason);
       default:
         return '';
     }

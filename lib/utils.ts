@@ -151,11 +151,13 @@ export function getResumeStageAndQuestion(app: AdopterApplication): {
   // Check MAIN stage question columns
   const hasBio = app.personal_bio != null && app.personal_bio.trim() !== '';
   const hasGender = app.gender_pref != null && app.gender_pref.trim() !== '';
+  const hasAge = app.age_pref != null && app.age_pref.length == 2;
 
   if (hasBio) {
     //TODO: update routing & other logic to remove offense, reason + add age
     if (!hasGender) return { stage: 1, question: 1 };
-    return { stage: 1, question: 4 }; // review
+    if (!hasAge) return { stage: 1, question: 2 };
+    return { stage: 1, question: 3 }; // review
   }
 
   // PRE stage - no main cols filled

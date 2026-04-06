@@ -1,4 +1,4 @@
-import { queryMatchedAdopteeForApprovedApplication } from '@/actions/monday/queryMatchedAdopteeForApprovedApplication';
+import { queryMatchedAdopteeForApprovedApplication } from '@/actions/monday/queryMatchedAdoptee';
 
 export async function GET(req: Request) {
   const url = new URL(req.url);

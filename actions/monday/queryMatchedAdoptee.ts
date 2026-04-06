@@ -2,50 +2,137 @@
 
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { assertEnvVarExists } from '@/lib/utils';
+import { RankedAdopteeMatch } from '@/types/schema';
 import { mondayApiClient } from './core';
 
-function isAdoptedStatusGroupTitle(groupTitle: string) {
-  const t = groupTitle.trim();
-  return (
-    t.startsWith('A: Adopted') ||
-    t.startsWith('B: Adopted') ||
-    t.startsWith('AO: Adopted')
-  );
+export type MatchedAdopteeResult = {
+  matchedAdopteeId: string;
+  unmatchedAdopteeIds: string[];
+};
+
+function uniqueStrings(values: string[]) {
+  return Array.from(new Set(values.filter(Boolean)));
 }
 
-interface MondayItemRow {
-  id: string;
-  group?: { title?: string };
-  board?: { id?: string };
-}
-
-function parseMondayItemsResponse(response: unknown): MondayItemRow[] {
-  const responseObj = response as Record<string, unknown>;
-  const maybeData = 'data' in responseObj ? responseObj.data : responseObj;
-  const dataObj = maybeData as Record<string, unknown>;
-  const itemsMaybe = dataObj.items;
-  return Array.isArray(itemsMaybe) ? (itemsMaybe as MondayItemRow[]) : [];
-}
-
-async function fetchMondayItemsByIds(ids: string[]): Promise<MondayItemRow[]> {
-  const idsArg = ids.join(', ');
-  const gpl = `query {
-    items(ids: [${idsArg}]) {
-      id
-      group { title }
-      board { id }
-    }
-  }`;
-
-  const response = await mondayApiClient.request(gpl);
-  return parseMondayItemsResponse(response);
-}
-
-export async function queryMatchedAdoptee(
+function normalizeCandidateIds(
+  rankedCards: unknown,
   applicationId: string,
-): Promise<{ matchedAdopteeId: string }> {
-  assertEnvVarExists('MONDAY_ADOPTED_BOARD_ID');
+): string[] {
+  if (!Array.isArray(rankedCards) || rankedCards.length !== 4) {
+    throw new Error(
+      `Expected ranked_cards to contain exactly 4 adoptee ids for app_uuid=${applicationId}`,
+    );
+  }
+
+  const first = rankedCards[0];
+  if (typeof first === 'string') {
+    if (!rankedCards.every((x): x is string => typeof x === 'string')) {
+      throw new Error(
+        `Expected ranked_cards to be 4 strings (Monday item ids) for app_uuid=${applicationId}`,
+      );
+    }
+    return rankedCards;
+  }
+
+  const asMatches = rankedCards as RankedAdopteeMatch[];
+  const ids = asMatches.map(c => String(c.id));
+  if (ids.some(id => !id)) {
+    throw new Error(
+      `Expected ranked_cards entries to have id for app_uuid=${applicationId}`,
+    );
+  }
+  return ids;
+}
+
+type MondayItem = {
+  id: string;
+  group?: {
+    title?: string | null;
+  } | null;
+};
+
+async function fetchCandidateIdsFromBoard(params: {
+  boardId: string;
+  candidateIds: Set<string>;
+  groupTitlePredicate: (groupTitle: string) => boolean;
+  maxFound: number;
+}) {
+  const { boardId, candidateIds, groupTitlePredicate, maxFound } = params;
+
+  const found = new Set<string>();
+  let cursor: string | null = null;
+
+  // Avoid infinite loops if Monday returns unexpected cursor behavior.
+  for (let page = 0; page < 50 && found.size < maxFound; page++) {
+    const cursorArg = cursor ? `cursor: "${cursor}"` : '';
+    const itemsPageArgs = cursorArg ? `limit: 100, ${cursorArg}` : 'limit: 100';
+
+    const gpl = `query {
+      boards(ids: ${boardId}) {
+        items_page(${itemsPageArgs}) {
+          cursor
+          items {
+            id
+            group { title }
+          }
+        }
+      }
+    }`;
+
+    const response = await mondayApiClient.request(gpl);
+
+    const responseObj = response as Record<string, unknown>;
+    const maybeData = 'data' in responseObj ? responseObj.data : responseObj;
+    const dataObj = maybeData as Record<string, unknown>;
+
+    const boardsMaybe = dataObj.boards;
+    const boardsArray = Array.isArray(boardsMaybe) ? boardsMaybe : [];
+    const firstBoard = boardsArray[0] as Record<string, unknown> | undefined;
+    const itemsPageMaybe = firstBoard?.['items_page'] as
+      | Record<string, unknown>
+      | undefined;
+
+    const itemsMaybe = itemsPageMaybe?.items;
+    const itemsArray = Array.isArray(itemsMaybe) ? itemsMaybe : [];
+
+    const items: MondayItem[] = itemsArray as MondayItem[];
+
+    for (const item of items) {
+      if (!candidateIds.has(String(item.id))) continue;
+
+      const groupTitle = item.group?.title ?? '';
+      if (!groupTitle) continue;
+
+      if (groupTitlePredicate(String(groupTitle))) {
+        found.add(String(item.id));
+        if (found.size >= maxFound) break;
+      }
+    }
+
+    const cursorMaybe = itemsPageMaybe?.['cursor'];
+    cursor = typeof cursorMaybe === 'string' ? cursorMaybe : null;
+    if (!cursor) break;
+  }
+
+  return found;
+}
+
+/**
+ * Resolves which of the four ranked adoptees is the match for an approved application.
+ *
+ * - While three candidates remain on the WL PIPs board in OFC status, the fourth id is treated as matched.
+ * - Otherwise, falls back to finding the single candidate on the Adopted board with A:/B:/AO: Adopted status.
+ *
+ * `ranked_cards` may be either four Monday item id strings or four objects with an `id` field (e.g. RankedAdopteeMatch).
+ */
+export async function queryMatchedAdopteeForApprovedApplication(
+  applicationId: string,
+): Promise<MatchedAdopteeResult> {
+  const wlBoardId = process.env.MONDAY_WL_PIPS_BOARD_ID ?? '';
   const adoptedBoardId = process.env.MONDAY_ADOPTED_BOARD_ID ?? '';
+
+  assertEnvVarExists('MONDAY_WL_PIPS_BOARD_ID');
+  assertEnvVarExists('MONDAY_ADOPTED_BOARD_ID');
 
   const supabase = await getSupabaseServerClient();
   const { data: appData, error } = await supabase
@@ -58,32 +145,66 @@ export async function queryMatchedAdoptee(
   if (!appData)
     throw new Error(`Application not found for app_uuid=${applicationId}`);
 
-  const rankedCards = appData.ranked_cards;
-  if (
-    !Array.isArray(rankedCards) ||
-    rankedCards.length !== 4 ||
-    !rankedCards.every((x): x is string => typeof x === 'string')
-  ) {
-    throw new Error(
-      `Expected ranked_cards to be an array of exactly 4 strings (Monday item ids) for app_uuid=${applicationId}`,
-    );
-  }
+  const candidateIds = uniqueStrings(
+    normalizeCandidateIds(appData.ranked_cards, applicationId),
+  );
+  const candidateSet = new Set(candidateIds);
 
-  const candidateSet = new Set(rankedCards);
-  const items = await fetchMondayItemsByIds(rankedCards);
+  // 1) Check WL PIPs first to confirm the 3 non-matched adoptees are still OFC.
+  const ofcTitlePredicate = (groupTitle: string) =>
+    groupTitle.trim().startsWith('OFC:');
 
-  const adoptedMatches = items.filter(item => {
-    if (!candidateSet.has(String(item.id))) return false;
-    if (String(item.board?.id) !== String(adoptedBoardId)) return false;
-    const title = item.group?.title ?? '';
-    return isAdoptedStatusGroupTitle(title);
+  const wlFound = await fetchCandidateIdsFromBoard({
+    boardId: wlBoardId,
+    candidateIds: candidateSet,
+    groupTitlePredicate: ofcTitlePredicate,
+    maxFound: 3,
   });
 
-  if (adoptedMatches.length !== 1) {
+  // If 3 candidates exist in OFC, the remaining 4th is the matched one.
+  if (wlFound.size === 3) {
+    const matched = candidateIds.find(id => !wlFound.has(id));
+    if (!matched) {
+      throw new Error(
+        'Inconsistent state: wlFound size was 3 but no unmatched candidate found.',
+      );
+    }
+
+    const unmatchedAdopteeIds = candidateIds.filter(id => id !== matched);
+    return { matchedAdopteeId: matched, unmatchedAdopteeIds };
+  }
+
+  // 2) Fallback: check Adopted board for the matched adoptee.
+  const adoptedTitlePredicate = (groupTitle: string) => {
+    const t = groupTitle.trim();
+    return (
+      t.startsWith('A: Adopted') ||
+      t.startsWith('B: Adopted') ||
+      t.startsWith('AO: Adopted')
+    );
+  };
+
+  const adoptedFound = await fetchCandidateIdsFromBoard({
+    boardId: adoptedBoardId,
+    candidateIds: candidateSet,
+    groupTitlePredicate: adoptedTitlePredicate,
+    maxFound: 1,
+  });
+
+  if (adoptedFound.size !== 1) {
     throw new Error(
-      `Expected exactly one ranked candidate on Adopted board with A:/B:/AO: status; found ${adoptedMatches.length} for app_uuid=${applicationId}`,
+      `Could not uniquely determine matched adoptee. matchedFound=${Array.from(
+        adoptedFound,
+      ).join(
+        ',',
+      )} wlFound=${Array.from(wlFound).join(',')} candidates=${candidateIds.join(',')}`,
     );
   }
 
-  return { matchedAdopteeId: String(adoptedMatches[0].id) };
+  const matchedAdopteeId = Array.from(adoptedFound)[0];
+  const unmatchedAdopteeIds = candidateIds.filter(
+    id => id !== matchedAdopteeId,
+  );
+
+  return { matchedAdopteeId, unmatchedAdopteeIds };
 }

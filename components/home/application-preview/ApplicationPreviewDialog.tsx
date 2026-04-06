@@ -9,6 +9,7 @@ import { formatAmericanTime, formatDate } from '@/lib/formatters';
 import { AdopterApplication, ApplicationWithAdoptees } from '@/types/schema';
 import { AdopterApplicationFormValues } from './AdopterApplicationFormValues';
 import ConfirmationControls from './ConfirmationControls';
+import EndCorrespondenceControls from './EndCorrespondenceControls';
 import StatusPill from './StatusPill';
 
 export default function ApplicationPreviewDialog() {
@@ -133,6 +134,13 @@ export default function ApplicationPreviewDialog() {
               {/* match confirmation controls */}
               {appData.matched && appData.status === 'PENDING_CONFIRMATION' && (
                 <ConfirmationControls onSubmit={form => console.log(form)} />
+              )}
+
+              {/* active: end correspondence */}
+              {appData.status === 'ACCEPTED' && (
+                <EndCorrespondenceControls
+                  onSubmit={form => console.log(form.reason)}
+                />
               )}
             </main>
           </Dialog.Content>

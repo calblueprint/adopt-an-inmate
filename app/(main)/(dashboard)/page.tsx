@@ -1,4 +1,4 @@
-import ApplicationPreviewDialog from '@/components/home/ApplicationPreviewDialog';
+import ApplicationPreviewDialog from '@/components/home/application-preview/ApplicationPreviewDialog';
 import ConfirmationDialog from '@/components/home/ConfirmationDialog';
 import MainDashboard from '@/components/MainDashboard/MainDashboard';
 

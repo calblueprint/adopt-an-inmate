@@ -1,4 +1,13 @@
+import { AdopterApplication } from '@/types/schema';
 import { FormState } from '@/types/types';
+
+/**
+ * Formats an application status value into a
+ * display-appropriate string.
+ */
+export function formatAppStatus(status: AdopterApplication['status']) {
+  return capitalize(status.toLowerCase().replaceAll('_', ' '));
+}
 
 /**
  * Formats a gender preference value into a

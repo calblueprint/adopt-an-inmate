@@ -1,4 +1,4 @@
-import { getApplicationWithAdoptees } from '@/actions/applications/getApplication';
+import { getApplicationWithAdoptees } from '@/actions/applications/getApplicationWithAdoptees';
 import { Database } from './database.types';
 
 // utility types

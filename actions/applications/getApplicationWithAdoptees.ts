@@ -22,15 +22,49 @@ export const getApplicationWithAdoptees = async (appId: string) => {
     .eq('app_uuid', appId)
     .eq('adopter_uuid', user.id)
     .maybeSingle();
+
   if (getAppError || !appData) {
     return { data: null, error: 'Not found' };
   }
 
   if (!appData.ranked_cards)
-    return { data: { ...appData, adoptees: null }, error: null };
+    return {
+      data: { matched: false, ...appData, adoptees: null },
+      error: null,
+    };
 
   // get adoptees
   const serviceSupabase = await dangerous_getSupabaseServiceClient();
+
+  // matched: get only matched adoptee
+  if (appData.matched_adoptee) {
+    const { data: adopteeData, error: getAdopteeError } = await serviceSupabase
+      .from('adoptee_vector_test')
+      .select('id, gender, state, first_name, dob, bio')
+      .eq('id', appData.matched_adoptee)
+      .maybeSingle();
+
+    if (getAdopteeError) {
+      Logger.error(
+        `Error fetching matched adoptee ${appData.matched_adoptee} for application ${appId}: ${getAdopteeError}`,
+      );
+      return { data: null, error: 'An unexpected error occurred' };
+    }
+
+    if (!adopteeData) {
+      Logger.error(
+        `Adoptee ${appData.matched_adoptee} for applciation ${appId} not found.`,
+      );
+      return { data: null, error: 'An unexpected error occurred' };
+    }
+
+    return {
+      data: { matched: true, ...appData, adoptees: [adopteeData] },
+      error: null,
+    };
+  }
+
+  // get unmatched adoptees
   const { data: adopteeData, error: getAdopteeError } = await serviceSupabase
     .from('adoptee_vector_test')
     .select('id, gender, state, first_name, dob')
@@ -43,5 +77,8 @@ export const getApplicationWithAdoptees = async (appId: string) => {
     return { data: null, error: 'An unexpected error occurred' };
   }
 
-  return { data: { ...appData, adoptees: adopteeData }, error: null };
+  return {
+    data: { matched: false, ...appData, adoptees: adopteeData },
+    error: null,
+  };
 };

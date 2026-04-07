@@ -53,7 +53,11 @@ export async function updateAdopteeMondayStatus(
   const boardId = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
 
   if (status === 'OFC') {
-    return buildStatusUpdateMutationInner(boardId, mondayItemIds, () => LABEL_OFC);
+    return buildStatusUpdateMutationInner(
+      boardId,
+      mondayItemIds,
+      () => LABEL_OFC,
+    );
   }
 
   const supabase = await getSupabaseServerClient();

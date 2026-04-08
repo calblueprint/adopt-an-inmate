@@ -4,8 +4,10 @@ import { useState } from 'react';
 import Logger from '@/actions/logging';
 import { Button } from '@/components/Button';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
+import useMediaQuery from '@/hooks/useMediaQuery';
 import { RankedAdopteeMatch } from '@/types/schema';
 import MatchingCard from './MatchingCard';
+import MobileMatchingSelectScreen from './MobileMatchingSelectScreen';
 
 interface MatchingSelectScreenProps {
   matchCards: RankedAdopteeMatch[];
@@ -18,23 +20,25 @@ export default function MatchingSelectScreen({
 }: MatchingSelectScreenProps) {
   const { appState } = useApplicationContext();
   const [rankedIds, setRankedIds] = useState<string[]>([]);
+  const isMobile = useMediaQuery('(max-width: 640px)');
+  const [isRankingOpen, setIsRankingOpen] = useState(false);
+  const [selectedMatch, setSelectedMatch] = useState<RankedAdopteeMatch | null>(
+    null,
+  );
 
-  /**
-   * Toggles the rank of an adoptee.
-   * If ranked, removes it from rankedIds.
-   * If unranked, adds it to the end of rankedIds.
-   */
+  // toggles the rank of an adoptee
   const handleRankToggle = (id: string) => {
-    setRankedIds(prevIds => {
-      const index = prevIds.indexOf(id);
-      if (index > -1) {
-        // unrank: filter out the id to remove it
-        return prevIds.filter(rankedId => rankedId !== id);
-      } else {
-        // rank: add id
-        return [...prevIds, id];
-      }
+    setRankedIds(prev => {
+      const index = prev.indexOf(id);
+      return index > -1
+        ? prev.filter(rankedId => rankedId !== id)
+        : [...prev, id];
     });
+  };
+
+  const handleReadMore = (match: RankedAdopteeMatch) => {
+    setSelectedMatch(match);
+    setIsRankingOpen(true);
   };
 
   const handleNextClick = async () => {
@@ -44,11 +48,27 @@ export default function MatchingSelectScreen({
       );
       return;
     }
-
     onTransitionToReview(rankedIds);
   };
 
-  const isNextDisabled = rankedIds.length != 4; // disable next if not all 4 ranked
+  const isNextDisabled = rankedIds.length !== 4;
+
+  if (isMobile) {
+    return (
+      <MobileMatchingSelectScreen
+        matches={matchCards}
+        rankedIds={rankedIds}
+        isNextDisabled={isNextDisabled}
+        selectedMatch={selectedMatch}
+        isRankingOpen={isRankingOpen}
+        onRankToggle={handleRankToggle}
+        onRankedIdsChange={setRankedIds}
+        onReadMore={handleReadMore}
+        onNextClick={handleNextClick}
+        onClosePopUp={() => setIsRankingOpen(false)}
+      />
+    );
+  }
 
   return (
     <div className="flex w-full flex-col gap-12 pt-8">
@@ -65,10 +85,11 @@ export default function MatchingSelectScreen({
             // calculate current rank based on array index
             const rankIndex = rankedIds.indexOf(m.id);
             const currentRank = rankIndex > -1 ? rankIndex + 1 : undefined;
+
             return (
               <MatchingCard
-                match={m}
                 key={m.id}
+                match={m}
                 rank={currentRank}
                 onSelect={handleRankToggle}
               />

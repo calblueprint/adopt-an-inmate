@@ -21,13 +21,12 @@ export default function MatchingSelectScreen({
   const { appState } = useApplicationContext();
   const [rankedIds, setRankedIds] = useState<string[]>([]);
   const isMobile = useMediaQuery('(max-width: 640px)');
-  //used for testing, can remove later
-  //console.log('[MatchingSelectScreen] mode:', isMobile ? 'mobile' : 'desktop');
   const [isRankingOpen, setIsRankingOpen] = useState(false);
   const [selectedMatch, setSelectedMatch] = useState<RankedAdopteeMatch | null>(
     null,
   );
 
+  // toggles the rank of an adoptee
   const handleRankToggle = (id: string) => {
     setRankedIds(prev => {
       const index = prev.indexOf(id);

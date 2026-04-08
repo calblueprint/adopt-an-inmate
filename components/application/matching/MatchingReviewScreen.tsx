@@ -33,11 +33,10 @@ export default function MatchingReviewScreen({
     setIsLoading(true);
 
     upsertAppInfo({
-      //should it be pending or pending_confirmation?
       status: 'PENDING',
       ranked_cards: ranks, // upsert only IDs
       time_submitted: new Date().toISOString(),
-    }); //new upsert helper
+    });
 
     advanceToStage(ApplicationStage.SUBMITTED);
     setIsLoading(false);

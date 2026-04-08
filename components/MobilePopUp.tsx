@@ -1,4 +1,3 @@
-// MobilePopUp.tsx
 'use client';
 
 import { Dialog } from 'radix-ui';

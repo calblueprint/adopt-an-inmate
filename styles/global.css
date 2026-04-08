@@ -92,6 +92,10 @@
     font-size: 1.25rem;
   }
 
+  html {
+    scrollbar-gutter: stable;
+  }
+  
   p,
   div,
   b,

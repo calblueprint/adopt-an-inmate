@@ -38,6 +38,19 @@ class MondayBoardFetcher:
     self.GROUP_ID = MONDAY_GROUP_ID
     self.BOARD_ID = MONDAY_BOARD_ID
 
+    missing = []
+    if not self.API_KEY:
+        missing.append("MONDAY_API_KEY")
+    if not self.API_URL:
+        missing.append("MONDAY_API_URL")
+    if not self.BOARD_ID:
+        missing.append("MONDAY_BOARD_ID")
+    if not self.GROUP_ID:
+        missing.append("MONDAY_GROUP_ID")
+
+    if missing:
+        raise ValueError(f"Missing required env vars: {', '.join(missing)}")
+
   def _build_query(self, since_date_str: str, is_initial=True, cursor=None):
     column_ids_list = list(MONDAY_COLUMN_IDS.values())
     if is_initial:
@@ -50,7 +63,7 @@ class MondayBoardFetcher:
     return f"""query {{
       boards(ids: {self.BOARD_ID}) {{
         name
-        items_page (limit: 500, {query_params_str}{',' if query_params_str and cursor_str else ''}{cursor_str}) {{
+        items_page (limit: 500 {query_params_str}{',' if query_params_str and cursor_str else ''}{cursor_str}) {{
           cursor
           items {{
             id 
@@ -131,10 +144,11 @@ class MondayBoardFetcher:
         "veteran_status": get_col_val(columns, MONDAY_COLUMN_IDS["veteran_status"]),
         "offense": get_col_val(columns, MONDAY_COLUMN_IDS["offense"]),
         "state": get_col_val(columns, MONDAY_COLUMN_IDS["state"]),
-        "adopted": "false"
+        # translate yes/no to boolean for formerly_adopted
+        "formerly_adopted": get_col_val(columns, MONDAY_COLUMN_IDS["formerly_adopted"]) == "Yes"
       }
       adoptee_data_dict[record_id] = record   
 
     adoptee_table_data = list(adoptee_data_dict.values())
-    
+
     return adoptee_table_data

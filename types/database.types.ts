@@ -104,6 +104,7 @@ export type Database = {
           embedding: string | null
           facility: string | null
           first_name: string | null
+          formerly_adopted: boolean
           gender: string | null
           id: string
           inmate_id: string
@@ -119,6 +120,7 @@ export type Database = {
           embedding?: string | null
           facility?: string | null
           first_name?: string | null
+          formerly_adopted?: boolean
           gender?: string | null
           id: string
           inmate_id: string
@@ -134,6 +136,7 @@ export type Database = {
           embedding?: string | null
           facility?: string | null
           first_name?: string | null
+          formerly_adopted?: boolean
           gender?: string | null
           id?: string
           inmate_id?: string

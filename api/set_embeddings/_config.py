@@ -27,5 +27,6 @@ MONDAY_COLUMN_IDS = {
   "dob": "date_of_birth__1",
   "veteran_status": "color1__1",
   "offense": "offense__1",
-  "state": "dropdown9__1"
+  "state": "dropdown9__1",
+  "formerly_adopted": "color_mm1pq72v"  # new column added 3/22
 }

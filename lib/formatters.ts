@@ -31,7 +31,8 @@ export function formatAgePreference(
 ) {
   if (!agePreference || agePreference.length === 0) return 'N/A';
 
-  return agePreference;
+  // return agePreference;
+  return `${agePreference[0]} - ${agePreference[1]}`;
 }
 
 /**

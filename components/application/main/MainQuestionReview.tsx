@@ -92,17 +92,17 @@ export default function MainQuestionReview() {
               {formatOffensePreference(appState.form.offensePreference)}
             </p>
           </div>
-          <div className="flex flex-col gap-[0.38]">
-            <p className="text-[0.78844rem] leading-normal font-[600] font-medium text-[var(--color-gray-8)]">
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">
               Age range preference
             </p>
-            <p className="text-[1.0035rem] leading-normal font-[400] font-medium text-[var(--color-gray-12)]">
+            <p className="text-gray-12">
               {formatAgePreference(appState.form.agePreference)}
             </p>
           </div>
 
-          <div className="flex flex-col gap-[0.38]">
-            <p className="text-[0.78844rem] leading-normal font-[600] font-medium text-[var(--color-gray-8)]">
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">
               {appState.stillInCorrespondence
                 ? 'Reason for adopting'
                 : 'Why it ended'}

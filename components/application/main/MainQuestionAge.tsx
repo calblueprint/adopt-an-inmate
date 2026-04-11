@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Resolver, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as Slider from '@radix-ui/react-slider';
@@ -7,30 +8,55 @@ import z from 'zod';
 import { Button } from '@/components/Button';
 import QuestionBack from '@/components/questions/QuestionBack';
 import RadioCard from '@/components/RadioCard';
+import { Textbox } from '@/components/Textbox';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import { useQuestionNavigaton } from '@/hooks/questions';
 
-const agePrefFormSchema = z.object({
-  hasAgePreference: z.enum(
-    ['yes', 'no'],
-    'Please select from one of the options below',
-  ),
-  minAge: z.coerce.number().min(18).max(80).optional(),
-  maxAge: z.coerce.number().min(18).max(80).optional(),
-});
+// const agePrefFormSchema = z.object({
+//   hasAgePreference: z.enum(
+//     ['yes', 'no'],
+//     'Please select from one of the options below',
+//   ),
+//   minAge: z.coerce.number().min(18).max(80).optional(),
+//   maxAge: z.coerce.number().min(18).max(80).optional(),
+// });
+const agePrefFormSchema = z
+  .object({
+    hasAgePreference: z.enum(
+      ['yes', 'no'],
+      'Please select from one of the options below',
+    ),
+    minAge: z.coerce.number().min(18).max(80).optional(),
+    maxAge: z.coerce.number().min(18).max(80).optional(),
+  })
+  .refine(
+    data => {
+      if (data.hasAgePreference === 'yes') {
+        return data.minAge !== undefined && data.maxAge !== undefined;
+      }
+      return true;
+    },
+    {
+      message: 'Please enter both a minimum and maximum age.',
+      path: ['minAge'],
+    },
+  );
 
 export default function MainQuestionAge() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
   const { upsertAppInfo } = useApplicationNavigation();
 
+  const [minAgeDisplay, setMinAgeDisplay] = useState<string>('18');
+  const [maxAgeDisplay, setMaxAgeDisplay] = useState<string>('80+');
+
   const {
     register,
     handleSubmit,
     watch,
     setValue,
-    //formState: { errors },
+    formState: { errors },
   } = useForm<z.infer<typeof agePrefFormSchema>>({
     defaultValues: {
       hasAgePreference: appState.form.agePreference ? 'yes' : 'no',
@@ -46,18 +72,47 @@ export default function MainQuestionAge() {
   const minAge = watch('minAge');
   const maxAge = watch('maxAge');
 
+  // const onSubmit = async ({
+  //   hasAgePreference,
+  //   minAge,
+  //   maxAge,
+  // }: z.infer<typeof agePrefFormSchema>) => {
+  //   console.log('typeof minAge:', typeof minAge, 'value:', minAge);
+  //   console.log('typeof maxAge:', typeof maxAge, 'value:', maxAge);
+  //   const agePref: [number, number] | undefined =
+  //     hasAgePreference === 'yes' ? [parseInt(String(minAge ?? 18), 10), parseInt(String(maxAge ?? 80), 10)] : undefined;
+
+  //   setAppState(prev => ({
+  //     ...prev,
+  //     form: { ...prev.form, agePreference: agePref },
+  //   }));
+
+  //   await upsertAppInfo({ age_pref: agePref });  // saves to the backend
+  //   nextQuestion();         // navigates to the next page
+  // };
   const onSubmit = async ({
     hasAgePreference,
     minAge,
     maxAge,
   }: z.infer<typeof agePrefFormSchema>) => {
+    console.log('typeof minAge:', typeof minAge, 'value:', minAge);
+    console.log('typeof maxAge:', typeof maxAge, 'value:', maxAge);
+
     const agePref: [number, number] | undefined =
-      hasAgePreference === 'yes' ? [minAge ?? 18, maxAge ?? 80] : undefined;
+      hasAgePreference === 'yes'
+        ? [
+            parseInt(String(minAge ?? 18), 10),
+            parseInt(String(maxAge ?? 80), 10),
+          ]
+        : undefined;
 
     setAppState(prev => ({
       ...prev,
       form: { ...prev.form, agePreference: agePref },
     }));
+
+    await upsertAppInfo({ age_pref: agePref });
+    nextQuestion();
   };
 
   return (
@@ -92,14 +147,21 @@ export default function MainQuestionAge() {
 
             <Slider.Root
               className="relative flex w-full touch-none items-center"
-              defaultValue={[18, 80]}
+              // defaultValue={[18, 80]}
+              value={[minAge ?? 18, maxAge ?? 80]} // controlled, not defaultValue
               min={18}
               max={80}
               step={1}
               aria-label="Age preference"
+              // onValueChange={vals => {
+              //   setValue('minAge', vals[0]);
+              //   setValue('maxAge', vals[1]);
+              // }}
               onValueChange={vals => {
                 setValue('minAge', vals[0]);
                 setValue('maxAge', vals[1]);
+                setMinAgeDisplay(String(vals[0]));
+                setMaxAgeDisplay(vals[1] === 80 ? '80+' : String(vals[1]));
               }}
             >
               <Slider.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-gray-200">
@@ -113,22 +175,97 @@ export default function MainQuestionAge() {
             <div className="flex flex-row justify-between">
               <div className="flex flex-col gap-1">
                 <p className="text-gray-10">Minimum</p>
-                <input
+                <Textbox
+                  className="h-9 rounded-lg border-2 border-gray-10 pl-2"
+                  value={minAgeDisplay}
+                  maxLength={2}
+                  onChange={e => {
+                    const raw = e.target.value;
+                    setMinAgeDisplay(raw);
+                    const parsed = parseInt(raw);
+                    setValue('minAge', isNaN(parsed) ? undefined : parsed, {
+                      shouldValidate: true,
+                    });
+                  }}
+                ></Textbox>
+
+                {/* <input
                   type="number"
-                  className="h-9 rounded-lg border-2 border-gray-10"
-                  value={minAge ?? 18}
-                  onChange={e => setValue('minAge', parseInt(e.target.value))}
-                />
+                  className="h-9 rounded-lg border-2 border-gray-10 pl-2"
+                  value={minAgeDisplay}
+                  onChange={e => {
+                    const raw = e.target.value;
+                    setMinAgeDisplay(raw); // always update display, even if blank
+                    const parsed = parseInt(raw);
+                    setValue('minAge', isNaN(parsed) ? undefined : parsed, {
+                      shouldValidate: true,
+                    });
+                  }}
+                /> */}
+                {/* {errors.minAge && (
+                  <p className="text-sm text-red-600">Minimum age is 18</p>
+                )} */}
+                {errors.minAge?.type === 'too_small' && (
+                  <p className="text-sm text-red-600"> Minimum age is 18.</p>
+                )}
+                {minAgeDisplay.trim() === '' && (
+                  <p className="text-sm text-red-600"> Please enter an age.</p>
+                )}
+                {errors.minAge?.type === 'custom' && (
+                  <p className="text-sm text-red-600">
+                    Minimum age cannot exceed maximum age
+                  </p>
+                )}
+                {errors.minAge?.type === 'too_big' && (
+                  <p className="text-sm text-red-600">
+                    Minimum age cannot exceed maximum age
+                  </p>
+                )}
               </div>
 
               <div className="flex flex-col gap-1">
                 <p className="text-right text-gray-10">Maximum</p>
-                <input
+                <Textbox
+                  className="h-9 rounded-lg border-2 border-gray-10 pr-2 text-right"
+                  value={maxAgeDisplay}
+                  maxLength={2}
+                  onChange={e => {
+                    const raw = e.target.value.replace('+', '');
+                    setMaxAgeDisplay(
+                      raw === '' ? '' : parseInt(raw) === 80 ? '80+' : raw,
+                    );
+                    const parsed = parseInt(raw);
+                    if (!isNaN(parsed)) {
+                      setValue('maxAge', parsed, { shouldValidate: true });
+                    } else {
+                      setValue('maxAge', undefined, { shouldValidate: true });
+                    }
+                  }}
+                ></Textbox>
+
+                {/* <input
                   type="number"
-                  className="h-9 rounded-lg border-2 border-gray-10"
-                  value={maxAge ?? 80}
-                  onChange={e => setValue('maxAge', parseInt(e.target.value))}
-                />
+                  className="h-9 rounded-lg border-2 border-gray-10 pr-2 text-right"
+                  value={maxAgeDisplay}
+                  onChange={e => {
+                    const raw = e.target.value.replace('+', '');
+                    setMaxAgeDisplay(
+                      raw === '' ? '' : parseInt(raw) === 80 ? '80+' : raw,
+                    );
+                    const parsed = parseInt(raw);
+                    if (!isNaN(parsed)) {
+                      setValue('maxAge', parsed, { shouldValidate: true });
+                    } else {
+                      setValue('maxAge', undefined, { shouldValidate: true });
+                    }
+                  }}
+                /> */}
+                {maxAgeDisplay.trim() === '' && (
+                  <p className="text-sm text-red-600">Please enter an age.</p>
+                )}
+                {errors.maxAge?.type === 'too_big' && (
+                  <p className="text-sm text-red-600">Maximum age is 80+.</p>
+                )}
               </div>
             </div>
           </div>

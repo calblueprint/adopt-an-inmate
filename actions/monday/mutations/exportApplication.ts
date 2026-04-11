@@ -9,6 +9,7 @@ import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
 import { assert, getEnvVar } from '@/lib/utils';
 import { ProfileAndApplication } from '@/types/schema';
 import { mondayApiClient } from '../core';
+import { updateAdopteeMondayStatus } from './changeStatus';
 
 // get env var and assert it exists at system level to trigger
 // error messages at build time (rather than run time)
@@ -17,7 +18,6 @@ const MONDAY_ADOPTER_DATA_BOARD_ID = getEnvVar('MONDAY_ADOPTER_DATA_BOARD_ID');
 const MONDAY_ADOPTER_DATA_WAITING_GROUP_ID = getEnvVar(
   'MONDAY_ADOPTER_DATA_WAITING_GROUP_ID',
 );
-const MONDAY_WL_PIPS_BOARD_ID = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
 
 ////
 // HELPER FUNCTION
@@ -97,28 +97,6 @@ const parseColumns = <K extends string>(
     },
     {},
   );
-};
-
-/**
- * Generate a query to update the status
- * of relevant adoptee rows in the WL PIPs board
- * to OFC: Out For Consideration.
- */
-const getQueryUpdateAdoptees = (appData: ProfileAndApplication) => {
-  const rankedCards = appData.ranked_cards as Array<string>;
-  const adopteeUpdatesQueries = rankedCards.map(
-    (id, idx) =>
-      `update${idx + 1}:change_simple_column_value(
-          board_id: "${MONDAY_WL_PIPS_BOARD_ID}",
-          item_id: "${id}",
-          column_id: "status__1",
-          value: "OFC: Out For Consideration"
-        ) { id }`,
-  );
-
-  const adopteeUpdatesQuery = adopteeUpdatesQueries.join(',');
-
-  return adopteeUpdatesQuery;
 };
 
 /**
@@ -352,7 +330,10 @@ const exportApplication = async (appId: string) => {
     mainItemId,
     adopteeData,
   );
-  const updateAdopteesQuery = getQueryUpdateAdoptees(appData);
+  const updateAdopteesQuery = await updateAdopteeMondayStatus(
+    appData.ranked_cards as Array<string>,
+    'OFC',
+  );
 
   const supplementaryQuery = `
     mutation {

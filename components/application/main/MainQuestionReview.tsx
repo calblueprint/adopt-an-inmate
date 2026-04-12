@@ -91,7 +91,7 @@ export default function MainQuestionReview() {
               {formatOffensePreference(appState.form.offensePreference)}
             </p>
           </div> */}
-          <div className="flex flex-col gap-1">
+          {/* <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold text-gray-8">
               {appState.stillInCorrespondence
                 ? 'Reason for adopting'
@@ -102,7 +102,7 @@ export default function MainQuestionReview() {
                 ? appState.form.whyAdopting
                 : appState.form.whyEnded) || 'N/A'}
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
 

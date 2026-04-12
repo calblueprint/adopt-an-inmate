@@ -17,7 +17,7 @@ export async function fetchTopK(
   k_value: number,
   gender?: string,
   veteran_status?: string,
-  offense?: string[],
+  // offense?: string[],
   state?: string,
 ): Promise<AdopteeMatch[]> {
   const supabase = await getSupabaseServerClient();
@@ -27,7 +27,7 @@ export async function fetchTopK(
     k: k_value,
     adopter_gender: gender,
     adopter_veteran_status: veteran_status,
-    adopter_offense: offense,
+    // adopter_offense: offense,
     adopter_state: state,
   });
 

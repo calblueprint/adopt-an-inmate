@@ -52,14 +52,14 @@ export default async function ApplicationDetailPage({
   const initialStage = getResumeStageAndQuestion(appData)
     .stage as ApplicationStage;
 
-  const predefinedOffenses = ['Violent offense', 'Harm-related offense'];
-  const offensePref = appData.offense_pref ?? [];
-  const offensePreference = offensePref.filter(offense =>
-    predefinedOffenses.includes(offense),
-  );
-  const customOffense = offensePref.find(
-    offense => !predefinedOffenses.includes(offense),
-  );
+  // const predefinedOffenses = ['Violent offense', 'Harm-related offense'];
+  // const offensePref = appData.offense_pref ?? [];
+  // const offensePreference = offensePref.filter(offense =>
+  //   predefinedOffenses.includes(offense),
+  // );
+  // const customOffense = offensePref.find(
+  //   offense => !predefinedOffenses.includes(offense),
+  // );
 
   return (
     <div className="flex min-h-svh w-full flex-col items-center justify-between">

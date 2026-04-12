@@ -18,14 +18,6 @@ export function formatGenderPreference(
   return mapper[genderPreference];
 }
 
-// export function formatOffensePreference(
-//   offensePreference?: FormState['offensePreference'],
-// ) {
-//   if (!offensePreference || offensePreference.length === 0) return 'N/A';
-
-//   return offensePreference.join(', ');
-// }
-
 /**
  * Formats a timestamp string or a date object
  * into a American time notation (mm/dd/yyyy)

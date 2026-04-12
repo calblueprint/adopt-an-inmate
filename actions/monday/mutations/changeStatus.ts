@@ -11,7 +11,7 @@ const MONDAY_WL_PIPS_BOARD_ID = process.env.MONDAY_WL_PIPS_BOARD_ID ?? ''; //sto
 
 export type MondayAdopteeStatus = 'WL' | 'OFC'; //restricts to 2 values
 
-//as other server 
+//as other server
 export type UpdateAdopteeMondayStatusResult = {
   data: string | null;
   error: string | null;
@@ -96,7 +96,6 @@ export async function updateAdopteeMondayStatus(
   if (adopteeMondayIds.length === 0) {
     return { data: '', error: null };
   }
-
 
   let statusLabelsById: Record<string, string>;
   if (status === 'WL') {

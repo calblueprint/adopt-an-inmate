@@ -327,13 +327,11 @@ const exportApplication = async (appId: string) => {
     mainItemId,
     adopteeData,
   );
-  const {
-    data: updateAdopteesQuery,
-    error: updateAdopteesFieldsError,
-  } = await updateAdopteeMondayStatus(
-    appData.ranked_cards as Array<string>,
-    'OFC',
-  );
+  const { data: updateAdopteesQuery, error: updateAdopteesFieldsError } =
+    await updateAdopteeMondayStatus(
+      appData.ranked_cards as Array<string>,
+      'OFC',
+    );
 
   if (updateAdopteesFieldsError || updateAdopteesQuery === null) {
     Logger.error(

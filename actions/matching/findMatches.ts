@@ -71,7 +71,6 @@ export const findMatches = async (appId: string) => {
     4,
     appData.gender_pref ?? undefined,
     userProfile.veteran_status ? 'Yes' : 'No',
-    // undefined,
     userProfile.state,
   );
 

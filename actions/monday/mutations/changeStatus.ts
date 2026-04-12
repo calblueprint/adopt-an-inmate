@@ -11,6 +11,12 @@ const MONDAY_WL_PIPS_BOARD_ID = process.env.MONDAY_WL_PIPS_BOARD_ID ?? ''; //sto
 
 export type MondayAdopteeStatus = 'WL' | 'OFC'; //restricts to 2 values
 
+//as other server 
+export type UpdateAdopteeMondayStatusResult = {
+  data: string | null;
+  error: string | null;
+};
+
 const OFC_STATUS_LABEL = 'OFC: Out for Consideration';
 const WL_STATUS_LABEL = 'WL: Wait Listed';
 const WLFA_STATUS_LABEL = 'WLFA: Wait Listed Formerly Adopted';
@@ -33,17 +39,35 @@ function buildStatusMutationFields(
     .join(',');
 }
 
+type WaitListLabelsResult =
+  | { ok: true; statusLabelsById: Record<string, string> }
+  | { ok: false; message: string };
+
 //determine if adoptee is formerly adopted
-async function getWaitListStatusLabels(adopteeMondayIds: string[]) {
-  const supabaseService = await dangerous_getSupabaseServiceClient();
+async function getWaitListStatusLabels(
+  adopteeMondayIds: string[],
+): Promise<WaitListLabelsResult> {
+  let supabaseService;
+  try {
+    supabaseService = await dangerous_getSupabaseServiceClient();
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    Logger.error(
+      `getWaitListStatusLabels: could not create Supabase service client: ${message}`,
+    );
+    return { ok: false, message };
+  }
+
   const { data, error } = await supabaseService
     .from('adoptee_vector_test')
     .select('id, formerly_adopted')
     .in('id', adopteeMondayIds);
 
   if (error) {
-    //if no ids
-    throw new Error(`Failed to fetch formerly_adopted flags: ${error.message}`);
+    Logger.error(
+      `getWaitListStatusLabels: failed to fetch formerly_adopted: ${error.message}`,
+    );
+    return { ok: false, message: error.message };
   }
 
   //2 step process to avoid O(N^2) - faster lookup with Map
@@ -51,7 +75,7 @@ async function getWaitListStatusLabels(adopteeMondayIds: string[]) {
     (data ?? []).map(row => [String(row.id), Boolean(row.formerly_adopted)]),
   );
 
-  return adopteeMondayIds.reduce(
+  const statusLabelsById = adopteeMondayIds.reduce(
     (acc, id) => {
       acc[id] = formerlyAdoptedById.get(id)
         ? WLFA_STATUS_LABEL
@@ -60,27 +84,41 @@ async function getWaitListStatusLabels(adopteeMondayIds: string[]) {
     },
     {} as Record<string, string>,
   );
+
+  return { ok: true, statusLabelsById };
 }
 
 //main function
 export async function updateAdopteeMondayStatus(
   adopteeMondayIds: string[],
   status: MondayAdopteeStatus,
-) {
-  if (adopteeMondayIds.length === 0) return '';
+): Promise<UpdateAdopteeMondayStatusResult> {
+  if (adopteeMondayIds.length === 0) {
+    return { data: '', error: null };
+  }
 
-  const uniqueAdopteeMondayIds = Array.from(adopteeMondayIds);
 
-  const statusLabelsById =
-    status === 'WL'
-      ? await getWaitListStatusLabels(uniqueAdopteeMondayIds)
-      : Object.fromEntries(
-          //for not string string
-          uniqueAdopteeMondayIds.map(id => [id, OFC_STATUS_LABEL]),
-        );
+  let statusLabelsById: Record<string, string>;
+  if (status === 'WL') {
+    const wlLabels = await getWaitListStatusLabels(adopteeMondayIds);
+    if (!wlLabels.ok) {
+      Logger.error(
+        `updateAdopteeMondayStatus(WL): skipping Monday update for ids [${adopteeMondayIds.join(', ')}]: ${wlLabels.message}`,
+      );
+      return {
+        data: null,
+        error: 'An unexpected error occurred.',
+      };
+    }
+    statusLabelsById = wlLabels.statusLabelsById;
+  } else {
+    statusLabelsById = Object.fromEntries(
+      adopteeMondayIds.map(id => [id, OFC_STATUS_LABEL]),
+    );
+  }
 
   const mutationFields = buildStatusMutationFields(
-    uniqueAdopteeMondayIds,
+    adopteeMondayIds,
     statusLabelsById,
   );
 
@@ -96,11 +134,14 @@ export async function updateAdopteeMondayStatus(
       await mondayApiClient.request(mutationQuery);
     } catch (error) {
       Logger.error(
-        `Failed to update adoptee Monday status to WL for ids ${uniqueAdopteeMondayIds.join(',')}: ${error}`,
+        `Failed to update adoptee Monday status to WL for ids ${adopteeMondayIds.join(',')}: ${error}`,
       );
-      throw error;
+      return {
+        data: null,
+        error: 'An unexpected error occurred.',
+      };
     }
   }
 
-  return mutationFields;
+  return { data: mutationFields, error: null };
 }

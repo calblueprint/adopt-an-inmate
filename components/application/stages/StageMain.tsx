@@ -14,8 +14,6 @@ export default function StageMain() {
         questions={[
           <MainQuestionBio key="bio" />,
           <MainQuestionGender key="genderPreference" />,
-          // <MainQuestionOffense key="offensePreference" />,
-          // <MainQuestionReason key="reason" />,
           <MainQuestionReview key="review" />,
         ]}
       >

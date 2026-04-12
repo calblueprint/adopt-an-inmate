@@ -77,14 +77,14 @@ export default async function ApplicationDetailPage({
               genderPreference:
                 (appData.gender_pref as FormState['genderPreference']) ??
                 undefined,
-              offensePreference:
-                offensePreference.length > 0
-                  ? (offensePreference as FormState['offensePreference'])
-                  : undefined,
-              offenseOther:
-                (customOffense as FormState['offenseOther']) ?? undefined,
-              whyAdopting: appData.return_explanation ?? undefined,
-              whyEnded: appData.return_explanation ?? undefined,
+              // offensePreference:
+              //   offensePreference.length > 0
+              //     ? (offensePreference as FormState['offensePreference'])
+              //     : undefined,
+              // offenseOther:
+              //   (customOffense as FormState['offenseOther']) ?? undefined,
+              // whyAdopting: appData.return_explanation ?? undefined,
+              // whyEnded: appData.return_explanation ?? undefined,
             },
             matches: null,
             selectedMatch: null,

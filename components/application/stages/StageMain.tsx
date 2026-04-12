@@ -3,8 +3,8 @@ import { QuestionsContextProvider } from '@/contexts/QuestionsContext';
 import ProgressBar from '../../questions/ProgressBar';
 import MainQuestionBio from '../main/MainQuestionBio';
 import MainQuestionGender from '../main/MainQuestionGender';
-import MainQuestionOffense from '../main/MainQuestionOffense';
-import MainQuestionReason from '../main/MainQuestionReason';
+// import MainQuestionOffense from '../main/MainQuestionOffense';
+// import MainQuestionReason from '../main/MainQuestionReason';
 import MainQuestionReview from '../main/MainQuestionReview';
 
 export default function StageMain() {
@@ -14,8 +14,8 @@ export default function StageMain() {
         questions={[
           <MainQuestionBio key="bio" />,
           <MainQuestionGender key="genderPreference" />,
-          <MainQuestionOffense key="offensePreference" />,
-          <MainQuestionReason key="reason" />,
+          // <MainQuestionOffense key="offensePreference" />,
+          // <MainQuestionReason key="reason" />,
           <MainQuestionReview key="review" />,
         ]}
       >

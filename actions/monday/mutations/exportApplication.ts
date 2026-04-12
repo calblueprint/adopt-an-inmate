@@ -316,9 +316,6 @@ const exportApplication = async (appId: string) => {
       Logger.error(
         `[CRITICAL] Error trying to update adopter profile for user ${user.email} (ID ${user.id}): ${updateError}`,
       );
-      // NOTE: allow pass through, don't want to report unsuccessful just
-      // bc push to supabase fails. Should still aim to get data to Monday.
-      // Then, admins can at least have access to data present here.
     }
   }
 
@@ -330,10 +327,23 @@ const exportApplication = async (appId: string) => {
     mainItemId,
     adopteeData,
   );
-  const updateAdopteesQuery = await updateAdopteeMondayStatus(
+  const {
+    data: updateAdopteesQuery,
+    error: updateAdopteesFieldsError,
+  } = await updateAdopteeMondayStatus(
     appData.ranked_cards as Array<string>,
     'OFC',
   );
+
+  if (updateAdopteesFieldsError || updateAdopteesQuery === null) {
+    Logger.error(
+      `exportApplication: could not build Monday OFC status fields for app ${appId}: ${updateAdopteesFieldsError ?? 'null data'}`,
+    );
+    return {
+      success: false,
+      error: updateAdopteesFieldsError ?? 'An unexpected error occurred.',
+    };
+  }
 
   const supplementaryQuery = `
     mutation {
@@ -361,15 +371,11 @@ const exportApplication = async (appId: string) => {
     .update({ exported_to_monday: true, monday_id: subitemId })
     .eq('app_uuid', appId);
 
-  // highly unlikely
   // would only error if app was deleted
   // or columns were renamed/deleted
   if (updateError) {
     Logger.error(`[CRITICAL] Error trying to update ${appId}: ${updateError}`);
-    // NOTE: allow successful report to go through, since at least
-    // the data reached the admins. If the push fails once,
-    // chances are, it will fail again - the cause is likely permanent
-    // and should be critical cause to investigate.
+    
   }
 
   // mark adoptees as OFC on Supabase

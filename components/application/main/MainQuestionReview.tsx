@@ -80,26 +80,6 @@ export default function MainQuestionReview() {
               {formatGenderPreference(appState.form.genderPreference)}
             </p>
           </div>
-          {/* <div className="flex flex-col gap-1">
-            <p className="text-xs font-semibold text-gray-8">
-              Offenses not preferred
-            </p>
-            <p className="text-gray-12">
-              {formatOffensePreference(appState.form.offensePreference)}
-            </p>
-          </div> */}
-          {/* <div className="flex flex-col gap-1">
-            <p className="text-xs font-semibold text-gray-8">
-              {appState.stillInCorrespondence
-                ? 'Reason for adopting'
-                : 'Why it ended'}
-            </p>
-            <p className="text-gray-12">
-              {(appState.stillInCorrespondence
-                ? appState.form.whyAdopting
-                : appState.form.whyEnded) || 'N/A'}
-            </p>
-          </div> */}
         </div>
       </div>
 

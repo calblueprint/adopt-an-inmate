@@ -31,7 +31,6 @@ export default async function ApplicationDetailPage({
     .select()
     .eq('app_uuid', appId)
     .eq('adopter_uuid', user.id)
-    //.eq('status', 'incomplete')
     .maybeSingle();
 
   if (getAppError) {
@@ -52,15 +51,6 @@ export default async function ApplicationDetailPage({
   const initialStage = getResumeStageAndQuestion(appData)
     .stage as ApplicationStage;
 
-  // const predefinedOffenses = ['Violent offense', 'Harm-related offense'];
-  // const offensePref = appData.offense_pref ?? [];
-  // const offensePreference = offensePref.filter(offense =>
-  //   predefinedOffenses.includes(offense),
-  // );
-  // const customOffense = offensePref.find(
-  //   offense => !predefinedOffenses.includes(offense),
-  // );
-
   return (
     <div className="flex min-h-svh w-full flex-col items-center justify-between">
       <Link href="/">
@@ -77,14 +67,6 @@ export default async function ApplicationDetailPage({
               genderPreference:
                 (appData.gender_pref as FormState['genderPreference']) ??
                 undefined,
-              // offensePreference:
-              //   offensePreference.length > 0
-              //     ? (offensePreference as FormState['offensePreference'])
-              //     : undefined,
-              // offenseOther:
-              //   (customOffense as FormState['offenseOther']) ?? undefined,
-              // whyAdopting: appData.return_explanation ?? undefined,
-              // whyEnded: appData.return_explanation ?? undefined,
             },
             matches: null,
             selectedMatch: null,

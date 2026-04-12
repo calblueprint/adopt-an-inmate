@@ -10,6 +10,7 @@ import Logger from '../logging';
  * a new application. Returns true if the user is
  * able to create, false otherwise.
  */
+//Test for commit
 export const checkCreationConstraints = async (user: User) => {
   const supabase = await getSupabaseServerClient();
 

@@ -9,7 +9,7 @@ import { useProfile } from '@/contexts/ProfileProvider';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import {
   formatGenderPreference,
-  formatOffensePreference,
+  // formatOffensePreference,
 } from '@/lib/formatters';
 import { ApplicationStage } from '@/types/enums';
 
@@ -83,14 +83,14 @@ export default function MainQuestionReview() {
               {formatGenderPreference(appState.form.genderPreference)}
             </p>
           </div>
-          <div className="flex flex-col gap-1">
+          {/* <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold text-gray-8">
               Offenses not preferred
             </p>
             <p className="text-gray-12">
               {formatOffensePreference(appState.form.offensePreference)}
             </p>
-          </div>
+          </div> */}
           <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold text-gray-8">
               {appState.stillInCorrespondence

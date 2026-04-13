@@ -1,139 +1,116 @@
 'use server';
 
-import { getSupabaseServerClient } from '@/lib/supabase';
-import { assertEnvVarExists } from '@/lib/utils';
-import { RankedAdopteeMatch } from '@/types/schema';
+import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { assertEnvVarExists, getEnvVar } from '@/lib/utils';
+import Logger from '../logging';
 import { mondayApiClient } from './core';
 
+assertEnvVarExists('MONDAY_WL_PIPS_BOARD_ID');
+assertEnvVarExists('MONDAY_ADOPTED_BOARD_ID');
+
+const MONDAY_WL_PIPS_BOARD_ID = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
+const MONDAY_ADOPTED_BOARD_ID = getEnvVar('MONDAY_ADOPTED_BOARD_ID');
+
 export type MatchedAdopteeResult = {
-  matchedAdopteeId: string;
-  unmatchedAdopteeIds: string[];
-};
-
-function uniqueStrings(values: string[]) {
-  return Array.from(new Set(values.filter(Boolean)));
-}
-
-function normalizeCandidateIds(
-  rankedCards: unknown,
-  applicationId: string,
-): string[] {
-  if (!Array.isArray(rankedCards) || rankedCards.length !== 4) {
-    throw new Error(
-      `Expected ranked_cards to contain exactly 4 adoptee ids for app_uuid=${applicationId}`,
-    );
-  }
-
-  const first = rankedCards[0];
-  if (typeof first === 'string') {
-    if (!rankedCards.every((x): x is string => typeof x === 'string')) {
-      throw new Error(
-        `Expected ranked_cards to be 4 strings (Monday item ids) for app_uuid=${applicationId}`,
-      );
-    }
-    return rankedCards;
-  }
-
-  const asMatches = rankedCards as RankedAdopteeMatch[];
-  const ids = asMatches.map(c => String(c.id));
-  if (ids.some(id => !id)) {
-    throw new Error(
-      `Expected ranked_cards entries to have id for app_uuid=${applicationId}`,
-    );
-  }
-  return ids;
-}
-
-type MondayItem = {
-  id: string;
-  group?: {
-    title?: string | null;
+  data: {
+    matchedAdopteeId: string;
+    unmatchedAdopteeIds: string[];
   } | null;
+  error: string | null;
 };
 
-async function fetchCandidateIdsFromBoard(params: {
-  boardId: string;
-  candidateIds: Set<string>;
-  groupTitlePredicate: (groupTitle: string) => boolean;
-  maxFound: number;
-}) {
-  const { boardId, candidateIds, groupTitlePredicate, maxFound } = params;
+type MondayResponse = {
+  items: {
+    id: string;
+    board: {
+      id: string;
+    };
+  }[];
+};
 
-  const found = new Set<string>();
-  let cursor: string | null = null;
+/**
+ * Checks whether given item IDs exist in either the adopted or waitlist boards.
+ * Ensures exactly one item is in the adopted board.
+ * Returns a map of item IDs to whether they exist in the adopted board.
+ */
+async function validateItemIds(
+  adoptedBoardId: string,
+  wlBoardId: string,
+  itemIds: string[],
+): Promise<{ data: Record<string, boolean> | null; error: string | null }> {
+  if (itemIds.length === 0) {
+    return { data: {}, error: null };
+  }
 
-  // Avoid infinite loops if Monday returns unexpected cursor behavior.
-  for (let page = 0; page < 50 && found.size < maxFound; page++) {
-    const cursorArg = cursor ? `cursor: "${cursor}"` : '';
-    const itemsPageArgs = cursorArg ? `limit: 100, ${cursorArg}` : 'limit: 100';
-
-    const gpl = `query {
-      boards(ids: ${boardId}) {
-        items_page(${itemsPageArgs}) {
-          cursor
-          items {
-            id
-            group { title }
-          }
+  const query = `
+    query ($ids: [ID!]!) {
+      items(ids: $ids) {
+        id
+        board {
+          id
         }
       }
-    }`;
-
-    const response = await mondayApiClient.request(gpl);
-
-    const responseObj = response as Record<string, unknown>;
-    const maybeData = 'data' in responseObj ? responseObj.data : responseObj;
-    const dataObj = maybeData as Record<string, unknown>;
-
-    const boardsMaybe = dataObj.boards;
-    const boardsArray = Array.isArray(boardsMaybe) ? boardsMaybe : [];
-    const firstBoard = boardsArray[0] as Record<string, unknown> | undefined;
-    const itemsPageMaybe = firstBoard?.['items_page'] as
-      | Record<string, unknown>
-      | undefined;
-
-    const itemsMaybe = itemsPageMaybe?.items;
-    const itemsArray = Array.isArray(itemsMaybe) ? itemsMaybe : [];
-
-    const items: MondayItem[] = itemsArray as MondayItem[];
-
-    for (const item of items) {
-      if (!candidateIds.has(String(item.id))) continue;
-
-      const groupTitle = item.group?.title ?? '';
-      if (!groupTitle) continue;
-
-      if (groupTitlePredicate(String(groupTitle))) {
-        found.add(String(item.id));
-        if (found.size >= maxFound) break;
-      }
     }
+  `;
 
-    const cursorMaybe = itemsPageMaybe?.['cursor'];
-    cursor = typeof cursorMaybe === 'string' ? cursorMaybe : null;
-    if (!cursor) break;
+  const exists: Record<string, boolean> = {};
+  for (const id of itemIds) {
+    exists[id] = false;
   }
 
-  return found;
+  const response = await mondayApiClient.request<MondayResponse>(query, {
+    ids: itemIds,
+  });
+
+  if (!response || !response.items) {
+    Logger.warn(`Unexpected response from Monday: ${JSON.stringify(response)}`);
+    return { data: null, error: 'An unexpected error occurred.' };
+  }
+
+  const returnedItems = response.items;
+
+  let numAdopted = 0;
+  let numWL = 0;
+
+  for (const item of returnedItems) {
+    const isAdopted = item.board.id === adoptedBoardId;
+    const isWL = item.board.id === wlBoardId;
+
+    if (!isAdopted && !isWL) {
+      Logger.warn(`Item ${item.id} is in unexpected board ${item.board.id}`);
+      return { data: null, error: 'An unexpected error occurred.' };
+    }
+
+    if (isAdopted) {
+      exists[item.id] = true;
+      numAdopted += 1;
+    } else if (isWL) {
+      numWL += 1;
+    }
+  }
+
+  if (numAdopted > 1) {
+    Logger.warn(
+      `More than one item is in the adopted board: ${JSON.stringify(exists)}`,
+    );
+    return { data: null, error: 'An unexpected error occurred.' };
+  }
+
+  if (numWL === itemIds.length) {
+    Logger.warn(`All items are in the WL board: ${JSON.stringify(exists)}`);
+    return { data: null, error: 'An unexpected error occurred.' };
+  }
+
+  return { data: exists, error: null };
 }
 
 /**
- * Resolves which of the four ranked adoptees is the match for an approved application.
- *
- * - While three candidates remain on the WL PIPs board in OFC status, the fourth id is treated as matched.
- * - Otherwise, falls back to finding the single candidate on the Adopted board with A:/B:/AO: Adopted status.
- *
- * `ranked_cards` may be either four Monday item id strings or four objects with an `id` field (e.g. RankedAdopteeMatch).
+ * Retrieves adoptee candidates for an application and determines
+ * the single matched adoptee along with unmatched candidates.
  */
-export async function queryMatchedAdopteeForApprovedApplication(
+export async function queryMatchedAdoptees(
   applicationId: string,
 ): Promise<MatchedAdopteeResult> {
-  const wlBoardId = process.env.MONDAY_WL_PIPS_BOARD_ID ?? '';
-  const adoptedBoardId = process.env.MONDAY_ADOPTED_BOARD_ID ?? '';
-
-  assertEnvVarExists('MONDAY_WL_PIPS_BOARD_ID');
-  assertEnvVarExists('MONDAY_ADOPTED_BOARD_ID');
-
   const supabase = await getSupabaseServerClient();
   const { data: appData, error } = await supabase
     .from('adopter_applications_dummy')
@@ -142,69 +119,43 @@ export async function queryMatchedAdopteeForApprovedApplication(
     .maybeSingle();
 
   if (error) throw new Error(`Failed to fetch ranked_cards: ${error.message}`);
-  if (!appData)
-    throw new Error(`Application not found for app_uuid=${applicationId}`);
 
-  const candidateIds = uniqueStrings(
-    normalizeCandidateIds(appData.ranked_cards, applicationId),
+  const candidateIds: string[] = appData?.ranked_cards ?? [];
+  const { data: candsExist, error: candsExistError } = await validateItemIds(
+    MONDAY_ADOPTED_BOARD_ID,
+    MONDAY_WL_PIPS_BOARD_ID,
+    candidateIds,
   );
-  const candidateSet = new Set(candidateIds);
 
-  // 1) Check WL PIPs first to confirm the 3 non-matched adoptees are still OFC.
-  const ofcTitlePredicate = (groupTitle: string) =>
-    groupTitle.trim().startsWith('OFC:');
+  if (candidateIds.length === 0) {
+    Logger.warn(`No candidate IDs found for application ${applicationId}`);
+    return { data: null, error: 'An unexpected error occurred.' };
+  }
 
-  const wlFound = await fetchCandidateIdsFromBoard({
-    boardId: wlBoardId,
-    candidateIds: candidateSet,
-    groupTitlePredicate: ofcTitlePredicate,
-    maxFound: 3,
-  });
+  if (!candsExist || candsExistError) {
+    Logger.error(
+      `Error checking if candidates exist in board: ${candsExistError}`,
+    );
+    return { data: null, error: 'An unexpected error occurred.' };
+  }
 
-  // If 3 candidates exist in OFC, the remaining 4th is the matched one.
-  if (wlFound.size === 3) {
-    const matched = candidateIds.find(id => !wlFound.has(id));
-    if (!matched) {
-      throw new Error(
-        'Inconsistent state: wlFound size was 3 but no unmatched candidate found.',
-      );
+  const unmatchedAdopteeIds = [];
+  let matchedAdopteeId = null;
+
+  for (const id of candidateIds) {
+    if (candsExist?.[id]) {
+      matchedAdopteeId = id;
+    } else {
+      unmatchedAdopteeIds.push(id);
     }
-
-    const unmatchedAdopteeIds = candidateIds.filter(id => id !== matched);
-    return { matchedAdopteeId: matched, unmatchedAdopteeIds };
   }
 
-  // 2) Fallback: check Adopted board for the matched adoptee.
-  const adoptedTitlePredicate = (groupTitle: string) => {
-    const t = groupTitle.trim();
-    return (
-      t.startsWith('A: Adopted') ||
-      t.startsWith('B: Adopted') ||
-      t.startsWith('AO: Adopted')
+  if (!matchedAdopteeId) {
+    Logger.error(
+      `No matched adoptee found for application ${applicationId} with candidateIds ${candidateIds}`,
     );
-  };
-
-  const adoptedFound = await fetchCandidateIdsFromBoard({
-    boardId: adoptedBoardId,
-    candidateIds: candidateSet,
-    groupTitlePredicate: adoptedTitlePredicate,
-    maxFound: 1,
-  });
-
-  if (adoptedFound.size !== 1) {
-    throw new Error(
-      `Could not uniquely determine matched adoptee. matchedFound=${Array.from(
-        adoptedFound,
-      ).join(
-        ',',
-      )} wlFound=${Array.from(wlFound).join(',')} candidates=${candidateIds.join(',')}`,
-    );
+    return { data: null, error: 'An unexpected error occurred.' };
   }
 
-  const matchedAdopteeId = Array.from(adoptedFound)[0];
-  const unmatchedAdopteeIds = candidateIds.filter(
-    id => id !== matchedAdopteeId,
-  );
-
-  return { matchedAdopteeId, unmatchedAdopteeIds };
+  return { data: { matchedAdopteeId, unmatchedAdopteeIds }, error: null };
 }

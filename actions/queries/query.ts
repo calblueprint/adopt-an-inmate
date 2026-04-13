@@ -8,17 +8,14 @@ import {
   RankedAdopteeMatch,
 } from '@/types/schema';
 
-/* Fetch top k (by simliaity) adoptee rows with hierarchical filtering:
- * Start with all filters applied. If no results, progressively drop filters
- * starting with state, then veteran_status, and finally gender.
- */
+//fetches top k with new filtering
 export async function fetchTopK(
   embedding: number[],
   k_value: number,
   gender?: string,
   veteran_status?: string,
-  offense?: string[],
   state?: string,
+  adopter_age_pref?: number[],
 ): Promise<AdopteeMatch[]> {
   const supabase = await getSupabaseServerClient();
 
@@ -27,8 +24,8 @@ export async function fetchTopK(
     k: k_value,
     adopter_gender: gender,
     adopter_veteran_status: veteran_status,
-    adopter_offense: offense,
     adopter_state: state,
+    ...(adopter_age_pref != null ? { adopter_age_pref } : {}),
   });
 
   if (error) {

@@ -11,22 +11,22 @@ assertEnvVarExists('MONDAY_ADOPTED_BOARD_ID');
 const MONDAY_WL_PIPS_BOARD_ID = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
 const MONDAY_ADOPTED_BOARD_ID = getEnvVar('MONDAY_ADOPTED_BOARD_ID');
 
-export type MatchedAdopteeResult = {
+export interface MatchedAdopteeResult {
   data: {
     matchedAdopteeId: string;
     unmatchedAdopteeIds: string[];
   } | null;
   error: string | null;
-};
+}
 
-type MondayResponse = {
+interface MondayResponse {
   items: {
     id: string;
     board: {
       id: string;
     };
   }[];
-};
+}
 
 /**
  * Checks whether given item IDs exist in either the adopted or waitlist boards.

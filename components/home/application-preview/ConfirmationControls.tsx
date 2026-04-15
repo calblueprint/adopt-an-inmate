@@ -24,16 +24,16 @@ const confirmationFormSchema = z
 
 type ConfirmationFormValues = z.infer<typeof confirmationFormSchema>;
 
-export default function ConfirmationControls() {
+export default function ConfirmationControls({
+  onSubmit,
+}: {
+  onSubmit: (data: ConfirmationFormValues) => void;
+}) {
   const { register, handleSubmit, watch } = useForm<ConfirmationFormValues>({
     resolver: zodResolver(confirmationFormSchema),
   });
 
   const selectedConfirmation = watch('confirmation');
-
-  const onSubmit = (data: ConfirmationFormValues) => {
-    console.log(data);
-  };
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>

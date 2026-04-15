@@ -84,10 +84,6 @@ export async function upsertApplication(
   if (error)
     throw new Error(`Error upserting application data: ${error.message}`);
 
-  console.log('upsertAppInfo received:', JSON.stringify(app));
-  console.log('userId:', app.adopter_uuid);
-  console.log('appId:', app.app_uuid);
-
   return data;
 }
 

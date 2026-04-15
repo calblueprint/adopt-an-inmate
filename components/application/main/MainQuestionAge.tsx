@@ -100,9 +100,6 @@ export default function MainQuestionAge() {
     minAge,
     maxAge,
   }: z.infer<typeof agePrefFormSchema>) => {
-    console.log('typeof minAge:', typeof minAge, 'value:', minAge);
-    console.log('typeof maxAge:', typeof maxAge, 'value:', maxAge);
-
     const agePref: [number, number] | undefined =
       hasAgePreference === 'yes'
         ? [
@@ -168,15 +165,15 @@ export default function MainQuestionAge() {
                 <Slider.Range className="absolute h-full bg-[#B73940]" />
               </Slider.Track>
 
-              <Slider.Thumb className="block h-6 w-6 rounded-full border border-red-900 bg-white shadow" />
-              <Slider.Thumb className="block h-6 w-6 rounded-full border border-red-900 bg-white shadow" />
+              <Slider.Thumb className="block h-6 w-6 rounded-full border border-red-900 bg-white shadow-md/25" />
+              <Slider.Thumb className="block h-6 w-6 rounded-full border border-red-900 bg-white shadow-md/25" />
             </Slider.Root>
 
-            <div className="flex flex-row justify-between">
+            <div className="flex flex-row justify-between gap-2">
               <div className="flex flex-col gap-1">
                 <p className="text-gray-10">Minimum</p>
                 <Textbox
-                  className="h-9 rounded-lg border-2 border-gray-10 pl-2"
+                  className="h-9 rounded-lg border-1 border-gray-10 pl-2"
                   value={minAgeDisplay}
                   maxLength={2}
                   onChange={e => {
@@ -206,13 +203,13 @@ export default function MainQuestionAge() {
               <div className="flex flex-col gap-1">
                 <p className="text-right text-gray-10">Maximum</p>
                 <Textbox
-                  className="h-9 rounded-lg border-2 border-gray-10 pr-2 text-right"
+                  className="h-9 rounded-lg border-1 border-gray-10 pr-2 text-right"
                   value={maxAgeDisplay}
                   maxLength={2}
                   onChange={e => {
                     const raw = e.target.value.replace('+', '');
                     setMaxAgeDisplay(
-                      raw === '' ? '' : parseInt(raw) === 80 ? '80+' : raw,
+                      raw === '' ? '' : parseInt(raw) >= 80 ? '80+' : raw,
                     );
                     const parsed = parseInt(raw);
                     if (!isNaN(parsed)) {

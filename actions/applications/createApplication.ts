@@ -2,7 +2,6 @@
 
 import { User } from '@supabase/supabase-js';
 import { getSupabaseServerClient } from '@/lib/supabase';
-import { AdopterApplication } from '@/types/schema';
 import Logger from '../logging';
 
 /**
@@ -30,9 +29,30 @@ export const checkCreationConstraints = async (user: User) => {
     return { data: false, error: 'User has no profile.' };
   }
 
+  // constraint: must be at least 18 years old
+  const dob = new Date(profile.date_of_birth);
+  const today = new Date();
+  const age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
+  const isUnder18 =
+    age < 18 ||
+    (age === 18 &&
+      (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())));
+  if (isUnder18) {
+    return {
+      data: false,
+      error:
+        'Adopters must be at least 18 years old before creating an application.',
+    };
+  }
+
   // constraint: invalid ended reason
   if (profile.past_inactive_reason === 'NPO_CANCELLED') {
-    return { data: false, error: 'User has an invalid ended reason.' };
+    return {
+      data: false,
+      error:
+        'There was an issue with your onboarding responses, please contact admin to fix this.',
+    };
   }
 
   // fetch applications
@@ -55,7 +75,7 @@ export const checkCreationConstraints = async (user: User) => {
   if (totalActiveAdoptees >= 2) {
     return {
       data: false,
-      error: 'User already has at least two past active adoptees',
+      error: 'You already have two active connections.',
     };
   }
 
@@ -63,22 +83,34 @@ export const checkCreationConstraints = async (user: User) => {
     return { data: true, error: null };
   }
 
+  // constraint: has existing incomplete app
+  if (appsData.some(app => app.status === 'INCOMPLETE')) {
+    return {
+      data: false,
+      error:
+        'Please complete your incomplete application before creating a new one.',
+    };
+  }
+
+  // constraint: has existing pending app
+  if (appsData.some(app => app.status === 'PENDING')) {
+    return {
+      data: false,
+      error:
+        'You still have one pending application, please wait for admin approval.',
+    };
+  }
+
   const now = new Date();
 
   for (const app of appsData) {
     // constraint: was rejected
     if (app.status === 'REJECTED') {
-      return { data: false, error: 'Application was rejected, contact NPO.' };
-    }
-
-    // constraint: has existing app
-    const existingStatus: AdopterApplication['status'][] = [
-      'INCOMPLETE',
-      'PENDING',
-    ];
-
-    if (existingStatus.includes(app.status)) {
-      return { data: false, error: 'An application is already in progress.' };
+      return {
+        data: false,
+        error:
+          'There was an issue with your onboarding responses, please contact admin to fix this.',
+      };
     }
 
     if (!app.time_submitted) continue;
@@ -95,7 +127,8 @@ export const checkCreationConstraints = async (user: User) => {
     if (monthDelta < 6 || (monthDelta === 6 && dayDelta < 0)) {
       return {
         data: false,
-        error: 'An application was already submitted within 6 months.',
+        error:
+          'Your most recent connection is still new, please wait before starting a new application.',
       };
     }
   }

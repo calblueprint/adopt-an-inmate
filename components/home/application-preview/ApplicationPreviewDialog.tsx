@@ -157,13 +157,6 @@ export default function ApplicationPreviewDialog() {
                   onSubmit={data => console.log(data)}
                 />
               )}
-
-              {/* active: end correspondence */}
-              {appData.status === 'ACCEPTED' && (
-                <EndCorrespondenceControls
-                  onSubmit={form => console.log(form.reason)}
-                />
-              )}
             </main>
           </Dialog.Content>
         </Dialog.Overlay>

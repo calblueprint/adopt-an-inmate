@@ -1,0 +1,1 @@
+ALTER TYPE status_vals ADD VALUE 'ACTIVE';

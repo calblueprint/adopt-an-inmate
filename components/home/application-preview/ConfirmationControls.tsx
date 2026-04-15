@@ -22,7 +22,7 @@ const confirmationFormSchema = z
       });
   });
 
-type ConfirmationFormValues = z.infer<typeof confirmationFormSchema>;
+export type ConfirmationFormValues = z.infer<typeof confirmationFormSchema>;
 
 export default function ConfirmationControls({
   onSubmit,

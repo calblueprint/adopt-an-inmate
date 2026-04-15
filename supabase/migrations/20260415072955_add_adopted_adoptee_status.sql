@@ -1,0 +1,1 @@
+ALTER TYPE adoptee_status ADD VALUE 'ADOPTED';

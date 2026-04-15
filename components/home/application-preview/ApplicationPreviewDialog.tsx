@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Dialog } from 'radix-ui';
 import { getApplicationWithAdoptees } from '@/actions/applications/getApplicationWithAdoptees';
+import { handleAdopterConfirmation as handleAdopterConfirmationServer } from '@/actions/applications/handleAdopterConfirmation';
 import Logger from '@/actions/logging';
 import {
   formatAmericanTime,
@@ -12,7 +13,9 @@ import {
 } from '@/lib/formatters';
 import { AdopterApplication, ApplicationWithAdoptees } from '@/types/schema';
 import { AdopterApplicationFormValues } from './AdopterApplicationFormValues';
-import ConfirmationControls from './ConfirmationControls';
+import ConfirmationControls, {
+  ConfirmationFormValues,
+} from './ConfirmationControls';
 import EndCorrespondenceControls from './EndCorrespondenceControls';
 import StatusPill from './StatusPill';
 
@@ -86,6 +89,27 @@ export default function ApplicationPreviewDialog() {
     return !appData || showFormStatuses.includes(appData.status);
   }, [appData]);
 
+  // handle adopter confirmation
+  const handleAdopterConfirmation = useCallback(
+    async ({ confirmation, reason }: ConfirmationFormValues) => {
+      if (!(appData && appData.matched_adoptee && appData.monday_id)) return;
+
+      const { error } = await handleAdopterConfirmationServer(
+        confirmation === 'yes',
+        appData.adopter_uuid,
+        appData.matched_adoptee,
+        appData.app_uuid,
+        appData.monday_id,
+        reason,
+      );
+
+      if (error) {
+        console.log(error);
+      }
+    },
+    [appData],
+  );
+
   if (!(showPreview && previewId && appData?.time_submitted)) return null;
 
   // replace URL to / when modal closes
@@ -148,7 +172,7 @@ export default function ApplicationPreviewDialog() {
 
               {/* match confirmation controls */}
               {appData.matched && appData.status === 'PENDING_CONFIRMATION' && (
-                <ConfirmationControls onSubmit={data => console.log(data)} />
+                <ConfirmationControls onSubmit={handleAdopterConfirmation} />
               )}
 
               {/* active: end correspondence */}

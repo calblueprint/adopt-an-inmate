@@ -121,16 +121,17 @@ export async function queryMatchedAdoptees(
   if (error) throw new Error(`Failed to fetch ranked_cards: ${error.message}`);
 
   const candidateIds: string[] = appData?.ranked_cards ?? [];
-  const { data: candsExist, error: candsExistError } = await validateItemIds(
-    MONDAY_ADOPTED_BOARD_ID,
-    MONDAY_WL_PIPS_BOARD_ID,
-    candidateIds,
-  );
 
   if (candidateIds.length === 0) {
     Logger.warn(`No candidate IDs found for application ${applicationId}`);
     return { data: null, error: 'An unexpected error occurred.' };
   }
+
+  const { data: candsExist, error: candsExistError } = await validateItemIds(
+    MONDAY_ADOPTED_BOARD_ID,
+    MONDAY_WL_PIPS_BOARD_ID,
+    candidateIds,
+  );
 
   if (!candsExist || candsExistError) {
     Logger.error(

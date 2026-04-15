@@ -18,15 +18,15 @@ interface EndCorrespondenceForm {
   reason: { label: string; value: string };
 }
 
-export default function EndCorrespondenceControls({
-  onSubmit,
-}: {
-  onSubmit: (form: EndCorrespondenceForm) => void;
-}) {
+export default function EndCorrespondenceControls() {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { handleSubmit, control } = useForm<EndCorrespondenceForm>();
+
+  const onSubmit = (data: EndCorrespondenceForm) => {
+    console.log(data);
+  };
 
   return (
     <Collapsible.Root open={open} onOpenChange={setOpen}>

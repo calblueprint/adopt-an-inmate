@@ -145,15 +145,11 @@ export default function ApplicationPreviewDialog() {
 
               {/* match confirmation controls */}
               {appData.matched && appData.status === 'PENDING_CONFIRMATION' && (
-                <ConfirmationControls onSubmit={form => console.log(form)} />
+                <ConfirmationControls />
               )}
 
               {/* active: end correspondence */}
-              {appData.status === 'ACCEPTED' && (
-                <EndCorrespondenceControls
-                  onSubmit={form => console.log(form.reason)}
-                />
-              )}
+              {appData.status === 'ACCEPTED' && <EndCorrespondenceControls />}
             </main>
           </Dialog.Content>
         </Dialog.Overlay>

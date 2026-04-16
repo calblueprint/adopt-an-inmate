@@ -5,14 +5,14 @@ import { AdopterApplication } from '@/types/schema';
 const statusPillStyles = cva('rounded-xl px-3 py-0.5 shadow-sm', {
   variants: {
     status: {
-      PENDING: 'bg-yellow-6',
-      PENDING_CONFIRMATION: 'bg-yellow-6',
-      ACCEPTED: 'bg-green-100',
-      REJECTED: 'bg-red-6',
-      REAPPLY: 'bg-blue-100',
-      ENDED: 'bg-pink-200',
-      INCOMPLETE: 'bg-pink-300',
-      ACTIVE: '',
+      PENDING: 'bg-[#FFF8D0] text-[#FFF4B6]',
+      PENDING_CONFIRMATION: 'bg-[#FFF8D0] text-[#FFF4B6]',
+      ACCEPTED: 'bg-[#DEF4DF] text-[#CDEACF]',
+      REJECTED: 'bg-[#FFCCCC] text-[#FFC0C0]',
+      REAPPLY: 'bg-[#EBD2FF] text-[#E5C5FF]',
+      ENDED: 'bg-[#FDDEF3] text-[#FDD4EE]',
+      INCOMPLETE: 'bg-[#D9ECFF] text-[#CCE5FF]',
+      ACTIVE: 'bg-[#DEF4DF] text-[#CDEACF]',
     },
   },
 });

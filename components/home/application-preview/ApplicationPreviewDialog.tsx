@@ -92,16 +92,25 @@ export default function ApplicationPreviewDialog() {
   // handle adopter confirmation
   const handleAdopterConfirmation = useCallback(
     async ({ confirmation, reason }: ConfirmationFormValues) => {
-      if (!(appData && appData.matched_adoptee && appData.monday_id)) return;
+      if (
+        !(
+          appData &&
+          appData.matched_adoptee &&
+          appData.monday_id &&
+          appData.email
+        )
+      )
+        return;
 
-      const { error } = await handleAdopterConfirmationServer(
-        confirmation === 'yes',
-        appData.adopter_uuid,
-        appData.matched_adoptee,
-        appData.app_uuid,
-        appData.monday_id,
+      const { error } = await handleAdopterConfirmationServer({
+        accepted: confirmation === 'yes',
+        adopterId: appData.adopter_uuid,
+        email: appData.email,
+        adopteeMondayId: appData.matched_adoptee,
+        appId: appData.app_uuid,
+        appMondayId: appData.monday_id,
         reason,
-      );
+      });
 
       if (error) {
         console.log(error);

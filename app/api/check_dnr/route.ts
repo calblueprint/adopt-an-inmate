@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (!dnrApps || dnrApps.length === 0) {
-    return new Response('No apps past confirmation deadline.', { status: 500 });
+    return new Response('No apps past confirmation deadline. Skipped.');
   }
 
   // map ids
@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
     adoptee${id}:change_simple_column_value(
       board_id: "${MONDAY_WL_PIPS_BOARD_ID}",
       item_id: "${id}",
-      column_id: "status",
+      column_id: "status__1",
       value: "${formerlyAdopted ? 'WLFA: Wait Listed Formerly Adopted' : 'WL: Wait Listed'}"
     ) {}
   `;

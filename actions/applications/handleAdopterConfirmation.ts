@@ -10,14 +10,23 @@ import { mondayApiClient } from '../monday/core';
 const MONDAY_WL_PIPS_BOARD_ID = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
 const MONDAY_ADOPTER_DATA_BOARD_ID = getEnvVar('MONDAY_ADOPTER_DATA_BOARD_ID');
 
-export const handleAdopterConfirmation = async (
-  accepted: boolean,
-  adopterId: string,
-  adopteeMondayId: string,
-  appId: string,
-  appMondayId: string,
-  reason?: string,
-) => {
+export const handleAdopterConfirmation = async ({
+  accepted,
+  adopterId,
+  email,
+  adopteeMondayId,
+  appId,
+  appMondayId,
+  reason,
+}: {
+  accepted: boolean;
+  adopterId: string;
+  email: string;
+  adopteeMondayId: string;
+  appId: string;
+  appMondayId: string;
+  reason?: string;
+}) => {
   if (accepted) {
     // monday: update adoptee formerly adopted status
     const query = `
@@ -58,7 +67,7 @@ export const handleAdopterConfirmation = async (
     const supabaseService = await dangerous_getSupabaseServiceClient();
     const { error: updateAdopteeError } = await supabaseService
       .from('adoptee_vector_test')
-      .update({ status: 'ADOPTED' })
+      .update({ status: 'ADOPTED', formerly_adopted: true })
       .eq('id', adopteeMondayId);
 
     if (updateAdopteeError) {
@@ -70,28 +79,6 @@ export const handleAdopterConfirmation = async (
   } else if (!reason) {
     return { error: 'A reason is required for rejecting match.' };
   } else {
-    // monday: update adoptee status
-    // TODO: use function to update adoptee status
-
-    // monday: update app status
-    const query = `
-      mutation {
-        change_simple_column_value(
-          board_id: "${MONDAY_ADOPTER_DATA_BOARD_ID}",
-          item_id: "${appMondayId}",
-          column_id: "status",
-          value: "Closed Out"
-        ) {}
-      }
-    `;
-
-    try {
-      await mondayApiClient.request(query);
-    } catch (error) {
-      Logger.error(`Error updating Monday adoptee and app status: ${error}`);
-      return { error: 'An unexpected error occurred.' };
-    }
-
     // db: update app status
     const supabase = await getSupabaseServerClient();
     const now = new Date();
@@ -125,15 +112,64 @@ export const handleAdopterConfirmation = async (
       return { error: 'An unexpected error occurred.' };
     }
 
+    // monday: update adoptee status
+    // TODO: use function to update adoptee status
+    const { data: adoptee, error: getAdopteeError } = await supabaseService
+      .from('adoptee_vector_test')
+      .select('id, formerly_adopted, inmate_id')
+      .eq('id', adopteeMondayId)
+      .maybeSingle();
+
+    if (getAdopteeError) {
+      Logger.error(
+        `Error getting formerly adopted status from adoptee ${adopteeMondayId}: ${getAdopteeError.message}`,
+      );
+      return { error: 'An unexpected error occurred.' };
+    }
+
+    if (!adoptee) {
+      Logger.error(
+        `No adoptee row found for adoptee ${adopteeMondayId}, matched to app ${appId}`,
+      );
+      return { error: 'An unexpected error occurred.' };
+    }
+
+    // monday: update app status
+    const query = `
+      mutation {
+        app:change_simple_column_value(
+          board_id: "${MONDAY_ADOPTER_DATA_BOARD_ID}",
+          item_id: "${appMondayId}",
+          column_id: "status",
+          value: "Closed Out"
+        ) {}
+        adoptee:change_simple_column_value(
+          board_id: "${MONDAY_WL_PIPS_BOARD_ID}",
+          item_id: "${adopteeMondayId}",
+          column_id: "status__1",
+          value: "${adoptee.formerly_adopted ? 'WLFA: Wait Listed Formerly Adopted' : 'WL: Wait Listed'}"
+        ) {}
+      }
+    `;
+
+    try {
+      await mondayApiClient.request(query);
+    } catch (error) {
+      Logger.error(`Error updating Monday adoptee and app status: ${error}`);
+      return { error: 'An unexpected error occurred.' };
+    }
+
     // send email to admins
     const emailContent = `
       Dear Adopt an Inmate team,
 
       An adopter rejected their match. Here are the details:
-      - Adopter ID: ${adopterId}
-      - Adoptee ID: ${adopteeMondayId}
-      - Timestamp: ${now.toLocaleTimeString('America/Los_Angeles', { month: 'short', day: 'numeric', year: 'numeric' })}
+      - Adopter: ${email} (ID: ${adopterId})
+      - Adoptee: ${adoptee.inmate_id} (ID: ${adopteeMondayId})
+      - Timestamp: ${now.toLocaleTimeString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })} (UTC+0)
       - Reason: "${reason}"
+
+      This is an automated email sent by the Adopt an Inmate web server. Please do not reply.
     `;
 
     await autoEmailSender(

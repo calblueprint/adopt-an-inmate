@@ -112,11 +112,16 @@ export default function ApplicationPreviewDialog() {
         reason,
       });
 
+      // TODO: use toast or error screen
       if (error) {
-        console.log(error);
+        alert(error);
+      } else {
+        // stretch TODO: use websockets instead for real time updates
+        // refresh page with updated data
+        router.push('/');
       }
     },
-    [appData],
+    [appData, router],
   );
 
   if (!(showPreview && previewId && appData?.time_submitted)) return null;

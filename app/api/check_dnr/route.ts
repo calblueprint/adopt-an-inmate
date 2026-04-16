@@ -5,7 +5,9 @@ import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
 import { getEnvVar } from '@/lib/utils';
 
 const CRON_SECRET = getEnvVar('CRON_SECRET');
-const MONDAY_ADOPTER_DATA_BOARD_ID = getEnvVar('MONDAY_ADOPTER_DATA_BOARD_ID');
+const MONDAY_ADOPTER_DATA_SUBITEM_BOARD_ID = getEnvVar(
+  'MONDAY_ADOPTER_DATA_SUBITEM_BOARD_ID',
+);
 const MONDAY_WL_PIPS_BOARD_ID = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
 
 export async function GET(request: NextRequest) {
@@ -54,6 +56,8 @@ export async function GET(request: NextRequest) {
       status: 'REAPPLY',
       time_ended: now.toISOString(),
       ended_reason: 'Adopter DNR',
+      time_confirmation_due: null,
+      waiting_confirmation: false,
     })
     .in('app_uuid', dnrAppIds);
 
@@ -83,11 +87,11 @@ export async function GET(request: NextRequest) {
   // monday: update app status to DNR
   const generateUpdateStatusQuery = (id: string) => `
     app${id}:change_simple_column_value(
-      board_id: ${MONDAY_ADOPTER_DATA_BOARD_ID},
+      board_id: ${MONDAY_ADOPTER_DATA_SUBITEM_BOARD_ID},
       item_id: ${id},
       column_id: "status",
       value: "DNR (Did Not Respond)"
-    ) {}
+    ) { id }
   `;
 
   const updateAppStatusQueries = dnrMondayIds.map(id =>
@@ -104,7 +108,7 @@ export async function GET(request: NextRequest) {
       item_id: "${id}",
       column_id: "status__1",
       value: "${formerlyAdopted ? 'WLFA: Wait Listed Formerly Adopted' : 'WL: Wait Listed'}"
-    ) {}
+    ) { id }
   `;
 
   const updateAdopteeStatusQueries = dnrAdopteeGroups.map(g =>

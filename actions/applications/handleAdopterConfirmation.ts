@@ -8,7 +8,9 @@ import Logger from '../logging';
 import { mondayApiClient } from '../monday/core';
 
 const MONDAY_WL_PIPS_BOARD_ID = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
-const MONDAY_ADOPTER_DATA_BOARD_ID = getEnvVar('MONDAY_ADOPTER_DATA_BOARD_ID');
+const MONDAY_ADOPTER_DATA_SUBITEM_BOARD_ID = getEnvVar(
+  'MONDAY_ADOPTER_DATA_SUBITEM_BOARD_ID',
+);
 
 export const handleAdopterConfirmation = async ({
   accepted,
@@ -36,7 +38,7 @@ export const handleAdopterConfirmation = async ({
           item_id: "${adopteeMondayId}",
           column_id: "color_mm1pq72v",
           value: "Yes"
-        ) {}
+        ) { id }
       }
     `;
 
@@ -53,7 +55,11 @@ export const handleAdopterConfirmation = async ({
     const supabase = await getSupabaseServerClient();
     const { error: updateAppError } = await supabase
       .from('adopter_applications_dummy')
-      .update({ status: 'ACTIVE' })
+      .update({
+        status: 'ACTIVE',
+        waiting_confirmation: false,
+        time_confirmation_due: null,
+      })
       .eq('app_uuid', appId);
 
     if (updateAppError) {
@@ -89,6 +95,8 @@ export const handleAdopterConfirmation = async ({
         status: 'ENDED',
         time_ended: now.toISOString(),
         ended_reason: reason,
+        time_confirmation_due: null,
+        waiting_confirmation: false,
       })
       .eq('app_uuid', appId);
 
@@ -113,7 +121,6 @@ export const handleAdopterConfirmation = async ({
     }
 
     // monday: update adoptee status
-    // TODO: use function to update adoptee status
     const { data: adoptee, error: getAdopteeError } = await supabaseService
       .from('adoptee_vector_test')
       .select('id, formerly_adopted, inmate_id')
@@ -138,17 +145,17 @@ export const handleAdopterConfirmation = async ({
     const query = `
       mutation {
         app:change_simple_column_value(
-          board_id: "${MONDAY_ADOPTER_DATA_BOARD_ID}",
+          board_id: "${MONDAY_ADOPTER_DATA_SUBITEM_BOARD_ID}",
           item_id: "${appMondayId}",
           column_id: "status",
           value: "Closed Out"
-        ) {}
+        ) { id }
         adoptee:change_simple_column_value(
           board_id: "${MONDAY_WL_PIPS_BOARD_ID}",
           item_id: "${adopteeMondayId}",
           column_id: "status__1",
           value: "${adoptee.formerly_adopted ? 'WLFA: Wait Listed Formerly Adopted' : 'WL: Wait Listed'}"
-        ) {}
+        ) { id }
       }
     `;
 

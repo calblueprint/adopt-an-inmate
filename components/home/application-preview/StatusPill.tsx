@@ -12,6 +12,7 @@ const statusPillStyles = cva('rounded-xl px-3 py-0.5 shadow-sm', {
       REAPPLY: 'bg-blue-100',
       ENDED: 'bg-pink-200',
       INCOMPLETE: 'bg-pink-300',
+      ACTIVE: '',
     },
   },
 });

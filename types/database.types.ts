@@ -153,43 +153,55 @@ export type Database = {
           adopter_uuid: string
           age_pref: number[] | null
           app_uuid: string
+          ended_reason: string | null
           exported_to_monday: boolean
           gender_pref: string | null
+          matched_adoptee: string | null
           monday_id: string | null
           personal_bio: string | null
           ranked_cards: string[] | null
-          return_explanation: string | null
           status: Database["public"]["Enums"]["status_vals"]
+          time_confirmation_due: string | null
           time_created: string
+          time_ended: string | null
           time_submitted: string | null
+          waiting_confirmation: boolean
         }
         Insert: {
           adopter_uuid: string
           age_pref?: number[] | null
           app_uuid?: string
+          ended_reason?: string | null
           exported_to_monday?: boolean
           gender_pref?: string | null
+          matched_adoptee?: string | null
           monday_id?: string | null
           personal_bio?: string | null
           ranked_cards?: string[] | null
-          return_explanation?: string | null
           status?: Database["public"]["Enums"]["status_vals"]
+          time_confirmation_due?: string | null
           time_created?: string
+          time_ended?: string | null
           time_submitted?: string | null
+          waiting_confirmation?: boolean
         }
         Update: {
           adopter_uuid?: string
           age_pref?: number[] | null
           app_uuid?: string
+          ended_reason?: string | null
           exported_to_monday?: boolean
           gender_pref?: string | null
+          matched_adoptee?: string | null
           monday_id?: string | null
           personal_bio?: string | null
           ranked_cards?: string[] | null
-          return_explanation?: string | null
           status?: Database["public"]["Enums"]["status_vals"]
+          time_confirmation_due?: string | null
           time_created?: string
+          time_ended?: string | null
           time_submitted?: string | null
+          waiting_confirmation?: boolean
         }
         Relationships: [
           {
@@ -303,10 +315,18 @@ export type Database = {
           gender: string
           id: string
           last_name: string
-          offense: string
           similarity: number
           state: string
           veteran_status: string
+        }[]
+      }
+      get_dnr_applications: {
+        Args: never
+        Returns: {
+          app_monday_id: string
+          app_uuid: string
+          formerly_adopted: boolean
+          matched_adoptee: string
         }[]
       }
       get_user_and_application: {
@@ -329,7 +349,7 @@ export type Database = {
       transfer_tables: { Args: never; Returns: undefined }
     }
     Enums: {
-      adoptee_status: "WAIT_LISTED" | "OUT_FOR_CONSIDERATION"
+      adoptee_status: "WAIT_LISTED" | "OUT_FOR_CONSIDERATION" | "ADOPTED"
       inactive_reason: "ENDED" | "INMATE_CANCELLED" | "NPO_CANCELLED" | "OTHER"
       status_vals:
         | "INCOMPLETE"
@@ -339,6 +359,7 @@ export type Database = {
         | "ENDED"
         | "PENDING_CONFIRMATION"
         | "REAPPLY"
+        | "ACTIVE"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -466,7 +487,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      adoptee_status: ["WAIT_LISTED", "OUT_FOR_CONSIDERATION"],
+      adoptee_status: ["WAIT_LISTED", "OUT_FOR_CONSIDERATION", "ADOPTED"],
       inactive_reason: ["ENDED", "INMATE_CANCELLED", "NPO_CANCELLED", "OTHER"],
       status_vals: [
         "INCOMPLETE",
@@ -476,6 +497,7 @@ export const Constants = {
         "ENDED",
         "PENDING_CONFIRMATION",
         "REAPPLY",
+        "ACTIVE",
       ],
     },
   },

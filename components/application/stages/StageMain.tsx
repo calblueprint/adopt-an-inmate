@@ -1,6 +1,7 @@
 import QuestionDecider from '@/components/questions/QuestionDecider';
 import { QuestionsContextProvider } from '@/contexts/QuestionsContext';
 import ProgressBar from '../../questions/ProgressBar';
+import MainQuestionAge from '../main/MainQuestionAge';
 import MainQuestionBio from '../main/MainQuestionBio';
 import MainQuestionGender from '../main/MainQuestionGender';
 import MainQuestionReview from '../main/MainQuestionReview';
@@ -12,6 +13,7 @@ export default function StageMain() {
         questions={[
           <MainQuestionBio key="bio" />,
           <MainQuestionGender key="genderPreference" />,
+          <MainQuestionAge key="age" />,
           <MainQuestionReview key="review" />,
         ]}
       >

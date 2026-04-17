@@ -13,6 +13,7 @@ const buttonStyle = cva(
         secondary: 'border border-gray-8 bg-gray-1 rounded-lg text-cyan-12',
         primary: 'bg-cyan-12 rounded-lg text-gray-1',
         tertiary: 'bg-cyan-9 text-white rounded-lg py-3 px-4',
+        quaternary: 'bg-red-9 rounded-lg text-red-1',
         rounded:
           'rounded-full px-6 border border-cyan-12 bg-gray-1 text-cyan-12',
         ghost:

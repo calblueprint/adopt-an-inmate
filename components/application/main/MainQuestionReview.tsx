@@ -8,6 +8,10 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { useProfile } from '@/contexts/ProfileProvider';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import { formatGenderPreference } from '@/lib/formatters';
+import {
+  formatAgePreference,
+  formatGenderPreference,
+} from '@/lib/formatters';
 import { ApplicationStage } from '@/types/enums';
 
 export default function MainQuestionReview() {
@@ -78,6 +82,14 @@ export default function MainQuestionReview() {
             </p>
             <p className="text-gray-12">
               {formatGenderPreference(appState.form.genderPreference)}
+            </p>
+          </div>
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">
+              Age range preference
+            </p>
+            <p className="text-gray-12">
+              {formatAgePreference(appState.form.agePreference)}
             </p>
           </div>
         </div>

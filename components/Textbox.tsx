@@ -33,13 +33,15 @@ export function Textbox({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange?.(e);
-    setIsEmpty(!(value || e.target.value));
+    setIsEmpty(!e.target.value);
   };
 
   return (
     <div>
       <input
         {...props}
+        value={value}
+        defaultValue={defaultValue}
         onChange={handleChange}
         className={textBoxStyle({ className, isEmpty, variant: 'default' })}
       />

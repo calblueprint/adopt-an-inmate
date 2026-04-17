@@ -10,6 +10,7 @@ export interface ApplicationState {
 export interface FormState {
   bio: string;
   genderPreference: 'male' | 'female' | 'no_preference';
+  agePreference: number[] | null;
 }
 
 export interface EmailPasswordCredentials {

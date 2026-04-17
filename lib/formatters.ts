@@ -26,6 +26,15 @@ export function formatOffensePreference(
   return offensePreference.join(', ');
 }
 
+export function formatAgePreference(
+  agePreference?: FormState['agePreference'],
+) {
+  if (!agePreference || agePreference.length === 0) return 'N/A';
+
+  // return agePreference;
+  return `${agePreference[0]} - ${agePreference[1]}`;
+}
+
 /**
  * Formats a timestamp string or a date object
  * into a American time notation (mm/dd/yyyy)

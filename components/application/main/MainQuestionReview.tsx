@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { useProfile } from '@/contexts/ProfileProvider';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import {
+  formatAgePreference,
   formatGenderPreference,
   formatOffensePreference,
 } from '@/lib/formatters';
@@ -91,6 +92,15 @@ export default function MainQuestionReview() {
               {formatOffensePreference(appState.form.offensePreference)}
             </p>
           </div>
+          <div className="flex flex-col gap-1">
+            <p className="text-xs font-semibold text-gray-8">
+              Age range preference
+            </p>
+            <p className="text-gray-12">
+              {formatAgePreference(appState.form.agePreference)}
+            </p>
+          </div>
+
           <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold text-gray-8">
               {appState.stillInCorrespondence

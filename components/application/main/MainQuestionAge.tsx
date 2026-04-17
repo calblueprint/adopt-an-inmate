@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Resolver, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as Slider from '@radix-ui/react-slider';
+import { Slider } from 'radix-ui';
 import z from 'zod';
 import { Button } from '@/components/Button';
 import QuestionBack from '@/components/questions/QuestionBack';

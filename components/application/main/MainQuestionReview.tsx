@@ -7,11 +7,7 @@ import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useProfile } from '@/contexts/ProfileProvider';
 import { useApplicationNavigation } from '@/hooks/app-process';
-import {
-  formatAgePreference,
-  formatGenderPreference,
-  formatOffensePreference,
-} from '@/lib/formatters';
+import { formatAgePreference, formatGenderPreference } from '@/lib/formatters';
 import { ApplicationStage } from '@/types/enums';
 
 export default function MainQuestionReview() {
@@ -86,31 +82,10 @@ export default function MainQuestionReview() {
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold text-gray-8">
-              Offenses not preferred
-            </p>
-            <p className="text-gray-12">
-              {formatOffensePreference(appState.form.offensePreference)}
-            </p>
-          </div>
-          <div className="flex flex-col gap-1">
-            <p className="text-xs font-semibold text-gray-8">
               Age range preference
             </p>
             <p className="text-gray-12">
               {formatAgePreference(appState.form.agePreference)}
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <p className="text-xs font-semibold text-gray-8">
-              {appState.stillInCorrespondence
-                ? 'Reason for adopting'
-                : 'Why it ended'}
-            </p>
-            <p className="text-gray-12">
-              {(appState.stillInCorrespondence
-                ? appState.form.whyAdopting
-                : appState.form.whyEnded) || 'N/A'}
             </p>
           </div>
         </div>

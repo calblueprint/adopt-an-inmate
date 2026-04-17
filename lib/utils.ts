@@ -151,15 +151,10 @@ export function getResumeStageAndQuestion(app: AdopterApplication): {
   // Check MAIN stage question columns
   const hasBio = app.personal_bio != null && app.personal_bio.trim() !== '';
   const hasGender = app.gender_pref != null && app.gender_pref.trim() !== '';
-  const hasOffense = app.offense_pref != null && app.offense_pref.length > 0;
-  const hasReason =
-    app.return_explanation != null && app.return_explanation.trim() !== '';
 
   if (hasBio) {
     //TODO: update routing & other logic to remove offense, reason + add age
     if (!hasGender) return { stage: 1, question: 1 };
-    if (!hasOffense) return { stage: 1, question: 2 };
-    if (!hasReason) return { stage: 1, question: 3 };
     return { stage: 1, question: 4 }; // review
   }
 

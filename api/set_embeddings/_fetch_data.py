@@ -142,7 +142,6 @@ class MondayBoardFetcher:
         "gender": get_col_val(columns, MONDAY_COLUMN_IDS["gender"]),
         "dob": get_col_val(columns, MONDAY_COLUMN_IDS["dob"]),
         "veteran_status": get_col_val(columns, MONDAY_COLUMN_IDS["veteran_status"]),
-        "offense": get_col_val(columns, MONDAY_COLUMN_IDS["offense"]),
         "state": get_col_val(columns, MONDAY_COLUMN_IDS["state"]),
         # translate yes/no to boolean for formerly_adopted
         "formerly_adopted": get_col_val(columns, MONDAY_COLUMN_IDS["formerly_adopted"]) == "Yes"

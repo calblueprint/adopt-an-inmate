@@ -7,11 +7,7 @@ import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useProfile } from '@/contexts/ProfileProvider';
 import { useApplicationNavigation } from '@/hooks/app-process';
-import { formatGenderPreference } from '@/lib/formatters';
-import {
-  formatAgePreference,
-  formatGenderPreference,
-} from '@/lib/formatters';
+import { formatAgePreference, formatGenderPreference } from '@/lib/formatters';
 import { ApplicationStage } from '@/types/enums';
 
 export default function MainQuestionReview() {

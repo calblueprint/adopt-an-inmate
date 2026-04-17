@@ -42,6 +42,10 @@ export function formatGenderPreference(genderPreference?: string | null) {
   return capitalize(genderPreference);
 }
 
+/**
+ * Formats an age preference range into a
+ * display-appropriate string.
+ */
 export function formatAgePreference(
   agePreference?: FormState['agePreference'],
 ) {

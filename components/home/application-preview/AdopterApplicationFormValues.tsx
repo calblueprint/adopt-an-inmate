@@ -25,7 +25,7 @@ export function AdopterApplicationFormValues({
       {/* age preference */}
       <div className="flex flex-col gap-1">
         <p className="text-sm font-bold text-gray-9">Age Preference</p>
-        <p>{formatAgePreference(appData.age_pref, 'standard')}</p>
+        <p>{formatAgePreference(appData.age_pref)}</p>
       </div>
     </>
   );

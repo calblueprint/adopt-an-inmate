@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { LuBell } from 'react-icons/lu';
 import { useSearchParams } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { appIsActive } from '@/lib/utils';
 import { AdopterApplication } from '@/types/schema';
 import LoadingSpinner from '../LoadingSpinner';
 import ApplicationCard from './ApplicationCard';
-import CreateApplicationCard from './CreateApplicationCard';
 
 export default function MainDashBoardTabs() {
   const searchParams = useSearchParams();
@@ -89,22 +87,9 @@ export default function MainDashBoardTabs() {
     </div>
   ) : (
     <div className="flex w-full flex-col gap-6">
-      {/* Header: Applications title + notifications bell */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-12">Applications</h1>
-        <button
-          type="button"
-          className="relative rounded p-2 text-gray-10 hover:bg-gray-2 hover:text-gray-12"
-          aria-label="Notifications"
-        >
-          <LuBell className="h-5 w-5" />
-          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-9" />
-        </button>
-      </div>
-
       {/* Cards grid: Create card + application cards */}
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(13.75rem,13.75rem))] gap-4">
-        {!showHistory && <CreateApplicationCard />}
+      <div className="grid grid-cols-2 gap-8">
+        {!showHistory && true}
         {applications.map(app => (
           <ApplicationCard
             key={app.app_uuid}

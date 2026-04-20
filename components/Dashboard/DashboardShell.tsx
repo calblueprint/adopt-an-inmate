@@ -1,6 +1,6 @@
 'use client';
 
-import Sidebar from './Sidebar';
+import Sidebar from '../Sidebar';
 
 export default function DashboardShell({
   children,
@@ -10,7 +10,7 @@ export default function DashboardShell({
   return (
     <div className="bg-color-bg flex min-h-svh w-full">
       <Sidebar />
-      <main className="flex-1 overflow-auto px-8 py-6">{children}</main>
+      <main className="min-w-0 flex-1 overflow-auto px-8 py-6">{children}</main>
     </div>
   );
 }

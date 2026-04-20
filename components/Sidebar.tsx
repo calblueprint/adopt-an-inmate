@@ -9,13 +9,12 @@ import {
   LuLayoutDashboard,
   LuUser,
 } from 'react-icons/lu';
-import { TbLogout } from 'react-icons/tb';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { signOut } from '@/actions/auth';
+import { usePathname, useSearchParams } from 'next/navigation';
 import Logo from '@/components/Logo';
 import { useProfile } from '@/contexts/ProfileProvider';
 import { cn } from '@/lib/utils';
+import LogoutButton from './MainDashboard/LogoutButton';
 
 const NAV_LINKS = [
   { href: '/', label: 'Dashboard', icon: LuLayoutDashboard },
@@ -29,19 +28,12 @@ export default function Sidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const tab = searchParams.get('tab');
-  const router = useRouter();
   const { profileData } = useProfile();
 
   const displayName = useMemo(
     () => profileData?.first_name || 'User',
     [profileData?.first_name],
   );
-
-  const handleSignOut = async () => {
-    const { error } = await signOut();
-    if (error) alert(error.message);
-    else router.push('/');
-  };
 
   const isActive = (label: string, href: string) => {
     if (label === 'Dashboard')
@@ -53,7 +45,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="flex h-full w-60 flex-col border-r border-gray-4 bg-white">
+    <aside className="sticky top-0 flex h-svh w-72 flex-col border-r border-gray-4 bg-white">
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2 px-6 py-5">
         <Logo compact />
@@ -100,25 +92,8 @@ export default function Sidebar() {
       </nav>
 
       {/* User profile + logout */}
-      <div className="border-t border-gray-4 px-4 py-4">
-        <div className="flex items-center justify-between gap-3 rounded-lg bg-gray-2 px-3 py-2">
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 shrink-0 rounded-full bg-gray-5" />
-            <span className="truncate text-sm font-medium text-gray-12">
-              {[profileData?.first_name, profileData?.last_name]
-                .filter(Boolean)
-                .join(' ') || 'Profile'}
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className="rounded p-1.5 text-gray-9 transition-colors hover:bg-red-2 hover:text-red-12"
-            aria-label="Logout"
-          >
-            <TbLogout className="h-5 w-5" />
-          </button>
-        </div>
+      <div className="mx-3 border-t border-gray-4 py-4">
+        <LogoutButton />
       </div>
     </aside>
   );

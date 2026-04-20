@@ -47,20 +47,21 @@ export default function LogoutButton() {
   const displayName = getDisplayName();
 
   return (
-    <div className="rounded-2xl bg-black/3 px-4 py-3">
-      <div className="flex flex-row items-center justify-between">
-        <div className="flex flex-row gap-3">
-          <div className="h-7 w-7 rounded-full bg-black/25" />
-          <p className="text-lg font-medium">{displayName}</p>
-        </div>
-
-        <div>
-          <TbLogout
-            className="h-5 w-5 cursor-pointer text-red-12"
-            onClick={() => handleSignOut()}
-          />
-        </div>
+    <div className="flex items-center justify-between gap-3 rounded-lg bg-gray-2 px-3 py-2">
+      <div className="flex items-center gap-3">
+        <div className="h-9 w-9 shrink-0 rounded-full bg-gray-5" />
+        <span className="truncate text-sm font-medium text-gray-12">
+          {displayName}
+        </span>
       </div>
+      <button
+        type="button"
+        onClick={handleSignOut}
+        className="rounded p-1.5 text-gray-9 transition-colors hover:bg-red-2 hover:text-red-12"
+        aria-label="Logout"
+      >
+        <TbLogout className="h-5 w-5" />
+      </button>
     </div>
   );
 }

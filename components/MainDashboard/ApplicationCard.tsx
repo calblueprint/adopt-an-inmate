@@ -12,7 +12,7 @@ export default function ApplicationCard({
   displayName = 'Application',
 }: ApplicationCardProps) {
   return (
-    <div className="flex h-55 w-55 flex-col justify-between rounded-2xl border-2 border-cyan-12 bg-white">
+    <div className="flex h-60 w-96 flex-col justify-between rounded-2xl border-2 border-cyan-12 bg-white">
       <div className="flex flex-row justify-end pt-3 pr-3">
         <ApplicationCardButton app={app} />
       </div>

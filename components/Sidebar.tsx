@@ -19,7 +19,7 @@ import LogoutButton from './MainDashboard/LogoutButton';
 const NAV_LINKS = [
   { href: '/', label: 'Dashboard', icon: LuLayoutDashboard },
   { href: '/?tab=history', label: 'History', icon: LuClock },
-  { href: '/profile', label: 'Profile', icon: LuUser },
+  { href: '/profile/edit', label: 'Profile', icon: LuUser },
   { href: '#', label: 'Donate', icon: LuHeart },
   { href: '#', label: 'Learn More', icon: LuInfo },
 ] as const;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Tabs } from 'radix-ui';
+import { useSearchParams } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { appIsActive } from '@/lib/utils';
 import { AdopterApplication } from '@/types/schema';
@@ -9,8 +9,13 @@ import LoadingSpinner from '../LoadingSpinner';
 import ApplicationCard from './ApplicationCard';
 
 export default function MainDashBoardTabs() {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  const showHistory = tabParam === 'history';
+
   const loadStarted = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [displayName, setDisplayName] = useState('Application');
   const [activeApplications, setActiveApplications] = useState<
     AdopterApplication[]
   >([]);
@@ -22,20 +27,28 @@ export default function MainDashBoardTabs() {
     if (loadStarted.current) return;
 
     const loadData = async () => {
-      // get user
       const supabase = getSupabaseBrowserClient();
       const {
         data: { user },
         error: getUserError,
       } = await supabase.auth.getUser();
 
-      // Next.js will handle routing to error page
       if (getUserError) throw new Error(getUserError.message);
-
-      // not logged in: redirect should be handled by layout
       if (!user) return;
 
-      // fetch user applications
+      const { data: profileData } = await supabase
+        .from('adopter_profiles')
+        .select('first_name, last_name')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (profileData?.first_name)
+        setDisplayName(
+          [profileData.first_name, profileData.last_name]
+            .filter(Boolean)
+            .join(' '),
+        );
+
       const { data: applicationsData, error: fetchApplicationsError } =
         await supabase
           .from('adopter_applications_dummy')
@@ -66,46 +79,25 @@ export default function MainDashBoardTabs() {
     loadStarted.current = true;
   }, []);
 
+  const applications = showHistory ? inactiveApplications : activeApplications;
+
   return isLoading ? (
-    <div className="grid h-full w-full place-items-center">
+    <div className="grid h-32 w-full place-items-center">
       <LoadingSpinner size="24" />
     </div>
   ) : (
-    <Tabs.Root className="w-full" defaultValue="active">
-      <Tabs.List
-        className="justify-items-center border-b-2 border-b-gray-300"
-        aria-label="Manage your account"
-      >
-        <div className="flex w-full">
-          <Tabs.Trigger
-            className="-mb-0.5 flex-1 cursor-pointer border-b-2 border-b-transparent px-4 pb-2 text-gray-400 transition-colors data-[state=active]:border-b-cyan-9 data-[state=active]:text-cyan-9"
-            value="active"
-          >
-            Active Applications
-          </Tabs.Trigger>
-
-          <Tabs.Trigger
-            className="-mb-0.5 flex-1 cursor-pointer border-b-2 border-b-transparent px-4 pb-2 text-gray-400 transition-colors data-[state=active]:border-b-cyan-9 data-[state=active]:text-cyan-9"
-            value="inactive"
-          >
-            Inactive Applications
-          </Tabs.Trigger>
-        </div>
-      </Tabs.List>
-      <Tabs.Content className="w-full pt-9" value="active">
-        <div className="flex flex-row flex-wrap gap-x-12 gap-y-14">
-          {activeApplications.map(app => (
-            <ApplicationCard key={app.app_uuid} app={app} />
-          ))}
-        </div>
-      </Tabs.Content>
-      <Tabs.Content className="w-full pt-9" value="inactive">
-        <div className="flex flex-row flex-wrap gap-x-12 gap-y-14">
-          {inactiveApplications.map(app => (
-            <ApplicationCard key={app.app_uuid} app={app} />
-          ))}
-        </div>
-      </Tabs.Content>
-    </Tabs.Root>
+    <div className="flex w-full flex-col gap-6">
+      {/* Cards grid: Create card + application cards */}
+      <div className="grid grid-cols-2 gap-8">
+        {!showHistory && true}
+        {applications.map(app => (
+          <ApplicationCard
+            key={app.app_uuid}
+            app={app}
+            displayName={displayName}
+          />
+        ))}
+      </div>
+    </div>
   );
 }

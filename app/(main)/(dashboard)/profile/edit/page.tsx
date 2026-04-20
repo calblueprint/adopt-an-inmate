@@ -31,7 +31,7 @@ export default function EditProfilePage() {
     loadProfile();
   }, [userId]);
 
-  if (loading) return null; // or a loading spinner
+  if (loading) return null;
 
   if (!profileData) return null;
 

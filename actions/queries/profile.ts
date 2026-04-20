@@ -25,8 +25,7 @@ export async function fetchProfileById(userId: string) {
     .eq('user_id', userId)
     .maybeSingle();
 
-  if (error)
-    throw new Error(`Error fetching profile id ${userId}: ${error.message}`);
+  if (error) throw new Error(`Error fetching profile: ${error.message}`);
 
   return data;
 }

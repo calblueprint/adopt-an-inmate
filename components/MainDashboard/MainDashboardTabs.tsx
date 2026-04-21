@@ -15,7 +15,6 @@ export default function MainDashBoardTabs() {
 
   const loadStarted = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [displayName, setDisplayName] = useState('Application');
   const [activeApplications, setActiveApplications] = useState<
     AdopterApplication[]
   >([]);
@@ -35,19 +34,6 @@ export default function MainDashBoardTabs() {
 
       if (getUserError) throw new Error(getUserError.message);
       if (!user) return;
-
-      const { data: profileData } = await supabase
-        .from('adopter_profiles')
-        .select('first_name, last_name')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (profileData?.first_name)
-        setDisplayName(
-          [profileData.first_name, profileData.last_name]
-            .filter(Boolean)
-            .join(' '),
-        );
 
       const { data: applicationsData, error: fetchApplicationsError } =
         await supabase
@@ -91,11 +77,7 @@ export default function MainDashBoardTabs() {
       <div className="grid grid-cols-2 gap-8">
         {!showHistory && true}
         {applications.map(app => (
-          <ApplicationCard
-            key={app.app_uuid}
-            app={app}
-            displayName={displayName}
-          />
+          <ApplicationCard key={app.app_uuid} app={app} />
         ))}
       </div>
     </div>

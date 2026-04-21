@@ -25,6 +25,7 @@ export default function ApplicationPreviewDialog() {
   const previewId = useMemo(() => searchParams.get('preview'), [searchParams]);
   const router = useRouter();
   const [appData, setAppData] = useState<ApplicationWithAdoptees>(null);
+  const historyStatuses = ['REAPPLY', 'REJECTED', 'ENDED'];
 
   useEffect(() => {
     if (!previewId) return;
@@ -90,7 +91,9 @@ export default function ApplicationPreviewDialog() {
   // replace URL to / when modal closes
   const triggerNavigate = (open: boolean) => {
     if (open) return;
-    router.push('/');
+    router.replace(
+      historyStatuses.includes(appData.status) ? '/?tab=history' : '/',
+    );
   };
 
   return (

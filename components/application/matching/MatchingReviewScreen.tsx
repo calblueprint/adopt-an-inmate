@@ -41,12 +41,11 @@ export default function MatchingReviewScreen({
       time_submitted: new Date().toISOString(),
     });
 
+    const { success, error } = await exportApplication(appState.appId);
+    console.log('Export result:', { success, error });
+
     advanceToStage(ApplicationStage.SUBMITTED);
     setIsLoading(false);
-
-    const { success, error } = await exportApplication(appState.appId);
-    if (success) return new Response('Success.');
-    return new Response(`${new String(error)}`);
   };
 
   const handleReadMore = (match: RankedAdopteeMatch) => {

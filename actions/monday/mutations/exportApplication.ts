@@ -238,7 +238,7 @@ const getQueryCreateSubItem = (
       status: 'Pending',
       gender_preference: parsedGenderPref,
       match_list_links: { item_ids: appData.ranked_cards },
-      bio: appData.personal_bio,
+      bio: appData.personal_bio?.replace(/"/g, "'"),
       order: rankedCardsOrder,
       date_received: currentDateISOString,
     },
@@ -311,8 +311,14 @@ const exportApplication = async (appId: string) => {
   if (!appData.adopter_monday_id) {
     const createMainItemQuery = getQueryCreateMainItem(appData, user.email);
 
-    const response = await mondayApiClient.request(createMainItemQuery);
-
+    let response;
+    try {
+      response = await mondayApiClient.request(createMainItemQuery);
+    } catch (err) {
+      Logger.error(`Monday API error: ${JSON.stringify(err)}`);
+      console.error('Monday API error:', err);
+      return { success: false, error: 'Monday API request failed.' };
+    }
     // interpret response, get main item id
     try {
       const resObj = response as Record<string, unknown>;

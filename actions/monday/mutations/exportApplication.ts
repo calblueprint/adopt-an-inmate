@@ -17,7 +17,7 @@ const MONDAY_ADOPTER_DATA_BOARD_ID = getEnvVar('MONDAY_ADOPTER_DATA_BOARD_ID');
 const MONDAY_ADOPTER_DATA_WAITING_GROUP_ID = getEnvVar(
   'MONDAY_ADOPTER_DATA_WAITING_GROUP_ID',
 );
-const MONDAY_WL_PIPS_BOARD_ID = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
+// const MONDAY_WL_PIPS_BOARD_ID = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
 
 ////
 // HELPER FUNCTION
@@ -104,22 +104,22 @@ const parseColumns = <K extends string>(
  * of relevant adoptee rows in the WL PIPs board
  * to OFC: Out For Consideration.
  */
-const getQueryUpdateAdoptees = (appData: ProfileAndApplication) => {
-  const rankedCards = appData.ranked_cards as Array<string>;
-  const adopteeUpdatesQueries = rankedCards.map(
-    (id, idx) =>
-      `update${idx + 1}:change_simple_column_value(
-          board_id: "${MONDAY_WL_PIPS_BOARD_ID}",
-          item_id: "${id}",
-          column_id: "status__1",
-          value: "OFC: Out For Consideration"
-        ) { id }`,
-  );
+// const getQueryUpdateAdoptees = (appData: ProfileAndApplication) => {
+//   const rankedCards = appData.ranked_cards as Array<string>;
+//   const adopteeUpdatesQueries = rankedCards.map(
+//     (id, idx) =>
+//       `update${idx + 1}:change_simple_column_value(
+//           board_id: "${MONDAY_WL_PIPS_BOARD_ID}",
+//           item_id: "${id}",
+//           column_id: "status__1",
+//           value: "OFC: Out For Consideration"
+//         ) { id }`,
+//   );
 
-  const adopteeUpdatesQuery = adopteeUpdatesQueries.join(',');
+//   const adopteeUpdatesQuery = adopteeUpdatesQueries.join(',');
 
-  return adopteeUpdatesQuery;
-};
+//   return adopteeUpdatesQuery;
+// };
 
 /**
  * Generate a mutation query to create the
@@ -352,14 +352,19 @@ const exportApplication = async (appId: string) => {
     mainItemId,
     adopteeData,
   );
-  const updateAdopteesQuery = getQueryUpdateAdoptees(appData);
+  // const updateAdopteesQuery = getQueryUpdateAdoptees(appData);
 
   const supplementaryQuery = `
     mutation {
       ${createSubitemQuery},
-      ${updateAdopteesQuery}
     }
   `;
+  // const supplementaryQuery = `
+  //   mutation {
+  //     ${createSubitemQuery},
+  //     ${updateAdopteesQuery}
+  //   }
+  // `;
 
   const response = await mondayApiClient.request(supplementaryQuery);
 

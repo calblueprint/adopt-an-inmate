@@ -62,6 +62,25 @@
   --color-yellow-10: #ffc703;
   --color-yellow-11: #9d7000;
   --color-yellow-12: #473b1e;
+
+  /* animations */
+  @keyframes collapsible-slide-up {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-collapsible-content-height);
+    }
+  }
+
+  @keyframes collapsible-slide-down {
+    from {
+      height: var(--radix-collapsible-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
 }
 
 @theme inline {

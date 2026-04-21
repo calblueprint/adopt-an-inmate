@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 
     // redirect to confirmation page
     if (!error) {
-      redirect('/?confirmation=true');
+      redirect('/?dialog=confirmation');
     }
   }
 

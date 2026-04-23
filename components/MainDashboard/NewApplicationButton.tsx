@@ -30,9 +30,9 @@ export default function NewApplicationButton({
       if (!user) return;
       const { data: canCreate, error: errorMsg } =
         await checkCreationConstraints(user);
-      console.log('canCreate:', canCreate, 'error:', errorMsg);
+      //console.log('canCreate:', canCreate, 'error:', errorMsg);
       setIsRestricted(!canCreate);
-      console.log('isRestricted set to:', !canCreate);
+      //console.log('isRestricted set to:', !canCreate);
     };
     checkRestriction();
   }, []);

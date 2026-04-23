@@ -51,7 +51,7 @@ export const checkCreationConstraints = async (user: User) => {
     return {
       data: false,
       error:
-        'There was an issue with your onboarding responses, please contact admin to fix this.',
+        'There was an issue with your onboarding responses, please contact admin at adopt@adoptaninmate.org to fix this.',
     };
   }
 
@@ -109,7 +109,7 @@ export const checkCreationConstraints = async (user: User) => {
       return {
         data: false,
         error:
-          'There was an issue with your onboarding responses, please contact admin to fix this.',
+          'You have a past rejected application, please follow up with admin at adopt@adoptaninmate.org.',
       };
     }
 

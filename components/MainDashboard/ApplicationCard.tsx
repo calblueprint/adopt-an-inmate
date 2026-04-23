@@ -20,7 +20,7 @@ export default function ApplicationCard({ app }: { app: AdopterApplication }) {
   return (
     <Link
       href={appLink}
-      className="flex h-60 w-96 flex-col rounded-2xl border-2 border-cyan-12 bg-white"
+      className="flex h-60 w-full flex-col rounded-2xl border-2 border-cyan-12 bg-white"
     >
       <div className="flex flex-col gap-y-30">
         <div className="flex flex-row justify-end pt-3 pr-3">

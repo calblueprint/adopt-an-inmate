@@ -7,7 +7,6 @@ import {
   LuHeart,
   LuInfo,
   LuLayoutDashboard,
-  LuUser,
 } from 'react-icons/lu';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
@@ -17,9 +16,8 @@ import { cn } from '@/lib/utils';
 import LogoutButton from './MainDashboard/LogoutButton';
 
 const NAV_LINKS = [
-  { href: '/', label: 'Dashboard', icon: LuLayoutDashboard },
+  { href: '/', label: 'Applications', icon: LuLayoutDashboard },
   { href: '/?tab=history', label: 'History', icon: LuClock },
-  { href: '/profile/edit', label: 'Profile', icon: LuUser },
   { href: '#', label: 'Donate', icon: LuHeart },
   { href: '#', label: 'Learn More', icon: LuInfo },
 ] as const;
@@ -45,7 +43,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="sticky top-0 flex h-svh w-72 flex-col border-r border-gray-4 bg-white">
+    <aside className="sticky top-0 flex h-svh w-72 flex-col border-r border-gray-4 bg-gray-1">
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2 px-6 py-5">
         <Logo compact />

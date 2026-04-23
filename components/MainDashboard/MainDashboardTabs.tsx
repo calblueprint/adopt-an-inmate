@@ -74,12 +74,20 @@ export default function MainDashBoardTabs() {
   ) : (
     <div className="flex w-full flex-col gap-6">
       {/* Cards grid: Create card + application cards */}
-      <div className="grid grid-cols-2 gap-8">
-        {!showHistory && true}
-        {applications.map(app => (
-          <ApplicationCard key={app.app_uuid} app={app} />
-        ))}
-      </div>
+      {applications.length === 0 && (
+        <div className="flex h-full items-center justify-center pb-30">
+          <p className="opacity-50">
+            No applications at the moment. Start an application to adopt!
+          </p>
+        </div>
+      )}
+      {applications.length > 0 && (
+        <div className="grid grid-cols-2 gap-8">
+          {applications.map(app => (
+            <ApplicationCard key={app.app_uuid} app={app} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

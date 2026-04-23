@@ -7,6 +7,7 @@ import {
   createApplication,
 } from '@/actions/applications/createApplication';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { cn } from '@/lib/utils';
 import LoadingSpinner from '../LoadingSpinner';
 
 interface NewApplicationButtonProps {
@@ -50,12 +51,11 @@ export default function NewApplicationButton({
     <button
       onClick={createApp}
       disabled={isCreating}
-      className="flex cursor-pointer items-center gap-2 rounded-[0.5rem] px-[2.0625rem] py-[0.4375rem] text-white transition-opacity hover:opacity-90"
-      style={{
-        background: isRestricted
-          ? 'linear-gradient(0deg, rgba(255, 255, 255, 0.30) 0%, rgba(255, 255, 255, 0.30) 100%), #AF2028'
-          : '#AF2028',
-      }}
+      className={cn(
+        'relative flex cursor-pointer items-center gap-2 rounded-[0.5rem] bg-red-9 px-8 py-2 text-white transition-opacity hover:opacity-90',
+        isRestricted &&
+          'before:absolute before:inset-0 before:block before:bg-white/30',
+      )}
     >
       {isCreating ? (
         <>

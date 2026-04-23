@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { LuClock, LuLayoutDashboard } from 'react-icons/lu';
 import { useSearchParams } from 'next/navigation';
 import MainDashboardTabs from './MainDashboardTabs';
 import NewApplicationButton from './NewApplicationButton';
@@ -35,23 +36,21 @@ export default function MainDashboard() {
   }, [errorMessage]);
 
   return (
-    <div className="relative mx-auto flex w-full max-w-400 flex-row justify-end gap-7 px-7">
-      <div className="flex w-full flex-col gap-14 rounded-2xl bg-white p-16">
-        <div className="flex flex-row justify-between">
-          <div className="flex flex-col">
-            <p className="text-2xl font-semibold text-cyan-12">
-              {showHistory ? 'Past Applications' : 'Applications'}
-            </p>
-            <p className="text-gray-13">
-              Welcome to your application dashboard
-            </p>
+    <main className="align-items flex h-svh w-full flex-col justify-center bg-gray-1">
+      <div className="flex w-full flex-col gap-14 border-b-1 border-gray-4 px-16 pt-16 pb-4">
+        <div className="flex h-12 items-center justify-between">
+          <div className="flex items-center gap-2 text-3xl text-gray-12">
+            {showHistory ? <LuClock /> : <LuLayoutDashboard />}
+            <h1 className="text-3xl font-normal text-gray-12">
+              {showHistory ? 'History' : 'Applications'}
+            </h1>
           </div>
-
           <div>
             {!showHistory && <NewApplicationButton onError={setErrorMessage} />}
           </div>
         </div>
-
+      </div>
+      <div className="flex h-full w-full max-w-400 flex-row justify-end gap-7 px-16 py-7">
         <MainDashboardTabs />
       </div>
 
@@ -78,6 +77,6 @@ export default function MainDashboard() {
           <p className="text-sm text-gray-12">{errorMessage}</p>
         </div>
       )}
-    </div>
+    </main>
   );
 }

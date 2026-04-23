@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import Logger from '@/actions/logging';
+import { updateAdopteeMondayStatus } from '@/actions/monday/mutations/changeStatus';
 import { queryMatchedAdoptees } from '@/actions/monday/queryMatchedAdoptee';
 import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
 import { assertEnvVarExists, getEnvVar } from '@/lib/utils';
@@ -124,7 +125,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // mark unmatched adoptees as WAIT_LISTED in adoptee_vector_test
+    // mark unmatched adoptees as WAIT_LISTED in adoptee_vector_test and on Monday WL PIPs board
     if (unmatchedAdopteeIds.length > 0) {
       const { error: wlError } = await supabase
         .from('adoptee_vector_test')
@@ -134,6 +135,15 @@ export async function POST(request: NextRequest) {
       if (wlError) {
         Logger.error(
           `Error marking unmatched adoptees as WAIT_LISTED: ${wlError.message}`,
+        );
+      }
+
+      // update unmatched adoptees status on Monday WL PIPs board
+      try {
+        await updateAdopteeMondayStatus(unmatchedAdopteeIds, 'WL');
+      } catch (e) {
+        Logger.error(
+          `Error updating unmatched adoptees on Monday WL PIPs board: ${e}`,
         );
       }
     }

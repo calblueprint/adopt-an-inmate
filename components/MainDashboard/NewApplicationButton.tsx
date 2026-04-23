@@ -28,11 +28,8 @@ export default function NewApplicationButton({
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) return;
-      // const { data: canCreate, error: errorMsg } =
-      //   await checkCreationConstraints(user);
-      // console.log('canCreate:', canCreate, 'error:', errorMsg);
-      // setIsRestricted(!canCreate);
-      //console.log('isRestricted set to:', !canCreate);
+      const { data: canCreate } = await checkCreationConstraints(user);
+      setIsRestricted(!canCreate);
     };
     checkRestriction();
   }, []);
@@ -58,8 +55,6 @@ export default function NewApplicationButton({
         background: isRestricted
           ? 'linear-gradient(0deg, rgba(255, 255, 255, 0.30) 0%, rgba(255, 255, 255, 0.30) 100%), #AF2028'
           : '#AF2028',
-        //   'linear-gradient(0deg, rgba(255, 255, 255, 0.30) 0%, rgba(255, 255, 255, 0.30) 100%), #AF2028',
-        // opacity: isRestricted ? 0.5 : 1,
       }}
     >
       {isCreating ? (

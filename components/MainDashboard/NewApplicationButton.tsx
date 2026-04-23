@@ -28,10 +28,10 @@ export default function NewApplicationButton({
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) return;
-      const { data: canCreate, error: errorMsg } =
-        await checkCreationConstraints(user);
-      //console.log('canCreate:', canCreate, 'error:', errorMsg);
-      setIsRestricted(!canCreate);
+      // const { data: canCreate, error: errorMsg } =
+      //   await checkCreationConstraints(user);
+      // console.log('canCreate:', canCreate, 'error:', errorMsg);
+      // setIsRestricted(!canCreate);
       //console.log('isRestricted set to:', !canCreate);
     };
     checkRestriction();

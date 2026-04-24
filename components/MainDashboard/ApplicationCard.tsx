@@ -1,22 +1,28 @@
 'use client';
 
 import { useMemo } from 'react';
-import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { formatDate } from '@/lib/formatters';
 import { getResumeStageAndQuestion } from '@/lib/utils';
 import { AdopterApplication } from '@/types/schema';
-import { Button } from '../Button';
+import { ButtonLink } from '../Button';
 import StatusPill from '../home/application-preview/StatusPill';
 
 export default function ApplicationCard({ app }: { app: AdopterApplication }) {
+  const searchParams = useSearchParams();
+
   const appLink = useMemo(() => {
     if (app.status === 'INCOMPLETE') {
       const { question, stage } = getResumeStageAndQuestion(app);
       return `/app/${app.app_uuid}?stage=${stage}&q=${question}`;
     } else {
-      return `/?dialog=preview&preview=${app.app_uuid}`;
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('dialog', 'preview');
+      params.set('preview', app.app_uuid);
+
+      return `?${params.toString()}`;
     }
-  }, [app]);
+  }, [app, searchParams]);
 
   const appStatusText = useMemo(() => {
     switch (app.status) {
@@ -41,10 +47,7 @@ export default function ApplicationCard({ app }: { app: AdopterApplication }) {
   }, [app]);
 
   return (
-    <Link
-      href={appLink}
-      className="flex h-60 w-full min-w-96 flex-col items-baseline gap-6 rounded-lg border-2 border-gray-4 bg-white p-8"
-    >
+    <div className="flex h-60 w-full min-w-96 flex-col items-baseline gap-6 rounded-lg border-2 border-gray-4 bg-white p-8">
       <StatusPill status={app.status} />
       <div className="flex flex-col gap-4">
         <h2>
@@ -59,9 +62,9 @@ export default function ApplicationCard({ app }: { app: AdopterApplication }) {
         </p>
       </div>
       <div className="flex items-center gap-4">
-        <Button variant="primary">
+        <ButtonLink variant="primary" href={appLink}>
           {app.status === 'INCOMPLETE' ? 'Continue' : 'View'}
-        </Button>
+        </ButtonLink>
         <p
           className={
             app.status === 'PENDING' || app.status === 'PENDING_CONFIRMATION'
@@ -72,6 +75,6 @@ export default function ApplicationCard({ app }: { app: AdopterApplication }) {
           {appStatusText}
         </p>
       </div>
-    </Link>
+    </div>
   );
 }

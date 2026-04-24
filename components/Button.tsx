@@ -38,7 +38,7 @@ const buttonStyle = cva(
       {
         variant: 'primary',
         disabled: false,
-        className: 'hover:bg-cyan-10',
+        className: 'hover:bg-red-10',
       },
       {
         variant: 'rounded',

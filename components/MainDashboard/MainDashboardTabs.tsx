@@ -82,7 +82,7 @@ export default function MainDashBoardTabs() {
         </div>
       )}
       {applications.length > 0 && (
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(24rem,1fr))] gap-8">
           {applications.map(app => (
             <ApplicationCard key={app.app_uuid} app={app} />
           ))}

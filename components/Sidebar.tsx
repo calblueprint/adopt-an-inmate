@@ -2,18 +2,19 @@
 
 import { useMemo } from 'react';
 import {
-  LuBell,
   LuClock,
   LuHeart,
   LuInfo,
   LuLayoutDashboard,
+  LuUser,
 } from 'react-icons/lu';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Logo from '@/components/Logo';
+import LogoutButton from '@/components/MainDashboard/LogoutButton';
 import { useProfile } from '@/contexts/ProfileProvider';
-import { cn } from '@/lib/utils';
-import LogoutButton from './MainDashboard/LogoutButton';
+import { ButtonLink } from './Button';
+import SidebarItem from './SidebarItem';
 
 const NAV_LINKS = [
   { href: '/', label: 'Applications', icon: LuLayoutDashboard },
@@ -34,7 +35,7 @@ export default function Sidebar() {
   );
 
   const isActive = (label: string, href: string) => {
-    if (label === 'Dashboard')
+    if (label === 'Applications')
       return (
         (pathname === '/' || pathname.startsWith('/app')) && tab !== 'history'
       );
@@ -43,54 +44,46 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="sticky top-0 flex h-svh w-72 flex-col border-r border-gray-4 bg-gray-1">
+    <aside className="sticky top-0 flex h-svh flex-col items-center gap-8 border-r border-gray-4 bg-gray-1 px-8 pt-13 pb-10">
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-2 px-6 py-5">
-        <Logo compact />
+      <Link href="/">
+        <Logo variant="sidebar" />
       </Link>
 
       {/* Greeting + notification bell */}
-      <div className="flex items-center justify-between gap-2 px-6 pb-2">
-        <div>
-          <p className="text-lg font-bold text-gray-12">Hi {displayName}</p>
-          <p className="text-sm text-gray-10">Adopter</p>
-        </div>
-        <Link
-          href="/notifications"
-          className="relative rounded p-1.5 text-gray-10 hover:bg-gray-2 hover:text-gray-12"
-          aria-label="Notifications"
-        >
-          <LuBell className="h-5 w-5" />
-          <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-9" />
-        </Link>
-      </div>
+      <section className="flex w-53 flex-col gap-4">
+        <p className="text-xl text-black/60">Hi {displayName}!</p>
 
-      <div className="border-t border-gray-4" />
-
-      {/* Nav links */}
-      <nav className="flex flex-1 flex-col gap-0.5 px-3 py-4">
-        {NAV_LINKS.map(({ href, label, icon: Icon }) => {
-          const active = isActive(label, href);
-          return (
-            <Link
-              key={label}
-              href={href}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                active
-                  ? 'bg-red-2 text-red-12'
-                  : 'text-gray-11 hover:bg-gray-2 hover:text-gray-12',
-              )}
-            >
-              <Icon className="h-5 w-5 shrink-0" />
-              {label}
-            </Link>
-          );
-        })}
-      </nav>
+        {/* Nav links */}
+        <nav className="flex flex-1 flex-col gap-0.5">
+          {NAV_LINKS.map(({ href, label, icon: Icon }) => {
+            const active = isActive(label, href);
+            return (
+              <SidebarItem
+                key={label}
+                active={active}
+                label={label}
+                href={href}
+              >
+                <Icon className="h-5 w-5 shrink-0" />
+              </SidebarItem>
+            );
+          })}
+        </nav>
+      </section>
 
       {/* User profile + logout */}
-      <div className="mx-3 border-t border-gray-4 py-4">
+      <div className="mt-auto flex w-full gap-2">
+        <ButtonLink
+          variant="outline"
+          href="/profile"
+          className="min-w-0 flex-1 justify-start px-4!"
+        >
+          <LuUser className="size-5 text-red-9" />
+          <p className="w-full overflow-hidden text-left overflow-ellipsis whitespace-nowrap">
+            {displayName}
+          </p>
+        </ButtonLink>
         <LogoutButton />
       </div>
     </aside>

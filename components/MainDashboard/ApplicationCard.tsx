@@ -47,7 +47,11 @@ export default function ApplicationCard({ app }: { app: AdopterApplication }) {
     >
       <StatusPill status={app.status} />
       <div className="flex flex-col gap-4">
-        <h2>Application #1</h2>
+        <h2>
+          {app.status === 'ACTIVE' || app.status === 'ENDED'
+            ? app.adoptee_name
+            : `Application #${app.app_num}`}
+        </h2>
         <p className="text-gray-10">
           {app.time_submitted
             ? `Submitted: ${formatDate(app.time_submitted)}`

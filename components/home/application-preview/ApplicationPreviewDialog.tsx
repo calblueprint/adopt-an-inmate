@@ -6,16 +6,11 @@ import { Dialog } from 'radix-ui';
 import { getApplicationWithAdoptees } from '@/actions/applications/getApplicationWithAdoptees';
 import { handleAdopterConfirmation as handleAdopterConfirmationServer } from '@/actions/applications/handleAdopterConfirmation';
 import Logger from '@/actions/logging';
-import {
-  formatAmericanTime,
-  formatDate,
-  formatEndedMessage,
-} from '@/lib/formatters';
+import { formatAppDateByStatus } from '@/lib/formatters';
 import { AdopterApplication, ApplicationWithAdoptees } from '@/types/schema';
 import { AdopterApplicationFormValues } from './AdopterApplicationFormValues';
-import ConfirmationControls, {
-  ConfirmationFormValues,
-} from './ConfirmationControls';
+import AppCallout from './AppCallout';
+import ConfirmationControls from './ConfirmationControls';
 import EndCorrespondenceControls from './EndCorrespondenceControls';
 import StatusPill from './StatusPill';
 
@@ -55,26 +50,9 @@ export default function ApplicationPreviewDialog() {
     fetchData();
   }, [previewId]);
 
-  // determine app status/step
-  const statusText = useMemo(() => {
+  const timeText = useMemo(() => {
     if (!appData) return '';
-
-    switch (appData.status) {
-      case 'PENDING':
-        return 'We are still reviewing your application!';
-      case 'PENDING_CONFIRMATION':
-        return "You've been matched! Confirm to accept below.";
-      case 'REAPPLY':
-        return appData.matched
-          ? "We didn't receive confirmation in time, please reapply."
-          : 'We found an issue with your application, please reapply.';
-      case 'REJECTED':
-        return 'You are blocked from creating future applications. Contact us to fix this.';
-      case 'ENDED':
-        return formatEndedMessage(appData.time_ended, appData.ended_reason);
-      default:
-        return '';
-    }
+    return formatAppDateByStatus(appData);
   }, [appData]);
 
   // app controls
@@ -91,7 +69,13 @@ export default function ApplicationPreviewDialog() {
 
   // handle adopter confirmation
   const handleAdopterConfirmation = useCallback(
-    async ({ confirmation, reason }: ConfirmationFormValues) => {
+    async ({
+      confirmation,
+      reason,
+    }: {
+      confirmation: 'yes' | 'no';
+      reason?: string;
+    }) => {
       if (
         !(
           appData &&
@@ -138,63 +122,77 @@ export default function ApplicationPreviewDialog() {
     <Dialog.Root open defaultOpen onOpenChange={triggerNavigate}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 grid h-full w-full place-items-center bg-black/50">
-          <Dialog.Content className="flex w-2/5 min-w-75 flex-col gap-2 rounded-lg bg-white p-10">
-            <Dialog.Title className="text-3xl">
-              {formatAmericanTime(appData.time_created)} Application
-            </Dialog.Title>
+          <Dialog.Content className="flex h-[90svh] w-4/5 min-w-75 flex-col gap-2 overflow-hidden rounded-2xl bg-white">
+            <header className="flex justify-center border border-gray-4 py-8 shadow-[0_2px_8px_#6e6e6e1c]">
+              <section className="flex w-1/2 min-w-72 flex-col gap-2">
+                <div className="flex items-center gap-4">
+                  <Dialog.Title className="text-3xl">
+                    {appData.status === 'ACTIVE' || appData.status === 'ENDED'
+                      ? appData.adoptee_name
+                      : `Application #${appData.app_num}`}
+                  </Dialog.Title>
+                  <StatusPill status={appData.status} />
+                </div>
+                <p className="text-gray-9">{timeText}</p>
+              </section>
+            </header>
 
-            <main className="flex flex-col gap-6">
-              <Dialog.Description>
-                Submitted: {formatDate(appData.time_submitted)}
-              </Dialog.Description>
+            <main className="flex justify-center overflow-auto py-10">
+              <section className="flex w-1/2 min-w-72 flex-col gap-5">
+                <Dialog.Description className="hidden">
+                  Details on application #{appData.app_num}
+                </Dialog.Description>
 
-              {/* status & msg */}
-              <div className="flex flex-wrap items-center gap-3 text-sm">
-                <StatusPill status={appData.status} />
-                <p className="font-bold text-gray-11 italic">{statusText}</p>
-              </div>
+                {/* status & msg */}
+                <AppCallout app={appData} />
 
-              {showAdopterFormValues && (
-                <AdopterApplicationFormValues appData={appData} />
-              )}
+                {showAdopterFormValues && (
+                  <AdopterApplicationFormValues appData={appData} />
+                )}
 
-              {/* ranking */}
-              {showAdopterFormValues &&
-                !appData.matched &&
-                appData.adoptees && (
+                {/* ranking */}
+                {showAdopterFormValues &&
+                  !appData.matched &&
+                  appData.adoptees && (
+                    <div className="flex flex-col gap-1">
+                      <p className="text-sm font-bold text-gray-9">
+                        Adoptee Ranking
+                      </p>
+                      <ol>
+                        {appData.adoptees.map((a, idx) => (
+                          <li key={a.id}>
+                            {idx + 1}. {a.first_name}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+
+                {/* matched adoptee name */}
+                {appData.matched && appData.adoptees && (
                   <div className="flex flex-col gap-1">
                     <p className="text-sm font-bold text-gray-9">
-                      Adoptee Ranking
+                      Adoptee Name
                     </p>
-                    <ol>
-                      {appData.adoptees.map((a, idx) => (
-                        <li key={a.id}>
-                          {idx + 1}. {a.first_name}
-                        </li>
-                      ))}
-                    </ol>
+                    <p>{appData.adoptee_name}</p>
                   </div>
                 )}
 
-              {/* matched adoptee name */}
-              {appData.matched && appData.adoptees && (
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-bold text-gray-9">Adoptee Name</p>
-                  <p>{appData.adoptees[0].first_name}</p>
-                </div>
-              )}
+                {/* match confirmation controls */}
+                {appData.matched &&
+                  appData.status === 'PENDING_CONFIRMATION' && (
+                    <ConfirmationControls
+                      onSubmit={data => console.log(data)}
+                    />
+                  )}
 
-              {/* match confirmation controls */}
-              {appData.matched && appData.status === 'PENDING_CONFIRMATION' && (
-                <ConfirmationControls onSubmit={handleAdopterConfirmation} />
-              )}
-
-              {/* active: end correspondence */}
-              {appData.status === 'ACTIVE' && (
-                <EndCorrespondenceControls
-                  onSubmit={data => console.log(data)}
-                />
-              )}
+                {/* active: end correspondence */}
+                {appData.status === 'ACCEPTED' && (
+                  <EndCorrespondenceControls
+                    onSubmit={data => console.log(data)}
+                  />
+                )}
+              </section>
             </main>
           </Dialog.Content>
         </Dialog.Overlay>

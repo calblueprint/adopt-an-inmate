@@ -126,7 +126,7 @@ export const checkCreationConstraints = async (user: User) => {
       return {
         data: false,
         error:
-          'Your most recent connection is still new, please wait before starting a new application.',
+          'Your last application was submitted less than 6 months ago, please wait before starting a new application.',
       };
     }
   }

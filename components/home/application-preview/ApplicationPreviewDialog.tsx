@@ -152,7 +152,7 @@ export default function ApplicationPreviewDialog() {
               )}
 
               {/* active: end correspondence */}
-              {appData.status === 'ACCEPTED' && (
+              {appData.status === 'ACTIVE' && (
                 <EndCorrespondenceControls
                   onSubmit={data => console.log(data)}
                 />

@@ -124,3 +124,18 @@
     font-size: 1rem;
   }
 }
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(2rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.6s ease-out forwards;
+}

@@ -7,7 +7,7 @@ const statusPillStyles = cva('rounded-xl px-3 py-0.5 shadow-sm', {
     status: {
       PENDING: 'bg-[#FFF8D0] text-[#D39C49]',
       PENDING_CONFIRMATION: 'bg-[#FFF8D0] text-[#D39C49]',
-      ACCEPTED: 'bg-[#DEF4DF] text-[#3E6430]',
+      ACCEPTED: 'bg-[#DEF4DF] text-[#3E6430]', //need to remove
       REJECTED: 'bg-[#FFCCCC] text-[#C04444]',
       REAPPLY: 'bg-[#EBD2FF] text-[#9C64CE]',
       ENDED: 'bg-[#FDDEF3] text-[#D16FB2]',

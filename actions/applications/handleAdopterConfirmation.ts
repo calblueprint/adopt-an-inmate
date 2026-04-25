@@ -59,6 +59,7 @@ export const handleAdopterConfirmation = async ({
         status: 'ACTIVE',
         waiting_confirmation: false,
         time_confirmation_due: null,
+        time_started: new Date().toISOString(),
       })
       .eq('app_uuid', appId);
 

@@ -42,7 +42,7 @@ export const checkCreationConstraints = async (user: User) => {
     return {
       data: false,
       error:
-        'Adopters must be at least 18 years old before creating an application.',
+        'You must be at least 18 years old to create an adopter application.',
     };
   }
 
@@ -51,7 +51,7 @@ export const checkCreationConstraints = async (user: User) => {
     return {
       data: false,
       error:
-        'There was an issue with your onboarding responses, please contact admin at adopt@adoptaninmate.org to fix this.',
+        'There was an issue with your onboarding responses, contact adopt@adoptaninmate.org to fix this.',
     };
   }
 
@@ -67,9 +67,7 @@ export const checkCreationConstraints = async (user: User) => {
   }
 
   // constraint: check number of active adoptees
-  const numActiveApps = appsData.filter(
-    app => app.status === 'ACCEPTED',
-  ).length;
+  const numActiveApps = appsData.filter(app => app.status === 'ACTIVE').length;
   const totalActiveAdoptees = numActiveApps + (profile.num_past_active || 0);
 
   if (totalActiveAdoptees >= 2) {

@@ -23,7 +23,7 @@ export function formatEndedMessage(
  */
 export function formatAppStatus(status: AdopterApplication['status']) {
   // custom mapping
-  if (status === 'ACCEPTED') return 'Active';
+  if (status === 'ACTIVE') return 'Active';
   if (status === 'PENDING_CONFIRMATION') return 'Pending';
 
   // generic

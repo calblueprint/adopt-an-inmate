@@ -23,6 +23,10 @@ export type RankedAdopteeMatch = Pick<
   'id' | 'age' | 'bio' | 'first_name' | 'state' | 'gender'
 >;
 
+export type Adoptee = PublicTables['adoptee_vector_test']['Row'];
+export type AdopteeWithFacility =
+  PublicFunctions['get_adoptee_with_facility']['Returns'][number];
+
 export type AdopterApplicationUpdate = Omit<
   Partial<AdopterApplication>,
   'adopter_uuid' | 'app_uuid'

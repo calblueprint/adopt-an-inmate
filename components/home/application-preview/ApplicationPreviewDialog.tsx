@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { LuChevronLeft, LuX } from 'react-icons/lu';
+import { LuChevronLeft, LuHouse, LuMapPin, LuX } from 'react-icons/lu';
+import { PiCity } from 'react-icons/pi';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Dialog, Tabs, VisuallyHidden } from 'radix-ui';
 import { getApplicationWithAdoptees } from '@/actions/applications/getApplicationWithAdoptees';
@@ -30,7 +31,7 @@ export default function ApplicationPreviewDialog() {
   );
   const previewId = useMemo(() => searchParams.get('preview'), [searchParams]);
   const router = useRouter();
-  const [appData, setAppData] = useState<ApplicationWithAdoptees>(null);
+  const [data, setData] = useState<ApplicationWithAdoptees>(null);
   const [activeTab, setActiveTab] = useState<'main' | 'end-correspondence'>(
     'main',
   );
@@ -44,7 +45,7 @@ export default function ApplicationPreviewDialog() {
       const { data, error } = await getApplicationWithAdoptees(previewId);
 
       if (error) {
-        Logger.error(
+        console.log(
           `Error fetching preview for application ID ${previewId}: ${error}`,
         );
         return;
@@ -55,16 +56,16 @@ export default function ApplicationPreviewDialog() {
         return;
       }
 
-      setAppData(data);
+      setData(data);
     };
 
     fetchData();
   }, [previewId]);
 
   const timeText = useMemo(() => {
-    if (!appData) return '';
-    return formatAppDateByStatus(appData);
-  }, [appData]);
+    if (!data) return '';
+    return formatAppDateByStatus(data.appData);
+  }, [data]);
 
   // handle adopter confirmation
   const handleAdopterConfirmation = useCallback(
@@ -77,21 +78,22 @@ export default function ApplicationPreviewDialog() {
     }) => {
       if (
         !(
-          appData &&
-          appData.matched_adoptee &&
-          appData.monday_id &&
-          appData.email
+          data &&
+          data.appData &&
+          data.appData.matched_adoptee &&
+          data.appData.monday_id &&
+          data.email
         )
       )
         return;
 
       const { error } = await handleAdopterConfirmationServer({
         accepted: confirmation === 'yes',
-        adopterId: appData.adopter_uuid,
-        email: appData.email,
-        adopteeMondayId: appData.matched_adoptee,
-        appId: appData.app_uuid,
-        appMondayId: appData.monday_id,
+        adopterId: data.appData.adopter_uuid,
+        email: data.email,
+        adopteeMondayId: data.appData.matched_adoptee,
+        appId: data.appData.app_uuid,
+        appMondayId: data.appData.monday_id,
         reason,
       });
 
@@ -104,33 +106,33 @@ export default function ApplicationPreviewDialog() {
         router.push('/');
       }
     },
-    [appData, router],
+    [data, router],
   );
 
   // app controls
   const showAdopterFormValues = useMemo(() => {
-    if (!appData) return false;
-    return !appData.matched_adoptee;
-  }, [appData]);
+    if (!data) return false;
+    return !data.matched;
+  }, [data]);
 
   const showAdopteeInfo = useMemo(() => {
-    if (!appData) return false;
-    return !!appData.matched_adoptee;
-  }, [appData]);
+    if (!data) return false;
+    return data.matched;
+  }, [data]);
 
   const showMailingInfo = useMemo(() => {
-    if (!appData) return false;
-    return !!appData.matched_adoptee && appData.status !== 'ENDED';
-  }, [appData]);
+    if (!data) return false;
+    return data.appData.status === 'ACTIVE';
+  }, [data]);
 
-  if (!(showPreview && previewId && appData?.time_submitted)) return null;
+  if (!(showPreview && previewId && data?.appData.time_submitted)) return null;
 
   // replace URL to / when modal closes
   const triggerNavigate = (open: boolean) => {
     if (open) return;
-    setAppData(null);
+    setData(null);
     router.replace(
-      historyStatuses.includes(appData.status) ? '/?tab=history' : '/',
+      historyStatuses.includes(data.appData.status) ? '/?tab=history' : '/',
     );
   };
 
@@ -143,9 +145,10 @@ export default function ApplicationPreviewDialog() {
               <section className="flex w-1/2 min-w-75 flex-col gap-2">
                 <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
                   <Dialog.Title className="text-3xl">
-                    {appData.adoptee_name || `Application #${appData.app_num}`}
+                    {data.appData.adoptee_name ||
+                      `Application #${data.appData.app_num}`}
                   </Dialog.Title>
-                  <StatusPill status={appData.status} />
+                  <StatusPill status={data.appData.status} />
                 </div>
                 <p className="text-gray-9">{timeText}</p>
               </section>
@@ -167,14 +170,14 @@ export default function ApplicationPreviewDialog() {
                     {/* accessibility descripion, announced when dialog opens */}
                     <VisuallyHidden.Root asChild>
                       <Dialog.Description>
-                        Details on application #{appData.app_num}
+                        Details on application #{data.appData.app_num}
                       </Dialog.Description>
                     </VisuallyHidden.Root>
 
                     {/* status & msg */}
-                    <AppCallout app={appData} />
+                    <AppCallout app={data.appData} />
 
-                    {appData.status === 'PENDING_CONFIRMATION' ? (
+                    {data.appData.status === 'PENDING_CONFIRMATION' ? (
                       <ConfirmationControls
                         onSubmit={data => console.log(data)}
                       />
@@ -182,14 +185,14 @@ export default function ApplicationPreviewDialog() {
 
                     {/* rankings */}
                     {showAdopterFormValues &&
-                      !appData.matched &&
-                      appData.adoptees && (
+                      !data.matched &&
+                      data.adoptees && (
                         <div className="flex flex-col gap-3">
                           <p className="text-sm font-medium text-gray-10">
                             RANKINGS
                           </p>
                           <div className="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2">
-                            {appData.adoptees.map((a, idx) => (
+                            {data.adoptees.map((a, idx) => (
                               <RankingCardPreview
                                 key={a.id}
                                 idx={idx}
@@ -208,7 +211,7 @@ export default function ApplicationPreviewDialog() {
                       <p className="text-sm font-medium text-gray-10">
                         BIOGRAPHY
                       </p>
-                      <p>{appData.personal_bio}</p>
+                      <p>{data.appData.personal_bio}</p>
                     </div>
 
                     {/* preferences */}
@@ -219,7 +222,9 @@ export default function ApplicationPreviewDialog() {
                           <p className="text-sm font-medium text-gray-10">
                             GENDER PREFERENCE
                           </p>
-                          <p>{formatGenderPreference(appData.gender_pref)}</p>
+                          <p>
+                            {formatGenderPreference(data.appData.gender_pref)}
+                          </p>
                         </div>
 
                         {/* age preference */}
@@ -227,7 +232,7 @@ export default function ApplicationPreviewDialog() {
                           <p className="text-sm font-medium text-gray-10">
                             AGE PREFERENCE
                           </p>
-                          <p>{formatAgePreference(appData.age_pref)}</p>
+                          <p>{formatAgePreference(data.appData.age_pref)}</p>
                         </div>
                       </>
                     )}
@@ -238,7 +243,7 @@ export default function ApplicationPreviewDialog() {
                         <p className="text-sm font-medium text-gray-10">
                           ADOPTEE INFORMATION
                         </p>
-                        <AdopteeInfoOverview appData={appData} />
+                        <AdopteeInfoOverview appData={data} />
                       </div>
                     )}
 
@@ -248,14 +253,51 @@ export default function ApplicationPreviewDialog() {
                         <p className="text-sm font-medium text-gray-10">
                           MAILING INFORMATION
                         </p>
-                        <div className="rounded-2xl bg-gray-3 p-6">
-                          {/* TODO: populate with mailing info */}
+                        <div className="flex flex-col gap-4 rounded-2xl bg-gray-3 p-6 font-medium">
+                          {/* facility name */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <LuHouse />
+                              <p>Facility</p>
+                            </div>
+                            <p className="text-black/60">
+                              {data.matched
+                                ? data.matchedAdoptee.facility_name
+                                : 'N/A'}
+                            </p>
+                          </div>
+
+                          {/* facility address */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <PiCity />
+                              <p>System</p>
+                            </div>
+                            <p className="text-black/60">
+                              {data.matched
+                                ? data.matchedAdoptee.system
+                                : 'N/A'}
+                            </p>
+                          </div>
+
+                          {/* facility address */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <LuMapPin />
+                              <p>Address</p>
+                            </div>
+                            <p className="text-black/60">
+                              {data.matched
+                                ? data.matchedAdoptee.mailing_address
+                                : 'N/A'}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     )}
 
                     {/* active: end correspondence */}
-                    {appData.status === 'ACTIVE' && (
+                    {data.appData.status === 'ACTIVE' && (
                       <div>
                         <Button
                           variant="quaternary"
@@ -268,7 +310,7 @@ export default function ApplicationPreviewDialog() {
                   </Tabs.Content>
 
                   {/* end correspondence form */}
-                  {appData.status === 'ACTIVE' && (
+                  {data.appData.status === 'ACTIVE' && (
                     <Tabs.Content
                       value="end-correspondence"
                       className="flex h-full w-full flex-col gap-2"
@@ -287,8 +329,8 @@ export default function ApplicationPreviewDialog() {
                       </div>
                       <p className="text-gray-12/60">
                         This will end the correspondence with{' '}
-                        {appData.adoptee_name} permanently. This action cannot
-                        be reversed.
+                        {data.appData.adoptee_name} permanently. This action
+                        cannot be reversed.
                       </p>
                       <EndCorrespondenceForm
                         onSubmit={data => console.log(data)}

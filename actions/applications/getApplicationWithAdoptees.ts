@@ -2,9 +2,48 @@
 
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
+import {
+  Adoptee,
+  AdopteeWithFacility,
+  AdopterApplication,
+} from '@/types/schema';
 import Logger from '../logging';
 
-export const getApplicationWithAdoptees = async (appId: string) => {
+type MatchedAdopteeInfo = Omit<AdopteeWithFacility, 'embedding'>;
+type UnmatchedAdopteeInfo = Pick<
+  Adoptee,
+  'id' | 'gender' | 'state' | 'first_name' | 'dob'
+>;
+
+interface ErrorReturn {
+  data: null;
+  error: string;
+}
+
+interface UnmatchedData {
+  matched: false;
+  email: string | undefined;
+  appData: AdopterApplication;
+  adoptees: UnmatchedAdopteeInfo[];
+}
+
+interface MatchedData {
+  matched: true;
+  email: string | undefined;
+  appData: AdopterApplication;
+  matchedAdoptee: MatchedAdopteeInfo;
+}
+
+interface SuccessReturn {
+  data: MatchedData | UnmatchedData;
+  error: null;
+}
+
+type FunctionReturn = ErrorReturn | SuccessReturn;
+
+export const getApplicationWithAdoptees = async (
+  appId: string,
+): Promise<FunctionReturn> => {
   const supabase = await getSupabaseServerClient();
   const {
     data: { user },
@@ -28,7 +67,7 @@ export const getApplicationWithAdoptees = async (appId: string) => {
 
   if (!appData.ranked_cards)
     return {
-      data: { matched: false, email: user.email, ...appData, adoptees: null },
+      data: { matched: false, email: user.email, appData, adoptees: [] },
       error: null,
     };
 
@@ -38,14 +77,12 @@ export const getApplicationWithAdoptees = async (appId: string) => {
   // matched: get only matched adoptee
   if (appData.matched_adoptee) {
     const { data: adopteeData, error: getAdopteeError } = await serviceSupabase
-      .from('adoptee_vector_test')
-      .select('id, gender, state, first_name, dob, bio, inmate_id')
-      .eq('id', appData.matched_adoptee)
+      .rpc('get_adoptee_with_facility', { adoptee_id: appData.matched_adoptee })
       .maybeSingle();
 
     if (getAdopteeError) {
       Logger.error(
-        `Error fetching matched adoptee ${appData.matched_adoptee} for application ${appId}: ${getAdopteeError}`,
+        `Error fetching matched adoptee ${appData.matched_adoptee} for application ${appId}: ${getAdopteeError.message}`,
       );
       return { data: null, error: 'An unexpected error occurred' };
     }
@@ -61,8 +98,8 @@ export const getApplicationWithAdoptees = async (appId: string) => {
       data: {
         matched: true,
         email: user.email,
-        ...appData,
-        adoptees: [adopteeData],
+        appData,
+        matchedAdoptee: adopteeData,
       },
       error: null,
     };
@@ -71,23 +108,18 @@ export const getApplicationWithAdoptees = async (appId: string) => {
   // get unmatched adoptees
   const { data: adopteeData, error: getAdopteeError } = await serviceSupabase
     .from('adoptee_vector_test')
-    .select('id, gender, state, first_name, dob, inmate_id')
+    .select('id, gender, state, first_name, dob')
     .in('id', appData.ranked_cards);
 
   if (getAdopteeError) {
     Logger.error(
-      `Error fetching adoptees for application ${appId}: ${getAdopteeError}`,
+      `Error fetching adoptees for application ${appId}: ${getAdopteeError.message}`,
     );
     return { data: null, error: 'An unexpected error occurred' };
   }
 
   return {
-    data: {
-      matched: false,
-      email: user.email,
-      ...appData,
-      adoptees: adopteeData,
-    },
+    data: { matched: false, email: user.email, appData, adoptees: adopteeData },
     error: null,
   };
 };

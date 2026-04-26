@@ -14,9 +14,8 @@ export default function AdopteeInfoOverview({
   appData: ApplicationWithAdoptees;
 }) {
   const adoptee = useMemo(() => {
-    if (!(appData && appData.adoptees && appData.adoptees.length > 0))
-      return null;
-    return appData.adoptees[0];
+    if (!(appData && appData.matched)) return null;
+    return appData.matchedAdoptee;
   }, [appData]);
 
   return (

@@ -9,11 +9,11 @@ import { CalloutCard } from './AppCallout';
 import { ApplicationDialogTabs } from './ApplicationPreviewDialog';
 
 export default function ConfirmationControls({
-  onSubmit,
+  onAccept,
   setActiveTab,
   app,
 }: {
-  onSubmit: (confirm: boolean) => Promise<void>;
+  onAccept: () => Promise<void>;
   setActiveTab: React.Dispatch<React.SetStateAction<ApplicationDialogTabs>>;
   app: ApplicationWithAdoptees;
 }) {
@@ -24,9 +24,7 @@ export default function ConfirmationControls({
     : 'You have two weeks to respond.';
 
   const handleAccept = async () => {
-    await onSubmit(true);
-    // artificial wait time to demonstrate waiting on backend changes
-    await new Promise(res => setTimeout(() => res(1), 1000));
+    await onAccept();
     setAccepted(true);
   };
 

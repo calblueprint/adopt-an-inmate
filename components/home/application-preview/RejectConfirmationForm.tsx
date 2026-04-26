@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { Button } from '@/components/Button';
+import AsyncButton from '@/components/AsyncButton';
 import { TextArea } from '@/components/TextArea';
 
 interface RejectConfirmationForm {
@@ -9,9 +9,10 @@ interface RejectConfirmationForm {
 export default function RejectConfirmationForm({
   onSubmit,
 }: {
-  onSubmit: (data: { reason: string }) => void;
+  onSubmit: (data: { reason: string }) => Promise<void>;
 }) {
-  const { handleSubmit, register } = useForm<RejectConfirmationForm>();
+  const { handleSubmit, register, formState } =
+    useForm<RejectConfirmationForm>();
 
   return (
     <form
@@ -28,9 +29,13 @@ export default function RejectConfirmationForm({
       </div>
 
       <div className="flex items-center justify-end gap-4">
-        <Button variant="primary" type="submit">
+        <AsyncButton
+          variant="primary"
+          type="submit"
+          loading={formState.isSubmitting}
+        >
           Reject Connection
-        </Button>
+        </AsyncButton>
       </div>
     </form>
   );

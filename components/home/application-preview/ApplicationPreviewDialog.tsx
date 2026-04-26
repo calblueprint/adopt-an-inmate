@@ -74,13 +74,7 @@ export default function ApplicationPreviewDialog() {
 
   // handle adopter confirmation
   const handleAdopterConfirmation = useCallback(
-    async ({
-      confirmation,
-      reason,
-    }: {
-      confirmation: 'yes' | 'no';
-      reason?: string;
-    }) => {
+    async (confirmation: boolean, reason?: string) => {
       if (
         !(
           data &&
@@ -93,7 +87,7 @@ export default function ApplicationPreviewDialog() {
         return;
 
       const { error } = await handleAdopterConfirmationServer({
-        accepted: confirmation === 'yes',
+        accepted: confirmation,
         adopterId: data.appData.adopter_uuid,
         email: data.email,
         adopteeMondayId: data.appData.matched_adoptee,
@@ -175,7 +169,9 @@ export default function ApplicationPreviewDialog() {
 
                     {data.appData.status === 'PENDING_CONFIRMATION' ? (
                       <ConfirmationControls
-                        onSubmit={async data => console.log(data)}
+                        onAccept={async () =>
+                          await handleAdopterConfirmation(true)
+                        }
                         setActiveTab={setActiveTab}
                         app={data}
                       />
@@ -323,7 +319,9 @@ export default function ApplicationPreviewDialog() {
                       setActiveTab={setActiveTab}
                     >
                       <RejectConfirmationForm
-                        onSubmit={data => console.log(data)}
+                        onSubmit={async ({ reason }) =>
+                          await handleAdopterConfirmation(false, reason)
+                        }
                       />
                     </DialogExtraForm>
                   )}

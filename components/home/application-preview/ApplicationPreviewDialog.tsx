@@ -174,6 +174,12 @@ export default function ApplicationPreviewDialog() {
                     {/* status & msg */}
                     <AppCallout app={appData} />
 
+                    {appData.status === 'PENDING_CONFIRMATION' ? (
+                      <ConfirmationControls
+                        onSubmit={data => console.log(data)}
+                      />
+                    ) : null}
+
                     {/* rankings */}
                     {showAdopterFormValues &&
                       !appData.matched &&
@@ -247,14 +253,6 @@ export default function ApplicationPreviewDialog() {
                         </div>
                       </div>
                     )}
-
-                    {/* match confirmation controls */}
-                    {appData.matched &&
-                      appData.status === 'PENDING_CONFIRMATION' && (
-                        <ConfirmationControls
-                          onSubmit={data => console.log(data)}
-                        />
-                      )}
 
                     {/* active: end correspondence */}
                     {appData.status === 'ACTIVE' && (

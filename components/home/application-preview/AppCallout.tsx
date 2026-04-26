@@ -3,13 +3,14 @@
 import { useMemo } from 'react';
 import { cva } from 'class-variance-authority';
 import { CONFIG } from '@/config';
+import { formatDate } from '@/lib/formatters';
 import { AdopterApplication } from '@/types/schema';
 
 const calloutStyles = cva('rounded-lg px-6 py-5 flex flex-col gap-1', {
   variants: {
     variant: {
-      PENDING: 'bg-yellow-2',
-      PENDING_CONFIRMATION: 'bg-yellow-2',
+      PENDING: 'bg-yellow-3',
+      PENDING_CONFIRMATION: 'bg-yellow-3',
       ACTIVE: 'bg-[#DEF4DF]',
       ACCEPTED: 'bg-[#DEF4DF]',
       REAPPLY: 'bg-[#EBD2FF]',
@@ -20,7 +21,13 @@ const calloutStyles = cva('rounded-lg px-6 py-5 flex flex-col gap-1', {
   },
 });
 
-export default function AppCallout({ app }: { app: AdopterApplication }) {
+export default function AppCallout({
+  app,
+  children,
+}: {
+  app: AdopterApplication;
+  children?: React.ReactNode;
+}) {
   const calloutTitle = useMemo(() => {
     if (!app) return '';
 
@@ -47,7 +54,9 @@ export default function AppCallout({ app }: { app: AdopterApplication }) {
       case 'PENDING':
         return 'It will take about 5-7 days. Check your email to be updated!';
       case 'PENDING_CONFIRMATION':
-        return 'Do you confirm that you will communicate with your adoptee? You have 2 weeks to respond.';
+        return app.time_confirmation_due
+          ? `You have until ${formatDate(app.time_confirmation_due)} to respond.`
+          : 'You have two weeks to respond.';
       case 'REAPPLY':
         return app.matched_adoptee
           ? "We didn't hear from you within 2 weeks."
@@ -67,6 +76,8 @@ export default function AppCallout({ app }: { app: AdopterApplication }) {
     <div className={calloutStyles({ variant: app.status })}>
       <p className="text-md font-medium">{calloutTitle}</p>
       <p className="text-sm font-medium text-black/40">{calloutDescription}</p>
+
+      {children}
     </div>
   );
 }

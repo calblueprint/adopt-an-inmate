@@ -49,8 +49,6 @@ export default function AppCallout({
         return `Email ${CONFIG.adminEmail}`;
       case 'PENDING':
         return 'The NPO is reviewing your application.';
-      case 'PENDING_CONFIRMATION':
-        return `You have been matched with ${app.adoptee_name}.`;
       default:
         return '';
     }
@@ -79,6 +77,9 @@ export default function AppCallout({
     }
   }, [app]);
 
+  // use confirmation control callout instead
+  if (app.status === 'PENDING_CONFIRMATION') return null;
+
   if (app.status === 'ACTIVE')
     return (
       <CalloutLink
@@ -90,16 +91,38 @@ export default function AppCallout({
     );
 
   return (
-    <div className={calloutStyles({ status: app.status })}>
-      <p className="text-md">{calloutTitle}</p>
-      <p className="text-sm text-black/40">{calloutDescription}</p>
+    <CalloutCard
+      title={calloutTitle}
+      description={calloutDescription}
+      status={app.status}
+    >
+      {children}
+    </CalloutCard>
+  );
+}
+
+export function CalloutCard({
+  title,
+  description,
+  status,
+  children,
+}: {
+  title: string;
+  description: string;
+  children?: React.ReactNode;
+  status: AdopterApplication['status'];
+}) {
+  return (
+    <div className={calloutStyles({ status })}>
+      <p className="text-md">{title}</p>
+      <p className="text-sm text-black/40">{description}</p>
 
       {children}
     </div>
   );
 }
 
-function CalloutLink({
+export function CalloutLink({
   href,
   children,
   status,

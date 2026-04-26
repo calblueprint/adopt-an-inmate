@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { Button } from '@/components/Button';
+import { ApplicationDialogTabs } from './ApplicationPreviewDialog';
 
 // options for reason
 const endReasons = ['Option A', 'Option B', 'Option C'].map((r, i) => ({
@@ -18,10 +19,10 @@ interface EndCorrespondenceForm {
 
 export default function EndCorrespondenceForm({
   onSubmit,
-  children,
+  setActiveTab,
 }: {
   onSubmit: (data: EndCorrespondenceForm) => void;
-  children?: React.ReactNode;
+  setActiveTab: React.Dispatch<React.SetStateAction<ApplicationDialogTabs>>;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +49,13 @@ export default function EndCorrespondenceForm({
       </div>
 
       <div className="flex items-center justify-end gap-4">
-        {children}
+        <Button
+          variant="outline"
+          type="button"
+          onClick={() => setActiveTab('main')}
+        >
+          Cancel
+        </Button>
         <Button variant="primary" type="submit">
           Confirm
         </Button>

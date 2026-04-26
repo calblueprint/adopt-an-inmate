@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { LuChevronLeft, LuHouse, LuMapPin, LuX } from 'react-icons/lu';
+import { LuHouse, LuMapPin, LuX } from 'react-icons/lu';
 import { PiCity } from 'react-icons/pi';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Dialog, Tabs, VisuallyHidden } from 'radix-ui';
@@ -19,9 +19,16 @@ import { ApplicationWithAdoptees } from '@/types/schema';
 import AdopteeInfoOverview from './AdopteeInfoOverview';
 import AppCallout from './AppCallout';
 import ConfirmationControls from './ConfirmationControls';
+import DialogExtraForm from './DialogExtraForm';
 import EndCorrespondenceForm from './EndCorrespondenceForm';
 import RankingCardPreview from './RankingCardPreview';
+import RejectConfirmationForm from './RejectConfirmationForm';
 import StatusPill from './StatusPill';
+
+export type ApplicationDialogTabs =
+  | 'main'
+  | 'end-correspondence'
+  | 'confirmation';
 
 export default function ApplicationPreviewDialog() {
   const searchParams = useSearchParams();
@@ -32,9 +39,7 @@ export default function ApplicationPreviewDialog() {
   const previewId = useMemo(() => searchParams.get('preview'), [searchParams]);
   const router = useRouter();
   const [data, setData] = useState<ApplicationWithAdoptees>(null);
-  const [activeTab, setActiveTab] = useState<'main' | 'end-correspondence'>(
-    'main',
-  );
+  const [activeTab, setActiveTab] = useState<ApplicationDialogTabs>('main');
   const historyStatuses = ['REAPPLY', 'REJECTED', 'ENDED'];
 
   useEffect(() => {
@@ -120,7 +125,11 @@ export default function ApplicationPreviewDialog() {
   // replace URL to / when modal closes
   const triggerNavigate = (open: boolean) => {
     if (open) return;
+
+    // reset states and data
     setData(null);
+    setActiveTab('main');
+
     router.replace(
       historyStatuses.includes(data.appData.status) ? '/?tab=history' : '/',
     );
@@ -164,14 +173,16 @@ export default function ApplicationPreviewDialog() {
                       </Dialog.Description>
                     </VisuallyHidden.Root>
 
-                    {/* status & msg */}
-                    <AppCallout app={data.appData} />
-
                     {data.appData.status === 'PENDING_CONFIRMATION' ? (
                       <ConfirmationControls
-                        onSubmit={data => console.log(data)}
+                        onSubmit={async data => console.log(data)}
+                        setActiveTab={setActiveTab}
+                        app={data}
                       />
                     ) : null}
+
+                    {/* status & msg */}
+                    <AppCallout app={data.appData} />
 
                     {/* rankings */}
                     {!data.matched && data.adoptees && (
@@ -303,40 +314,33 @@ export default function ApplicationPreviewDialog() {
                     )}
                   </Tabs.Content>
 
+                  {/* adopter confirmation form */}
+                  {data.appData.status === 'PENDING_CONFIRMATION' && (
+                    <DialogExtraForm
+                      value="confirmation"
+                      title="Reject Connection"
+                      description={`This will reject the connection with ${data.appData.adoptee_name} permanently. This action cannot be reversed.`}
+                      setActiveTab={setActiveTab}
+                    >
+                      <RejectConfirmationForm
+                        onSubmit={data => console.log(data)}
+                      />
+                    </DialogExtraForm>
+                  )}
+
                   {/* end correspondence form */}
                   {data.appData.status === 'ACTIVE' && (
-                    <Tabs.Content
+                    <DialogExtraForm
                       value="end-correspondence"
-                      className="flex h-full w-full flex-col gap-2"
+                      title="End Connection"
+                      description={`This will end the correspondence with ${data.appData.adoptee_name} permanently. This action cannot be reversed.`}
+                      setActiveTab={setActiveTab}
                     >
-                      <div className="relative">
-                        <div className="absolute top-1/2 -left-4 -translate-x-full -translate-y-1/2">
-                          <Button
-                            variant="ghost"
-                            onClick={() => setActiveTab('main')}
-                          >
-                            <LuChevronLeft />
-                          </Button>
-                        </div>
-
-                        <h2>End Connection</h2>
-                      </div>
-                      <p className="text-gray-12/60">
-                        This will end the correspondence with{' '}
-                        {data.appData.adoptee_name} permanently. This action
-                        cannot be reversed.
-                      </p>
                       <EndCorrespondenceForm
                         onSubmit={data => console.log(data)}
-                      >
-                        <Button
-                          variant="outline"
-                          onClick={() => setActiveTab('main')}
-                        >
-                          Cancel
-                        </Button>
-                      </EndCorrespondenceForm>
-                    </Tabs.Content>
+                        setActiveTab={setActiveTab}
+                      />
+                    </DialogExtraForm>
                   )}
                 </Tabs.Root>
 

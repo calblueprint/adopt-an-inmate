@@ -36,7 +36,7 @@ export default function MainDashboard() {
   }, [errorMessage]);
 
   return (
-    <main className="align-items flex h-svh w-full flex-col justify-center bg-gray-1">
+    <main className="align-items flex w-full flex-col justify-center bg-gray-1">
       <div className="flex w-full flex-col gap-14 border-b-1 border-gray-4 px-16 pt-16 pb-4">
         <div className="flex h-12 items-center justify-between">
           <div className="flex items-center gap-2 text-3xl text-gray-12">

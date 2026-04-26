@@ -158,15 +158,15 @@ export const createApplication = async () => {
   }
 
   // check create app constraint
-  const { data: canCreate, error: constraintError } =
-    await checkCreationConstraints(user);
+  // const { data: canCreate, error: constraintError } =
+  //   await checkCreationConstraints(user);
 
-  if (!canCreate || constraintError) {
-    return {
-      data: null,
-      error: constraintError || 'Cannot create application',
-    };
-  }
+  // if (!canCreate || constraintError) {
+  //   return {
+  //     data: null,
+  //     error: constraintError || 'Cannot create application',
+  //   };
+  // }
 
   // create app with user id
   const { data: insertedRow, error: insertError } = await supabase

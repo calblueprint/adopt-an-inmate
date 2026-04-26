@@ -17,7 +17,7 @@ const MONDAY_ADOPTER_DATA_BOARD_ID = getEnvVar('MONDAY_ADOPTER_DATA_BOARD_ID');
 const MONDAY_ADOPTER_DATA_WAITING_GROUP_ID = getEnvVar(
   'MONDAY_ADOPTER_DATA_WAITING_GROUP_ID',
 );
-const MONDAY_WL_PIPS_BOARD_ID = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
+// const MONDAY_WL_PIPS_BOARD_ID = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
 
 ////
 // HELPER FUNCTION
@@ -104,22 +104,22 @@ const parseColumns = <K extends string>(
  * of relevant adoptee rows in the WL PIPs board
  * to OFC: Out For Consideration.
  */
-const getQueryUpdateAdoptees = (appData: ProfileAndApplication) => {
-  const rankedCards = appData.ranked_cards as Array<string>;
-  const adopteeUpdatesQueries = rankedCards.map(
-    (id, idx) =>
-      `update${idx + 1}:change_simple_column_value(
-          board_id: "${MONDAY_WL_PIPS_BOARD_ID}",
-          item_id: "${id}",
-          column_id: "status__1",
-          value: "OFC: Out For Consideration"
-        ) { id }`,
-  );
+// const getQueryUpdateAdoptees = (appData: ProfileAndApplication) => {
+//   const rankedCards = appData.ranked_cards as Array<string>;
+//   const adopteeUpdatesQueries = rankedCards.map(
+//     (id, idx) =>
+//       `update${idx + 1}:change_simple_column_value(
+//           board_id: "${MONDAY_WL_PIPS_BOARD_ID}",
+//           item_id: "${id}",
+//           column_id: "status__1",
+//           value: "OFC: Out For Consideration"
+//         ) { id }`,
+//   );
 
-  const adopteeUpdatesQuery = adopteeUpdatesQueries.join(',');
+//   const adopteeUpdatesQuery = adopteeUpdatesQueries.join(',');
 
-  return adopteeUpdatesQuery;
-};
+//   return adopteeUpdatesQuery;
+// };
 
 /**
  * Generate a mutation query to create the
@@ -238,7 +238,7 @@ const getQueryCreateSubItem = (
       status: 'Pending',
       gender_preference: parsedGenderPref,
       match_list_links: { item_ids: appData.ranked_cards },
-      bio: appData.personal_bio,
+      bio: appData.personal_bio?.replace(/"/g, "'"),
       order: rankedCardsOrder,
       date_received: currentDateISOString,
     },
@@ -311,8 +311,14 @@ const exportApplication = async (appId: string) => {
   if (!appData.adopter_monday_id) {
     const createMainItemQuery = getQueryCreateMainItem(appData, user.email);
 
-    const response = await mondayApiClient.request(createMainItemQuery);
-
+    let response;
+    try {
+      response = await mondayApiClient.request(createMainItemQuery);
+    } catch (err) {
+      Logger.error(`Monday API error: ${JSON.stringify(err)}`);
+      console.error('Monday API error:', err);
+      return { success: false, error: 'Monday API request failed.' };
+    }
     // interpret response, get main item id
     try {
       const resObj = response as Record<string, unknown>;
@@ -352,14 +358,19 @@ const exportApplication = async (appId: string) => {
     mainItemId,
     adopteeData,
   );
-  const updateAdopteesQuery = getQueryUpdateAdoptees(appData);
+  // const updateAdopteesQuery = getQueryUpdateAdoptees(appData);
 
   const supplementaryQuery = `
     mutation {
       ${createSubitemQuery},
-      ${updateAdopteesQuery}
     }
   `;
+  // const supplementaryQuery = `
+  //   mutation {
+  //     ${createSubitemQuery},
+  //     ${updateAdopteesQuery}
+  //   }
+  // `;
 
   const response = await mondayApiClient.request(supplementaryQuery);
 

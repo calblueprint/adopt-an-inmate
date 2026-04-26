@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import exportApplication from '@/actions/monday/mutations/exportApplication';
 import { Button } from '@/components/Button';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useApplicationNavigation } from '@/hooks/app-process';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import { ApplicationStage } from '@/types/enums';
@@ -28,6 +30,7 @@ export default function MatchingReviewScreen({
   );
   const isMobile = useMediaQuery('(max-width: 640px)');
   const { advanceToStage, upsertAppInfo } = useApplicationNavigation();
+  const { appState } = useApplicationContext();
 
   const nextStage = async () => {
     setIsLoading(true);
@@ -37,6 +40,9 @@ export default function MatchingReviewScreen({
       ranked_cards: ranks, // upsert only IDs
       time_submitted: new Date().toISOString(),
     });
+
+    const { success, error } = await exportApplication(appState.appId);
+    console.log('Export result:', { success, error });
 
     advanceToStage(ApplicationStage.SUBMITTED);
     setIsLoading(false);

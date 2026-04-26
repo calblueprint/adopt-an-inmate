@@ -5,7 +5,7 @@ import { cva } from 'class-variance-authority';
 import { CONFIG } from '@/config';
 import { AdopterApplication } from '@/types/schema';
 
-const calloutStyles = cva('rounded-lg px-6 py-5 flex flex-col', {
+const calloutStyles = cva('rounded-lg px-6 py-5 flex flex-col gap-1', {
   variants: {
     variant: {
       PENDING: 'bg-yellow-2',
@@ -13,7 +13,7 @@ const calloutStyles = cva('rounded-lg px-6 py-5 flex flex-col', {
       ACTIVE: 'bg-[#DEF4DF]',
       ACCEPTED: 'bg-[#DEF4DF]',
       REAPPLY: 'bg-[#EBD2FF]',
-      REJECTED: 'bg-red-2',
+      REJECTED: 'bg-red-5',
       ENDED: 'bg-[#FDDEF3]',
       INCOMPLETE: '',
     },
@@ -63,8 +63,8 @@ export default function AppCallout({ app }: { app: AdopterApplication }) {
 
   return (
     <div className={calloutStyles({ variant: app.status })}>
-      <h4 className="text-md font-medium">{calloutTitle}</h4>
-      <p className="text-black/40">{calloutDescription}</p>
+      <p className="text-md font-medium">{calloutTitle}</p>
+      <p className="text-sm font-medium text-black/40">{calloutDescription}</p>
     </div>
   );
 }

@@ -1,12 +1,13 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { LuX } from 'react-icons/lu';
+import { LuChevronLeft, LuX } from 'react-icons/lu';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Dialog, VisuallyHidden } from 'radix-ui';
+import { Dialog, Tabs, VisuallyHidden } from 'radix-ui';
 import { getApplicationWithAdoptees } from '@/actions/applications/getApplicationWithAdoptees';
 import { handleAdopterConfirmation as handleAdopterConfirmationServer } from '@/actions/applications/handleAdopterConfirmation';
 import Logger from '@/actions/logging';
+import { Button } from '@/components/Button';
 import {
   formatAgePreference,
   formatAppDateByStatus,
@@ -17,7 +18,7 @@ import { ApplicationWithAdoptees } from '@/types/schema';
 import AdopteeInfoOverview from './AdopteeInfoOverview';
 import AppCallout from './AppCallout';
 import ConfirmationControls from './ConfirmationControls';
-import EndCorrespondenceControls from './EndCorrespondenceControls';
+import EndCorrespondenceForm from './EndCorrespondenceForm';
 import RankingCardPreview from './RankingCardPreview';
 import StatusPill from './StatusPill';
 
@@ -30,6 +31,9 @@ export default function ApplicationPreviewDialog() {
   const previewId = useMemo(() => searchParams.get('preview'), [searchParams]);
   const router = useRouter();
   const [appData, setAppData] = useState<ApplicationWithAdoptees>(null);
+  const [activeTab, setActiveTab] = useState<'main' | 'end-correspondence'>(
+    'main',
+  );
   const historyStatuses = ['REAPPLY', 'REJECTED', 'ENDED'];
 
   useEffect(() => {
@@ -124,6 +128,7 @@ export default function ApplicationPreviewDialog() {
   // replace URL to / when modal closes
   const triggerNavigate = (open: boolean) => {
     if (open) return;
+    setAppData(null);
     router.replace(
       historyStatuses.includes(appData.status) ? '/?tab=history' : '/',
     );
@@ -153,106 +158,156 @@ export default function ApplicationPreviewDialog() {
             </header>
 
             <main className="flex h-full justify-center overflow-auto py-8">
-              <section className="flex h-full w-1/2 min-w-72 flex-col gap-5">
-                {/* accessibility descripion, announced when dialog opens */}
-                <VisuallyHidden.Root asChild>
-                  <Dialog.Description>
-                    Details on application #{appData.app_num}
-                  </Dialog.Description>
-                </VisuallyHidden.Root>
+              <section className="w-1/2 min-w-72">
+                <Tabs.Root value={activeTab}>
+                  <Tabs.Content
+                    value="main"
+                    className="flex h-full w-full flex-col gap-5"
+                  >
+                    {/* accessibility descripion, announced when dialog opens */}
+                    <VisuallyHidden.Root asChild>
+                      <Dialog.Description>
+                        Details on application #{appData.app_num}
+                      </Dialog.Description>
+                    </VisuallyHidden.Root>
 
-                {/* status & msg */}
-                <AppCallout app={appData} />
+                    {/* status & msg */}
+                    <AppCallout app={appData} />
 
-                {/* rankings */}
-                {showAdopterFormValues &&
-                  !appData.matched &&
-                  appData.adoptees && (
+                    {/* rankings */}
+                    {showAdopterFormValues &&
+                      !appData.matched &&
+                      appData.adoptees && (
+                        <div className="flex flex-col gap-3">
+                          <p className="text-sm font-medium text-gray-10">
+                            RANKINGS
+                          </p>
+                          <div className="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2">
+                            {appData.adoptees.map((a, idx) => (
+                              <RankingCardPreview
+                                key={a.id}
+                                idx={idx}
+                                age={a.dob ? calculateAge(a.dob) : 'N/A'}
+                                firstName={a.first_name}
+                                gender={a.gender}
+                                state={a.state}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                    {/* adopter bio */}
                     <div className="flex flex-col gap-3">
                       <p className="text-sm font-medium text-gray-10">
-                        RANKINGS
+                        BIOGRAPHY
                       </p>
-                      <div className="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2">
-                        {appData.adoptees.map((a, idx) => (
-                          <RankingCardPreview
-                            key={a.id}
-                            idx={idx}
-                            age={a.dob ? calculateAge(a.dob) : 'N/A'}
-                            firstName={a.first_name}
-                            gender={a.gender}
-                            state={a.state}
-                          />
-                        ))}
+                      <p>{appData.personal_bio}</p>
+                    </div>
+
+                    {/* preferences */}
+                    {showAdopterFormValues && (
+                      <>
+                        {/* gender preference */}
+                        <div className="flex flex-col gap-3">
+                          <p className="text-sm font-medium text-gray-10">
+                            GENDER PREFERENCE
+                          </p>
+                          <p>{formatGenderPreference(appData.gender_pref)}</p>
+                        </div>
+
+                        {/* age preference */}
+                        <div className="flex flex-col gap-3">
+                          <p className="text-sm font-medium text-gray-10">
+                            AGE PREFERENCE
+                          </p>
+                          <p>{formatAgePreference(appData.age_pref)}</p>
+                        </div>
+                      </>
+                    )}
+
+                    {/* adoptee info */}
+                    {showAdopteeInfo && (
+                      <div className="flex flex-col gap-3">
+                        <p className="text-sm font-medium text-gray-10">
+                          ADOPTEE INFORMATION
+                        </p>
+                        <AdopteeInfoOverview appData={appData} />
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                {/* adopter bio */}
-                <div className="flex flex-col gap-3">
-                  <p className="text-sm font-medium text-gray-10">BIOGRAPHY</p>
-                  <p>{appData.personal_bio}</p>
-                </div>
+                    {/* mailing info */}
+                    {showMailingInfo && (
+                      <div className="flex flex-col gap-3">
+                        <p className="text-sm font-medium text-gray-10">
+                          MAILING INFORMATION
+                        </p>
+                        <div className="rounded-2xl bg-gray-3 p-6">
+                          {/* TODO: populate with mailing info */}
+                        </div>
+                      </div>
+                    )}
 
-                {/* preferences */}
-                {showAdopterFormValues && (
-                  <>
-                    {/* gender preference */}
-                    <div className="flex flex-col gap-3">
-                      <p className="text-sm font-medium text-gray-10">
-                        GENDER PREFERENCE
+                    {/* match confirmation controls */}
+                    {appData.matched &&
+                      appData.status === 'PENDING_CONFIRMATION' && (
+                        <ConfirmationControls
+                          onSubmit={data => console.log(data)}
+                        />
+                      )}
+
+                    {/* active: end correspondence */}
+                    {appData.status === 'ACTIVE' && (
+                      <div>
+                        <Button
+                          variant="quaternary"
+                          onClick={() => setActiveTab('end-correspondence')}
+                        >
+                          End Connection
+                        </Button>
+                      </div>
+                    )}
+                  </Tabs.Content>
+
+                  {/* end correspondence form */}
+                  {appData.status === 'ACTIVE' && (
+                    <Tabs.Content
+                      value="end-correspondence"
+                      className="flex h-full w-full flex-col gap-2"
+                    >
+                      <div className="relative">
+                        <div className="absolute top-1/2 -left-4 -translate-x-full -translate-y-1/2">
+                          <Button
+                            variant="ghost"
+                            onClick={() => setActiveTab('main')}
+                          >
+                            <LuChevronLeft />
+                          </Button>
+                        </div>
+
+                        <h2>End Connection</h2>
+                      </div>
+                      <p className="text-gray-12/60">
+                        This will end the correspondence with{' '}
+                        {appData.adoptee_name} permanently. This action cannot
+                        be reversed.
                       </p>
-                      <p>{formatGenderPreference(appData.gender_pref)}</p>
-                    </div>
-
-                    {/* age preference */}
-                    <div className="flex flex-col gap-3">
-                      <p className="text-sm font-medium text-gray-10">
-                        AGE PREFERENCE
-                      </p>
-                      <p>{formatAgePreference(appData.age_pref)}</p>
-                    </div>
-                  </>
-                )}
-
-                {/* adoptee info */}
-                {showAdopteeInfo && (
-                  <div className="flex flex-col gap-3">
-                    <p className="text-sm font-medium text-gray-10">
-                      ADOPTEE INFORMATION
-                    </p>
-                    <AdopteeInfoOverview appData={appData} />
-                  </div>
-                )}
-
-                {/* mailing info */}
-                {showMailingInfo && (
-                  <div className="flex flex-col gap-3">
-                    <p className="text-sm font-medium text-gray-10">
-                      MAILING INFORMATION
-                    </p>
-                    <div className="rounded-2xl bg-gray-3 p-6">
-                      {/* TODO: populate with mailing info */}
-                    </div>
-                  </div>
-                )}
-
-                {/* match confirmation controls */}
-                {appData.matched &&
-                  appData.status === 'PENDING_CONFIRMATION' && (
-                    <ConfirmationControls
-                      onSubmit={data => console.log(data)}
-                    />
+                      <EndCorrespondenceForm
+                        onSubmit={data => console.log(data)}
+                      >
+                        <Button
+                          variant="outline"
+                          onClick={() => setActiveTab('main')}
+                        >
+                          Cancel
+                        </Button>
+                      </EndCorrespondenceForm>
+                    </Tabs.Content>
                   )}
-
-                {/* active: end correspondence */}
-                {appData.status === 'ACTIVE' && (
-                  <EndCorrespondenceControls
-                    onSubmit={data => console.log(data)}
-                  />
-                )}
+                </Tabs.Root>
 
                 {/* padding */}
-                <div className="pb-4" />
+                <div className="pb-8" />
               </section>
             </main>
           </Dialog.Content>

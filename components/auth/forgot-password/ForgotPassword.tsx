@@ -65,7 +65,9 @@ export default function ForgotPassword() {
       return;
     }
 
-    router.push(`?status=check-email&email=${email}`);
+    router.push(
+      `/forgot-password?status=check-email&email=${encodeURIComponent(email)}`,
+    );
   };
 
   const onSubmit = async ({ email }: ForgotPasswordForm) => {

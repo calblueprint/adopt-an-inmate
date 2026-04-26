@@ -91,7 +91,9 @@ export default function SignUpPage() {
     }
 
     setAuthError(null);
-    router.push('/');
+    router.push(
+      `/forgot-password?status=check-email&email=${encodeURIComponent(email)}`,
+    );
   };
 
   return (

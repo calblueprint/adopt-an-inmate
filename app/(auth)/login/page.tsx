@@ -42,8 +42,10 @@ export default function LoginPage() {
             setAuthError('Email address not supported.');
             break;
           case 'email_not_confirmed':
-            setAuthError('Email not confirmed.');
-            break;
+            router.push(
+              `/forgot-password?status=check-email&email=${encodeURIComponent(email)}`,
+            );
+            return;
           case 'invalid_credentials':
             setAuthError('Either email or password is incorrect.');
             break;

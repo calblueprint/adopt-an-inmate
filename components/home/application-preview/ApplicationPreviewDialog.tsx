@@ -110,16 +110,6 @@ export default function ApplicationPreviewDialog() {
   );
 
   // app controls
-  const showAdopterFormValues = useMemo(() => {
-    if (!data) return false;
-    return !data.matched;
-  }, [data]);
-
-  const showAdopteeInfo = useMemo(() => {
-    if (!data) return false;
-    return data.matched;
-  }, [data]);
-
   const showMailingInfo = useMemo(() => {
     if (!data) return false;
     return data.appData.status === 'ACTIVE';
@@ -184,38 +174,42 @@ export default function ApplicationPreviewDialog() {
                     ) : null}
 
                     {/* rankings */}
-                    {showAdopterFormValues &&
-                      !data.matched &&
-                      data.adoptees && (
-                        <div className="flex flex-col gap-3">
-                          <p className="text-sm font-medium text-gray-10">
-                            RANKINGS
-                          </p>
-                          <div className="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2">
-                            {data.adoptees.map((a, idx) => (
-                              <RankingCardPreview
-                                key={a.id}
-                                idx={idx}
-                                age={a.dob ? calculateAge(a.dob) : 'N/A'}
-                                firstName={a.first_name}
-                                gender={a.gender}
-                                state={a.state}
-                              />
-                            ))}
-                          </div>
+                    {!data.matched && data.adoptees && (
+                      <div className="flex flex-col gap-3">
+                        <p className="text-sm font-medium text-gray-10">
+                          RANKINGS
+                        </p>
+                        <div className="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2">
+                          {data.adoptees.map((a, idx) => (
+                            <RankingCardPreview
+                              key={a.id}
+                              idx={idx}
+                              age={a.dob ? calculateAge(a.dob) : 'N/A'}
+                              firstName={a.first_name}
+                              gender={a.gender}
+                              state={a.state}
+                            />
+                          ))}
                         </div>
-                      )}
+                      </div>
+                    )}
 
                     {/* adopter bio */}
                     <div className="flex flex-col gap-3">
                       <p className="text-sm font-medium text-gray-10">
-                        BIOGRAPHY
+                        {data.matched
+                          ? 'ADOPTEE BIOGRAPHY'
+                          : 'PERSONAL BIOGRAPHY'}
                       </p>
-                      <p>{data.appData.personal_bio}</p>
+                      <p>
+                        {data.matched
+                          ? data.matchedAdoptee.personal_bio
+                          : data.appData.personal_bio}
+                      </p>
                     </div>
 
                     {/* preferences */}
-                    {showAdopterFormValues && (
+                    {!data.matched && (
                       <>
                         {/* gender preference */}
                         <div className="flex flex-col gap-3">
@@ -238,7 +232,7 @@ export default function ApplicationPreviewDialog() {
                     )}
 
                     {/* adoptee info */}
-                    {showAdopteeInfo && (
+                    {data.matched && (
                       <div className="flex flex-col gap-3">
                         <p className="text-sm font-medium text-gray-10">
                           ADOPTEE INFORMATION

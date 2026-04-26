@@ -1,8 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { IoKeyOutline } from 'react-icons/io5';
-import { LuCake, LuCalendar } from 'react-icons/lu';
+import { LuCake, LuCalendar, LuGlobe, LuIdCard } from 'react-icons/lu';
 import { TbGenderBigender } from 'react-icons/tb';
 import { formatAmericanTime } from '@/lib/formatters';
 import { calculateAge } from '@/lib/utils';
@@ -20,6 +19,15 @@ export default function AdopteeInfoOverview({
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl bg-gray-3 p-6 font-medium">
+      {/* inmate id */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <LuIdCard />
+          <p>Inmate ID</p>
+        </div>
+        <p className="text-black/60">{adoptee?.inmate_id}</p>
+      </div>
+
       {/* gender */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -41,23 +49,25 @@ export default function AdopteeInfoOverview({
       </div>
 
       {/* dob */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <LuCalendar />
-          <p>Date of Birth</p>
+      {appData?.appData.status === 'ACTIVE' && (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <LuCalendar />
+            <p>Date of Birth</p>
+          </div>
+          <p className="text-black/60">
+            {adoptee?.dob ? formatAmericanTime(adoptee.dob) : 'N/A'}
+          </p>
         </div>
-        <p className="text-black/60">
-          {adoptee?.dob ? formatAmericanTime(adoptee.dob) : 'N/A'}
-        </p>
-      </div>
+      )}
 
-      {/* inmate id */}
+      {/* state */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <IoKeyOutline />
-          <p>Inmate ID</p>
+          <LuGlobe />
+          <p>State</p>
         </div>
-        <p className="text-black/60">{adoptee?.inmate_id}</p>
+        <p className="text-black/60">{adoptee?.state || 'N/A'}</p>
       </div>
     </div>
   );

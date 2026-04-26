@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { LuPlus } from 'react-icons/lu';
 import { useRouter } from 'next/navigation';
 import {
   checkCreationConstraints,
@@ -52,7 +53,7 @@ export default function NewApplicationButton({
       onClick={createApp}
       disabled={isCreating}
       className={cn(
-        'relative flex cursor-pointer items-center gap-2 rounded-[0.5rem] bg-red-9 px-8 py-2 text-white transition-opacity hover:opacity-90',
+        'relative flex cursor-pointer items-center gap-2 rounded-lg bg-red-9 px-9 py-2 text-white transition-opacity hover:opacity-90',
         isRestricted &&
           'before:absolute before:inset-0 before:block before:bg-white/30',
       )}
@@ -64,20 +65,8 @@ export default function NewApplicationButton({
         </>
       ) : (
         <>
+          <LuPlus />
           Create new
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="white"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm1 5a1 1 0 1 0-2 0v4H7a1 1 0 1 0 0 2h4v4a1 1 0 1 0 2 0v-4h4a1 1 0 1 0 0-2h-4V7z"
-            />
-          </svg>
         </>
       )}
     </button>

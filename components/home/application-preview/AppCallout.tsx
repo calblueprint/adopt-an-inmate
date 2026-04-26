@@ -61,6 +61,8 @@ export default function AppCallout({ app }: { app: AdopterApplication }) {
     }
   }, [app]);
 
+  if (app.status === 'ACTIVE') return null;
+
   return (
     <div className={calloutStyles({ variant: app.status })}>
       <p className="text-md font-medium">{calloutTitle}</p>

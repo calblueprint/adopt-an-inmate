@@ -7,12 +7,18 @@ import { Dialog, VisuallyHidden } from 'radix-ui';
 import { getApplicationWithAdoptees } from '@/actions/applications/getApplicationWithAdoptees';
 import { handleAdopterConfirmation as handleAdopterConfirmationServer } from '@/actions/applications/handleAdopterConfirmation';
 import Logger from '@/actions/logging';
-import { formatAppDateByStatus } from '@/lib/formatters';
+import {
+  formatAgePreference,
+  formatAppDateByStatus,
+  formatGenderPreference,
+} from '@/lib/formatters';
+import { calculateAge } from '@/lib/utils';
 import { ApplicationWithAdoptees } from '@/types/schema';
-import { AdopterApplicationFormValues } from './AdopterApplicationFormValues';
+import AdopteeInfoOverview from './AdopteeInfoOverview';
 import AppCallout from './AppCallout';
 import ConfirmationControls from './ConfirmationControls';
 import EndCorrespondenceControls from './EndCorrespondenceControls';
+import RankingCardPreview from './RankingCardPreview';
 import StatusPill from './StatusPill';
 
 export default function ApplicationPreviewDialog() {
@@ -56,12 +62,6 @@ export default function ApplicationPreviewDialog() {
     return formatAppDateByStatus(appData);
   }, [appData]);
 
-  // app controls
-  const showAdopterFormValues = useMemo(() => {
-    if (!appData) return false;
-    return !appData.matched_adoptee;
-  }, [appData]);
-
   // handle adopter confirmation
   const handleAdopterConfirmation = useCallback(
     async ({
@@ -102,6 +102,22 @@ export default function ApplicationPreviewDialog() {
     },
     [appData, router],
   );
+
+  // app controls
+  const showAdopterFormValues = useMemo(() => {
+    if (!appData) return false;
+    return !appData.matched_adoptee;
+  }, [appData]);
+
+  const showAdopteeInfo = useMemo(() => {
+    if (!appData) return false;
+    return !!appData.matched_adoptee;
+  }, [appData]);
+
+  const showMailingInfo = useMemo(() => {
+    if (!appData) return false;
+    return !!appData.matched_adoptee && appData.status !== 'ENDED';
+  }, [appData]);
 
   if (!(showPreview && previewId && appData?.time_submitted)) return null;
 
@@ -148,8 +164,76 @@ export default function ApplicationPreviewDialog() {
                 {/* status & msg */}
                 <AppCallout app={appData} />
 
+                {/* rankings */}
+                {showAdopterFormValues &&
+                  !appData.matched &&
+                  appData.adoptees && (
+                    <div className="flex flex-col gap-3">
+                      <p className="text-sm font-medium text-gray-10">
+                        RANKINGS
+                      </p>
+                      <div className="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2">
+                        {appData.adoptees.map((a, idx) => (
+                          <RankingCardPreview
+                            key={a.id}
+                            idx={idx}
+                            age={a.dob ? calculateAge(a.dob) : 'N/A'}
+                            firstName={a.first_name}
+                            gender={a.gender}
+                            state={a.state}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                {/* adopter bio */}
+                <div className="flex flex-col gap-3">
+                  <p className="text-sm font-medium text-gray-10">BIOGRAPHY</p>
+                  <p>{appData.personal_bio}</p>
+                </div>
+
+                {/* preferences */}
                 {showAdopterFormValues && (
-                  <AdopterApplicationFormValues appData={appData} />
+                  <>
+                    {/* gender preference */}
+                    <div className="flex flex-col gap-3">
+                      <p className="text-sm font-medium text-gray-10">
+                        GENDER PREFERENCE
+                      </p>
+                      <p>{formatGenderPreference(appData.gender_pref)}</p>
+                    </div>
+
+                    {/* age preference */}
+                    <div className="flex flex-col gap-3">
+                      <p className="text-sm font-medium text-gray-10">
+                        AGE PREFERENCE
+                      </p>
+                      <p>{formatAgePreference(appData.age_pref)}</p>
+                    </div>
+                  </>
+                )}
+
+                {/* adoptee info */}
+                {showAdopteeInfo && (
+                  <div className="flex flex-col gap-3">
+                    <p className="text-sm font-medium text-gray-10">
+                      ADOPTEE INFORMATION
+                    </p>
+                    <AdopteeInfoOverview appData={appData} />
+                  </div>
+                )}
+
+                {/* mailing info */}
+                {showMailingInfo && (
+                  <div className="flex flex-col gap-3">
+                    <p className="text-sm font-medium text-gray-10">
+                      MAILING INFORMATION
+                    </p>
+                    <div className="rounded-2xl bg-gray-3 p-6">
+                      {/* TODO: populate with mailing info */}
+                    </div>
+                  </div>
                 )}
 
                 {/* match confirmation controls */}
@@ -161,7 +245,7 @@ export default function ApplicationPreviewDialog() {
                   )}
 
                 {/* active: end correspondence */}
-                {appData.status === 'ACCEPTED' && (
+                {appData.status === 'ACTIVE' && (
                   <EndCorrespondenceControls
                     onSubmit={data => console.log(data)}
                   />

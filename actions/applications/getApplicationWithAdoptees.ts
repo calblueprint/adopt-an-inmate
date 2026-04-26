@@ -39,7 +39,7 @@ export const getApplicationWithAdoptees = async (appId: string) => {
   if (appData.matched_adoptee) {
     const { data: adopteeData, error: getAdopteeError } = await serviceSupabase
       .from('adoptee_vector_test')
-      .select('id, gender, state, first_name, dob, bio')
+      .select('id, gender, state, first_name, dob, bio, inmate_id')
       .eq('id', appData.matched_adoptee)
       .maybeSingle();
 
@@ -71,7 +71,7 @@ export const getApplicationWithAdoptees = async (appId: string) => {
   // get unmatched adoptees
   const { data: adopteeData, error: getAdopteeError } = await serviceSupabase
     .from('adoptee_vector_test')
-    .select('id, gender, state, first_name, dob')
+    .select('id, gender, state, first_name, dob, inmate_id')
     .in('id', appData.ranked_cards);
 
   if (getAdopteeError) {

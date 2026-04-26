@@ -373,7 +373,6 @@ const exportApplication = async (appId: string) => {
   // or columns were renamed/deleted
   if (updateError) {
     Logger.error(`[CRITICAL] Error trying to update ${appId}: ${updateError}`);
-    
   }
 
   // mark adoptees as OFC on Supabase

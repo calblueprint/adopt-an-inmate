@@ -7,7 +7,7 @@ import autoEmailSender from '../emails/email';
 import Logger from '../logging';
 import { mondayApiClient } from '../monday/core';
 
-const MONDAY_WL_PIPS_BOARD_ID = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
+const MONDAY_ADOPTED_BOARD_ID = getEnvVar('MONDAY_ADOPTED_BOARD_ID');
 const MONDAY_ADOPTER_DATA_SUBITEM_BOARD_ID = getEnvVar(
   'MONDAY_ADOPTER_DATA_SUBITEM_BOARD_ID',
 );
@@ -34,13 +34,13 @@ export const handleAdopterConfirmation = async ({
     const query = `
       mutation {
         change_simple_column_value(
-          board_id: "${MONDAY_WL_PIPS_BOARD_ID}",
+          board_id: "${MONDAY_ADOPTED_BOARD_ID}",
           item_id: "${adopteeMondayId}",
-          column_id: "color_mm1pq72v",
+          column_id: "color_mm1pbttw", 
           value: "Yes"
         ) { id }
       }
-    `;
+    `; //in WL PIPS: color_mm1pq72v, Adopted: color_mm1pbttw
 
     try {
       await mondayApiClient.request(query);
@@ -152,13 +152,13 @@ export const handleAdopterConfirmation = async ({
           value: "Closed Out"
         ) { id }
         adoptee:change_simple_column_value(
-          board_id: "${MONDAY_WL_PIPS_BOARD_ID}",
+          board_id: "${MONDAY_ADOPTED_BOARD_ID}",
           item_id: "${adopteeMondayId}",
-          column_id: "status__1",
+          column_id: "status4",
           value: "${adoptee.formerly_adopted ? 'WLFA: Wait Listed Formerly Adopted' : 'WL: Wait Listed'}"
         ) { id }
       }
-    `;
+    `; //in WL PIPS: status__1, Adopted: status4
 
     try {
       await mondayApiClient.request(query);
@@ -183,7 +183,7 @@ export const handleAdopterConfirmation = async ({
     await autoEmailSender(
       emailContent,
       'An adopter rejected a match',
-      'adopt@adoptaninmate.org',
+      'inayayusuf.29@gmail.com', //'adopt@adoptaninmate.org',
     );
   }
 

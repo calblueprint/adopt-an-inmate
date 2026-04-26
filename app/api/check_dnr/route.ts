@@ -8,7 +8,7 @@ const CRON_SECRET = getEnvVar('CRON_SECRET');
 const MONDAY_ADOPTER_DATA_SUBITEM_BOARD_ID = getEnvVar(
   'MONDAY_ADOPTER_DATA_SUBITEM_BOARD_ID',
 );
-const MONDAY_WL_PIPS_BOARD_ID = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
+const MONDAY_ADOPTED_BOARD_ID = getEnvVar('MONDAY_ADOPTED_BOARD_ID');
 
 export async function GET(request: NextRequest) {
   // check that this is issued by cron job
@@ -104,9 +104,9 @@ export async function GET(request: NextRequest) {
     formerlyAdopted: boolean,
   ) => `
     adoptee${id}:change_simple_column_value(
-      board_id: "${MONDAY_WL_PIPS_BOARD_ID}",
+      board_id: "${MONDAY_ADOPTED_BOARD_ID}",
       item_id: "${id}",
-      column_id: "status__1",
+      column_id: "status4",
       value: "${formerlyAdopted ? 'WLFA: Wait Listed Formerly Adopted' : 'WL: Wait Listed'}"
     ) { id }
   `;

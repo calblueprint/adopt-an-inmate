@@ -3,6 +3,10 @@
     {
       "path": "/api/set_embeddings/pipeline",
       "schedule": "0 20 1 * *"
+    },
+    {
+      "path": "/api/check_dnr",
+      "schedule": "0 1 * * *"
     }
   ]
 }

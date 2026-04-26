@@ -150,8 +150,10 @@ export type Database = {
       }
       adopter_applications_dummy: {
         Row: {
+          adoptee_name: string | null
           adopter_uuid: string
           age_pref: number[] | null
+          app_num: number
           app_uuid: string
           ended_reason: string | null
           exported_to_monday: boolean
@@ -164,12 +166,15 @@ export type Database = {
           time_confirmation_due: string | null
           time_created: string
           time_ended: string | null
+          time_started: string | null
           time_submitted: string | null
           waiting_confirmation: boolean
         }
         Insert: {
+          adoptee_name?: string | null
           adopter_uuid: string
           age_pref?: number[] | null
+          app_num?: number
           app_uuid?: string
           ended_reason?: string | null
           exported_to_monday?: boolean
@@ -182,12 +187,15 @@ export type Database = {
           time_confirmation_due?: string | null
           time_created?: string
           time_ended?: string | null
+          time_started?: string | null
           time_submitted?: string | null
           waiting_confirmation?: boolean
         }
         Update: {
+          adoptee_name?: string | null
           adopter_uuid?: string
           age_pref?: number[] | null
+          app_num?: number
           app_uuid?: string
           ended_reason?: string | null
           exported_to_monday?: boolean
@@ -200,6 +208,7 @@ export type Database = {
           time_confirmation_due?: string | null
           time_created?: string
           time_ended?: string | null
+          time_started?: string | null
           time_submitted?: string | null
           waiting_confirmation?: boolean
         }
@@ -279,6 +288,21 @@ export type Database = {
         }
         Relationships: []
       }
+      app_counter: {
+        Row: {
+          adopter_uuid: string
+          last_app_num: number
+        }
+        Insert: {
+          adopter_uuid?: string
+          last_app_num?: number
+        }
+        Update: {
+          adopter_uuid?: string
+          last_app_num?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -350,6 +374,14 @@ export type Database = {
     }
     Enums: {
       adoptee_status: "WAIT_LISTED" | "OUT_FOR_CONSIDERATION" | "ADOPTED"
+      app_status:
+        | "INCOMPLETE"
+        | "PENDING"
+        | "PENDING_CONFIRMATION"
+        | "ACTIVE"
+        | "ENDED"
+        | "REAPPLY"
+        | "REJECTED"
       inactive_reason: "ENDED" | "INMATE_CANCELLED" | "NPO_CANCELLED" | "OTHER"
       status_vals:
         | "INCOMPLETE"
@@ -488,6 +520,15 @@ export const Constants = {
   public: {
     Enums: {
       adoptee_status: ["WAIT_LISTED", "OUT_FOR_CONSIDERATION", "ADOPTED"],
+      app_status: [
+        "INCOMPLETE",
+        "PENDING",
+        "PENDING_CONFIRMATION",
+        "ACTIVE",
+        "ENDED",
+        "REAPPLY",
+        "REJECTED",
+      ],
       inactive_reason: ["ENDED", "INMATE_CANCELLED", "NPO_CANCELLED", "OTHER"],
       status_vals: [
         "INCOMPLETE",

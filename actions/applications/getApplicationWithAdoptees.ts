@@ -22,14 +22,13 @@ export const getApplicationWithAdoptees = async (appId: string) => {
     .eq('app_uuid', appId)
     .eq('adopter_uuid', user.id)
     .maybeSingle();
-
   if (getAppError || !appData) {
     return { data: null, error: 'Not found' };
   }
 
   if (!appData.ranked_cards)
     return {
-      data: { matched: false, ...appData, adoptees: null },
+      data: { matched: false, email: user.email, ...appData, adoptees: null },
       error: null,
     };
 
@@ -59,7 +58,12 @@ export const getApplicationWithAdoptees = async (appId: string) => {
     }
 
     return {
-      data: { matched: true, ...appData, adoptees: [adopteeData] },
+      data: {
+        matched: true,
+        email: user.email,
+        ...appData,
+        adoptees: [adopteeData],
+      },
       error: null,
     };
   }
@@ -78,7 +82,12 @@ export const getApplicationWithAdoptees = async (appId: string) => {
   }
 
   return {
-    data: { matched: false, ...appData, adoptees: adopteeData },
+    data: {
+      matched: false,
+      email: user.email,
+      ...appData,
+      adoptees: adopteeData,
+    },
     error: null,
   };
 };

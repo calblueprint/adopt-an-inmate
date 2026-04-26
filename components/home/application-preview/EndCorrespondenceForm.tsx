@@ -4,13 +4,8 @@ import React, { useRef } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { Button } from '@/components/Button';
+import { endReasons } from '@/data/endCorrespondenceDropdown';
 import { ApplicationDialogTabs } from './ApplicationPreviewDialog';
-
-// options for reason
-const endReasons = ['Option A', 'Option B', 'Option C'].map((r, i) => ({
-  label: r,
-  value: i.toString(),
-}));
 
 // schema for form
 interface EndCorrespondenceForm {

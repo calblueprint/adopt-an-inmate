@@ -16,6 +16,8 @@ interface EditProfileFormProps {
 interface EditProfileFormData {
   first_name: string;
   last_name: string;
+  date_of_birth: string;
+  pronouns: string;
   state: { label: string; value: string } | null;
   veteran_status: boolean;
 }
@@ -81,6 +83,19 @@ export default function EditProfileForm({ profile }: EditProfileFormProps) {
         name="last_name"
         control={control}
         render={({ field }) => <Textbox {...field} placeholder="Last Name" />}
+      />
+
+      <div className="flex flex-col gap-0.5 rounded-lg bg-gray-5 px-3 py-2">
+        <p className="text-[10px]">Email</p>
+        <p>actual users email</p>
+      </div>
+
+      <Controller
+        name="date_of_birth"
+        control={control}
+        render={({ field }) => (
+          <Textbox {...field} placeholder="Date of Birth" />
+        )}
       />
 
       <div className="flex flex-col gap-1">

@@ -1,22 +1,21 @@
 'use client';
 
+import { useState } from 'react';
 import { Button } from '@/components/Button';
 import EditProfileForm from '@/components/EditProfilePage';
 import { useProfile } from '@/contexts/ProfileProvider';
+import EditProfileModal from './editprofilemodal';
 import SideBar from './sidebar';
 
 export default function EditProfilePage() {
   const { profileData, profileReady } = useProfile();
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
   if (!profileReady) return null;
   if (!profileData) return null;
 
   return (
     <div className="flex flex-row">
-      {/* <div className="border-red flex w-xs flex-col border-2">
-        <p>SIDE BAR</p>
-        <p className="text-xl">Hi, {profileData.first_name}!</p>
-      </div> */}
       <SideBar />
       <div className="flex w-full flex-col justify-center gap-12">
         {/* Profile Header */}
@@ -41,7 +40,10 @@ export default function EditProfilePage() {
             <div className="flex flex-col gap-3">
               <div className="flex flex-row justify-between">
                 <p className="font-medium text-[#0000007d]">Account</p>
-                <p className="font-medium text-[#0000007d] underline">
+                <p
+                  className="cursor-pointer font-medium text-[#0000007d] underline hover:text-black"
+                  onClick={() => setIsEditProfileOpen(true)}
+                >
                   {' '}
                   Edit Profile
                 </p>
@@ -142,7 +144,13 @@ export default function EditProfilePage() {
         <p>Veteran: {profileData.veteran_status ? 'Yes' : 'No'}</p>
       </div> */}
 
-        <EditProfileForm profile={profileData} />
+        {/* <EditProfileForm profile={profileData} /> */}
+        {isEditProfileOpen && (
+          <EditProfileModal
+            profileData={profileData}
+            onClose={() => setIsEditProfileOpen(false)}
+          />
+        )}
       </div>
     </div>
   );

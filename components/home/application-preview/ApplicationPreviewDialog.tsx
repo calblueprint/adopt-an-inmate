@@ -5,7 +5,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { LuHouse, LuMapPin, LuX } from 'react-icons/lu';
 import { PiCity } from 'react-icons/pi';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Dialog, Tabs, VisuallyHidden } from 'radix-ui';
+import { motion } from 'motion/react';
+import { Dialog, VisuallyHidden } from 'radix-ui';
 import { getApplicationWithAdoptees } from '@/actions/applications/getApplicationWithAdoptees';
 import { handleAdopterConfirmation as handleAdopterConfirmationServer } from '@/actions/applications/handleAdopterConfirmation';
 import { handleEndCorrespondence as handleEndCorrespondenceServer } from '@/actions/applications/handleEndCorrespondence';
@@ -177,13 +178,14 @@ export default function ApplicationPreviewDialog() {
               </Dialog.Close>
             </header>
 
-            <main className="flex h-full justify-center overflow-auto py-8">
-              <section className="w-1/2 min-w-72">
-                <Tabs.Root value={activeTab}>
-                  <Tabs.Content
-                    value="main"
-                    className="flex h-full w-full flex-col gap-5"
-                  >
+            <main className="relative h-full overflow-hidden">
+              <motion.div
+                className="flex h-full justify-center overflow-auto py-8"
+                animate={{ x: activeTab === 'main' ? 0 : '-100%' }}
+                transition={{ duration: 0.2, type: 'tween', ease: 'easeInOut' }}
+              >
+                <section className="w-1/2 min-w-72">
+                  <div className="flex h-full w-full flex-col gap-5">
                     {/* accessibility descripion, announced when dialog opens */}
                     <VisuallyHidden.Root asChild>
                       <Dialog.Description>
@@ -332,45 +334,47 @@ export default function ApplicationPreviewDialog() {
                         </Button>
                       </div>
                     )}
-                  </Tabs.Content>
 
-                  {/* adopter confirmation form */}
-                  {data.appData.status === 'PENDING_CONFIRMATION' && (
-                    <DialogExtraForm
-                      value="confirmation"
-                      title="Reject Connection"
-                      description={`This will reject the connection with ${data.appData.adoptee_name} permanently. This action cannot be reversed.`}
-                      setActiveTab={setActiveTab}
-                    >
-                      <RejectConfirmationForm
-                        onSubmit={async ({ reason }) =>
-                          await handleAdopterConfirmation(false, reason)
-                        }
-                      />
-                    </DialogExtraForm>
-                  )}
+                    {/* padding */}
+                    <div className="pb-8" />
+                  </div>
+                </section>
+              </motion.div>
 
-                  {/* end correspondence form */}
-                  {data.appData.status === 'ACTIVE' && (
-                    <DialogExtraForm
-                      value="end-correspondence"
-                      title="End Connection"
-                      description={`This will end the correspondence with ${data.appData.adoptee_name} permanently. This action cannot be reversed.`}
-                      setActiveTab={setActiveTab}
-                    >
-                      <EndCorrespondenceForm
-                        onSubmit={async ({ reason }) =>
-                          await handleEndCorrespondence(reason)
-                        }
-                        setActiveTab={setActiveTab}
-                      />
-                    </DialogExtraForm>
-                  )}
-                </Tabs.Root>
+              {/* adopter confirmation form */}
+              {data.appData.status === 'PENDING_CONFIRMATION' && (
+                <DialogExtraForm
+                  value="confirmation"
+                  activeTab={activeTab}
+                  title="Reject Connection"
+                  description={`This will reject the connection with ${data.appData.adoptee_name} permanently. This action cannot be reversed.`}
+                  setActiveTab={setActiveTab}
+                >
+                  <RejectConfirmationForm
+                    onSubmit={async ({ reason }) =>
+                      await handleAdopterConfirmation(false, reason)
+                    }
+                  />
+                </DialogExtraForm>
+              )}
 
-                {/* padding */}
-                <div className="pb-8" />
-              </section>
+              {/* end correspondence form */}
+              {data.appData.status === 'ACTIVE' && (
+                <DialogExtraForm
+                  value="end-correspondence"
+                  activeTab={activeTab}
+                  title="End Connection"
+                  description={`This will end the correspondence with ${data.appData.adoptee_name} permanently. This action cannot be reversed.`}
+                  setActiveTab={setActiveTab}
+                >
+                  <EndCorrespondenceForm
+                    onSubmit={async ({ reason }) =>
+                      await handleEndCorrespondence(reason)
+                    }
+                    setActiveTab={setActiveTab}
+                  />
+                </DialogExtraForm>
+              )}
             </main>
           </Dialog.Content>
         </Dialog.Overlay>

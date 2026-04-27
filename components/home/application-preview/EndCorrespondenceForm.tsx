@@ -4,12 +4,12 @@ import React, { useRef } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { Button } from '@/components/Button';
-import { endReasons } from '@/data/endCorrespondenceDropdown';
+import { EndReasonOption, endReasons } from '@/data/endCorrespondenceDropdown';
 import { ApplicationDialogTabs } from './ApplicationPreviewDialog';
 
 // schema for form
 interface EndCorrespondenceForm {
-  reason: { label: string; value: string };
+  reason: EndReasonOption;
 }
 
 export default function EndCorrespondenceForm({

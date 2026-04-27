@@ -1,5 +1,6 @@
 'use client';
 
+import type { EndReasonOption } from '@/data/endCorrespondenceDropdown';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { LuHouse, LuMapPin, LuX } from 'react-icons/lu';
 import { PiCity } from 'react-icons/pi';
@@ -7,6 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Dialog, Tabs, VisuallyHidden } from 'radix-ui';
 import { getApplicationWithAdoptees } from '@/actions/applications/getApplicationWithAdoptees';
 import { handleAdopterConfirmation as handleAdopterConfirmationServer } from '@/actions/applications/handleAdopterConfirmation';
+import { handleEndCorrespondence as handleEndCorrespondenceServer } from '@/actions/applications/handleEndCorrespondence';
 import Logger from '@/actions/logging';
 import { Button } from '@/components/Button';
 import {
@@ -100,12 +102,34 @@ export default function ApplicationPreviewDialog() {
       if (error) {
         alert(error);
       } else {
-        // stretch TODO: use websockets instead for real time updates
-        // refresh page with updated data
-        router.push('/');
+        window.location.href = '/';
       }
     },
-    [data, router],
+    [data],
+  );
+
+  // handle end correspondence
+  const handleEndCorrespondence = useCallback(
+    async (reason: EndReasonOption) => {
+      if (!(data && data.email && data.matched)) return;
+
+      const { error } = await handleEndCorrespondenceServer({
+        appId: data.appData.app_uuid,
+        adopterEmail: data.email,
+        adopterId: data.appData.adopter_uuid,
+        adopteeId: data.matchedAdoptee.id,
+        adopteeInmateId: data.matchedAdoptee.inmate_id,
+        reason,
+      });
+
+      if (error) {
+        // TODO: replace with toast
+        alert(error);
+      } else {
+        window.location.href = '/';
+      }
+    },
+    [data],
   );
 
   // app controls
@@ -335,7 +359,9 @@ export default function ApplicationPreviewDialog() {
                       setActiveTab={setActiveTab}
                     >
                       <EndCorrespondenceForm
-                        onSubmit={data => console.log(data)}
+                        onSubmit={async ({ reason }) =>
+                          await handleEndCorrespondence(reason)
+                        }
                         setActiveTab={setActiveTab}
                       />
                     </DialogExtraForm>

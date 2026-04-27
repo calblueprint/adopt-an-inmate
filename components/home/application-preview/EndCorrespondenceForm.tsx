@@ -5,6 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import Select from 'react-select';
 import { Button } from '@/components/Button';
 import { EndReasonOption, endReasons } from '@/data/endCorrespondenceDropdown';
+import { reactSelectClassnames } from '@/styles/reactSelectClassnames';
 import { ApplicationDialogTabs } from './ApplicationPreviewDialog';
 
 // schema for form
@@ -36,8 +37,11 @@ export default function EndCorrespondenceForm({
           render={({ field }) => (
             <Select
               {...field}
+              placeholder="Select a reason"
               options={endReasons}
               menuPortalTarget={containerRef.current}
+              unstyled
+              classNames={reactSelectClassnames}
             />
           )}
         />

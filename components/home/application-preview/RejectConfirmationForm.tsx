@@ -23,7 +23,7 @@ export default function RejectConfirmationForm({
         <label htmlFor="reason">What&apos;s the reason?</label>
         <TextArea
           {...register('reason')}
-          placeholder='Please be specific as possible! For example, "I just got hired and will be working 40 hour a week, so I will no longer have enough time to commit to this correspondence."'
+          placeholder="Please be specific as possible!"
           rows={4}
         />
       </div>

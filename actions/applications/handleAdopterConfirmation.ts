@@ -1,5 +1,6 @@
 'use server';
 
+import { CONFIG } from '@/config';
 import { getSupabaseServerClient } from '@/lib/supabase';
 import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
 import { getEnvVar } from '@/lib/utils';
@@ -183,7 +184,7 @@ export const handleAdopterConfirmation = async ({
     await autoEmailSender(
       emailContent,
       'An adopter rejected a match',
-      'inayayusuf.29@gmail.com', //'adopt@adoptaninmate.org',
+      CONFIG.adminEmail,
     );
   }
 

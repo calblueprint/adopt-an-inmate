@@ -4,6 +4,5 @@ export const CONFIG = {
   enableMondayMutations: false,
 
   // The point of contact email for admins
-  // adminEmail: 'adopt@adoptaninmate.org',
-  adminEmail: 'jinkang.fang@berkeley.edu',
+  adminEmail: 'adopt@adoptaninmate.org',
 };

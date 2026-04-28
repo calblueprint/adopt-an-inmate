@@ -121,7 +121,11 @@ export const calculateAge = (dob: Date | string): number => {
  * active, false otherwise.
  */
 export const appIsActive = (app: AdopterApplication) => {
-  return !(app.status === 'REJECTED' || app.status === 'ENDED');
+  return !(
+    app.status === 'REJECTED' ||
+    app.status === 'ENDED' ||
+    app.status === 'REAPPLY'
+  );
 };
 
 /**

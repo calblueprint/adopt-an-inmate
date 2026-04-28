@@ -2,22 +2,6 @@ import { AdopterApplication } from '@/types/schema';
 import { FormState } from '@/types/types';
 
 /**
- * Format an application's ended message
- */
-export function formatEndedMessage(
-  timeEnded: string | null,
-  endedReason: string | null,
-) {
-  if (!(timeEnded || endedReason))
-    return 'Application ended without reason or time.';
-
-  const timeString = timeEnded ? ` on ${formatDate(timeEnded)}` : '';
-  const reason = endedReason ? ` because "${endedReason}"` : '';
-
-  return 'Ended' + timeString + reason;
-}
-
-/**
  * Formats an application status value into a
  * display-appropriate string.
  */
@@ -81,6 +65,30 @@ export function formatDate(dateParam: Date | string) {
     month: 'short',
     year: 'numeric',
   });
+}
+
+/**
+ * Returns an appropriate display text for a relevant
+ * date for an application, based on the application's
+ * status and various times.
+ */
+export function formatAppDateByStatus(app: AdopterApplication) {
+  switch (app.status) {
+    case 'ACTIVE':
+      return `Started: ${formatDate(app.time_started || '')}`;
+    case 'PENDING':
+    case 'REAPPLY':
+    case 'REJECTED':
+      return `Submitted: ${formatDate(app.time_submitted || '')}`;
+    case 'PENDING_CONFIRMATION':
+      return `Confirm by: ${formatDate(app.time_confirmation_due || '')}`;
+    case 'ENDED':
+      return `Ended: ${formatDate(app.time_ended || '')}`;
+    case 'INCOMPLETE':
+      return `Created: ${formatDate(app.time_created)}`;
+    default:
+      return '';
+  }
 }
 
 /**

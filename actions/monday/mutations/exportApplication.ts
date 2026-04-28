@@ -316,6 +316,9 @@ const exportApplication = async (appId: string) => {
       Logger.error(
         `[CRITICAL] Error trying to update adopter profile for user ${user.email} (ID ${user.id}): ${updateError}`,
       );
+      // NOTE: allow pass through, don't want to report unsuccessful just
+      // bc push to supabase fails. Should still aim to get data to Monday.
+      // Then, admins can at least have access to data present here.
     }
   }
 
@@ -373,6 +376,10 @@ const exportApplication = async (appId: string) => {
   // or columns were renamed/deleted
   if (updateError) {
     Logger.error(`[CRITICAL] Error trying to update ${appId}: ${updateError}`);
+    // NOTE: allow successful report to go through, since at least
+    // the data reached the admins. If the push fails once,
+    // chances are, it will fail again - the cause is likely permanent
+    // and should be critical cause to investigate.
   }
 
   // mark adoptees as OFC on Supabase

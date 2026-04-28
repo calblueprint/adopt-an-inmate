@@ -1,6 +1,7 @@
 'use server';
 
 import Logger from '@/actions/logging';
+import { CONFIG } from '@/config';
 import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
 import { assertEnvVarExists } from '@/lib/utils';
 import { mondayApiClient } from '../core';
@@ -17,7 +18,7 @@ export type UpdateAdopteeMondayStatusResult = {
   error: string | null;
 };
 
-const OFC_STATUS_LABEL = 'OFC: Out for Consideration';
+const OFC_STATUS_LABEL = 'OFC: Out For Consideration';
 const WL_STATUS_LABEL = 'WL: Wait Listed';
 const WLFA_STATUS_LABEL = 'WLFA: Wait Listed Formerly Adopted';
 
@@ -40,8 +41,8 @@ function buildStatusMutationFields(
 }
 
 type WaitListLabelsResult =
-  | { ok: true; statusLabelsById: Record<string, string> }
-  | { ok: false; message: string };
+  | { success: true; statusLabelsById: Record<string, string> }
+  | { success: false; message: string };
 
 //determine if adoptee is formerly adopted
 async function getWaitListStatusLabels(
@@ -55,7 +56,7 @@ async function getWaitListStatusLabels(
     Logger.error(
       `getWaitListStatusLabels: could not create Supabase service client: ${message}`,
     );
-    return { ok: false, message };
+    return { success: false, message };
   }
 
   const { data, error } = await supabaseService
@@ -67,7 +68,7 @@ async function getWaitListStatusLabels(
     Logger.error(
       `getWaitListStatusLabels: failed to fetch formerly_adopted: ${error.message}`,
     );
-    return { ok: false, message: error.message };
+    return { success: false, message: error.message };
   }
 
   //2 step process to avoid O(N^2) - faster lookup with Map
@@ -85,14 +86,18 @@ async function getWaitListStatusLabels(
     {} as Record<string, string>,
   );
 
-  return { ok: true, statusLabelsById };
+  return { success: true, statusLabelsById };
 }
 
 //main function
+//for OFC, will return the query
+//for WL, will make the change
 export async function updateAdopteeMondayStatus(
   adopteeMondayIds: string[],
   status: MondayAdopteeStatus,
 ): Promise<UpdateAdopteeMondayStatusResult> {
+  if (!CONFIG.enableMondayMutations)
+    return { data: '', error: 'Forbidden action.' };
   if (adopteeMondayIds.length === 0) {
     return { data: '', error: null };
   }
@@ -100,7 +105,7 @@ export async function updateAdopteeMondayStatus(
   let statusLabelsById: Record<string, string>;
   if (status === 'WL') {
     const wlLabels = await getWaitListStatusLabels(adopteeMondayIds);
-    if (!wlLabels.ok) {
+    if (!wlLabels.success) {
       Logger.error(
         `updateAdopteeMondayStatus(WL): skipping Monday update for ids [${adopteeMondayIds.join(', ')}]: ${wlLabels.message}`,
       );

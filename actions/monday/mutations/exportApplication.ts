@@ -335,15 +335,15 @@ const exportApplication = async (appId: string) => {
     'OFC',
   );
 
-  // if (updateAdopteesFieldsError || updateAdopteesQuery === null) {
-  //   Logger.error(
-  //     `exportApplication: could not build Monday OFC status fields for app ${appId}: ${updateAdopteesFieldsError ?? 'null data'}`,
-  //   );
-  //   return {
-  //     success: false,
-  //     error: updateAdopteesFieldsError ?? 'An unexpected error occurred.',
-  //   };
-  // }
+  if (!updateAdopteesQuery) {
+    Logger.error(
+      `exportApplication: could not build Monday OFC status fields for app ${appId}`,
+    );
+    return {
+      success: false,
+      error: 'An unexpected error occurred.',
+    };
+  }
 
   const supplementaryQuery = `
     mutation {

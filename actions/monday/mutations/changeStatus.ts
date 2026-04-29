@@ -1,151 +1,86 @@
 'use server';
 
-import Logger from '@/actions/logging';
-import { CONFIG } from '@/config';
-import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
-import { assertEnvVarExists } from '@/lib/utils';
+import { getSupabaseServerClient } from '@/lib/supabase';
+import { getEnvVar } from '@/lib/utils';
 import { mondayApiClient } from '../core';
 
-assertEnvVarExists('MONDAY_WL_PIPS_BOARD_ID');
+/** Short codes for adoptee status on the WL PIPs Monday board (column status__1). */
+export type AdopteeMondayStatusCode = 'WL' | 'OFC';
 
-const MONDAY_WL_PIPS_BOARD_ID = process.env.MONDAY_WL_PIPS_BOARD_ID ?? ''; //store env var
+const LABEL_WL = 'WL: Wait Listed';
+const LABEL_WLFA = 'WLFA: Wait Listed Formerly Adopted';
+const LABEL_OFC = 'OFC: Out for Consideration';
 
-export type MondayAdopteeStatus = 'WL' | 'OFC'; //restricts to 2 values
-
-//as other server
-export type UpdateAdopteeMondayStatusResult = {
-  data: string | null;
-  error: string | null;
-};
-
-const OFC_STATUS_LABEL = 'OFC: Out For Consideration';
-const WL_STATUS_LABEL = 'WL: Wait Listed';
-const WLFA_STATUS_LABEL = 'WLFA: Wait Listed Formerly Adopted';
-
-//build mutation operations
-function buildStatusMutationFields(
-  adopteeMondayIds: string[],
-  statusLabelsById: Record<string, string>,
-) {
-  return adopteeMondayIds
-    .map((id, idx) => {
-      const value = statusLabelsById[id];
-      return `update${idx + 1}:change_simple_column_value(
-        board_id: "${MONDAY_WL_PIPS_BOARD_ID}",
-        item_id: "${id}",
-        column_id: "status__1",
-        value: "${value}"
-      ) { id }`;
-    })
+/**
+ * Builds the inner body of a Monday `mutation { ... }` that updates status__1
+ * for each item (comma-separated `change_simple_column_value` operations).
+ */
+function buildStatusUpdateMutationInner(
+  boardId: string,
+  mondayItemIds: string[],
+  labelForIndex: (itemId: string, index: number) => string,
+): string {
+  return mondayItemIds
+    .map(
+      (id, idx) =>
+        `update${idx + 1}:change_simple_column_value(
+          board_id: "${boardId}",
+          item_id: "${id}",
+          column_id: "status__1",
+          value: "${labelForIndex(id, idx).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"
+        ) { id }`,
+    )
     .join(',');
 }
 
-type WaitListLabelsResult =
-  | { success: true; statusLabelsById: Record<string, string> }
-  | { success: false; message: string };
-
-//determine if adoptee is formerly adopted
-async function getWaitListStatusLabels(
-  adopteeMondayIds: string[],
-): Promise<WaitListLabelsResult> {
-  let supabaseService;
-  try {
-    supabaseService = await dangerous_getSupabaseServiceClient();
-  } catch (e) {
-    const message = e instanceof Error ? e.message : String(e);
-    Logger.error(
-      `getWaitListStatusLabels: could not create Supabase service client: ${message}`,
-    );
-    return { success: false, message };
+/**
+ * Updates adoptee rows on the WL PIPs board (column `status__1`).
+ *
+ * - **OFC**: Returns only the comma-separated mutation body (no `mutation` wrapper) so it can be
+ *   composed into a larger mutation (e.g. with `create_subitem`). Does not execute the API call.
+ * - **WL**: Loads `formerly_adopted` from `adoptee_vector_test` for each id, sets Monday to
+ *   `WLFA: Wait Listed Formerly Adopted` or `WL: Wait Listed` accordingly, executes the mutation,
+ *   and returns the full `mutation { ... }` string (callers typically ignore it).
+ */
+export async function updateAdopteeMondayStatus(
+  mondayItemIds: string[],
+  status: AdopteeMondayStatusCode,
+): Promise<string> {
+  if (mondayItemIds.length === 0) {
+    return '';
   }
 
-  const { data, error } = await supabaseService
+  const boardId = getEnvVar('MONDAY_WL_PIPS_BOARD_ID');
+
+  if (status === 'OFC') {
+    return buildStatusUpdateMutationInner(
+      boardId,
+      mondayItemIds,
+      () => LABEL_OFC,
+    );
+  }
+
+  const supabase = await getSupabaseServerClient();
+  const { data: rows, error } = await supabase
     .from('adoptee_vector_test')
     .select('id, formerly_adopted')
-    .in('id', adopteeMondayIds);
+    .in('id', mondayItemIds);
 
   if (error) {
-    Logger.error(
-      `getWaitListStatusLabels: failed to fetch formerly_adopted: ${error.message}`,
-    );
-    return { success: false, message: error.message };
-  }
-
-  //2 step process to avoid O(N^2) - faster lookup with Map
-  const formerlyAdoptedById = new Map(
-    (data ?? []).map(row => [String(row.id), Boolean(row.formerly_adopted)]),
-  );
-
-  const statusLabelsById = adopteeMondayIds.reduce(
-    (acc, id) => {
-      acc[id] = formerlyAdoptedById.get(id)
-        ? WLFA_STATUS_LABEL
-        : WL_STATUS_LABEL;
-      return acc;
-    },
-    {} as Record<string, string>,
-  );
-
-  return { success: true, statusLabelsById };
-}
-
-//main function
-//for OFC, will return the query
-//for WL, will make the change
-export async function updateAdopteeMondayStatus(
-  adopteeMondayIds: string[],
-  status: MondayAdopteeStatus,
-): Promise<UpdateAdopteeMondayStatusResult> {
-  if (!CONFIG.enableMondayMutations)
-    return { data: '', error: 'Forbidden action.' };
-  if (adopteeMondayIds.length === 0) {
-    return { data: '', error: null };
-  }
-
-  let statusLabelsById: Record<string, string>;
-  if (status === 'WL') {
-    const wlLabels = await getWaitListStatusLabels(adopteeMondayIds);
-    if (!wlLabels.success) {
-      Logger.error(
-        `updateAdopteeMondayStatus(WL): skipping Monday update for ids [${adopteeMondayIds.join(', ')}]: ${wlLabels.message}`,
-      );
-      return {
-        data: null,
-        error: 'An unexpected error occurred.',
-      };
-    }
-    statusLabelsById = wlLabels.statusLabelsById;
-  } else {
-    statusLabelsById = Object.fromEntries(
-      adopteeMondayIds.map(id => [id, OFC_STATUS_LABEL]),
+    throw new Error(
+      `updateAdopteeMondayStatus (WL): failed to load formerly_adopted: ${error.message}`,
     );
   }
 
-  const mutationFields = buildStatusMutationFields(
-    adopteeMondayIds,
-    statusLabelsById,
+  const formerlyById = new Map(
+    (rows ?? []).map(r => [r.id, Boolean(r.formerly_adopted)]),
   );
 
-  //only run if WL to avoid extra queries
-  if (status === 'WL') {
-    const mutationQuery = ` 
-      mutation {
-        ${mutationFields}
-      }
-    `;
+  const inner = buildStatusUpdateMutationInner(boardId, mondayItemIds, id =>
+    formerlyById.get(id) ? LABEL_WLFA : LABEL_WL,
+  );
 
-    try {
-      await mondayApiClient.request(mutationQuery);
-    } catch (error) {
-      Logger.error(
-        `Failed to update adoptee Monday status to WL for ids ${adopteeMondayIds.join(',')}: ${error}`,
-      );
-      return {
-        data: null,
-        error: 'An unexpected error occurred.',
-      };
-    }
-  }
-
-  return { data: mutationFields, error: null };
+  const fullMutation = `mutation { ${inner} }`;
+  await mondayApiClient.request(fullMutation);
+  return fullMutation;
 }

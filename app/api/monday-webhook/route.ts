@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import Logger from '@/actions/logging';
+import { updateAdopteeMondayStatus } from '@/actions/monday/mutations/changeStatus';
+import { queryMatchedAdoptees } from '@/actions/monday/queryMatchedAdoptee';
 import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
 import { assertEnvVarExists, getEnvVar } from '@/lib/utils';
 import { ApplicationStatusEnum } from '@/types/schema';
@@ -57,6 +59,98 @@ export async function POST(request: NextRequest) {
 
   if (updateError) {
     Logger.error(`Error updating Supabase application status: ${updateError}`);
+    return Response.json({ data });
+  }
+
+  // if status is PENDING_CONFIRMATION, find and store matched adoptee
+  if (status === 'PENDING_CONFIRMATION') {
+    // fetch the application to get its app_uuid
+    const { data: appData, error: fetchError } = await supabase
+      .from('adopter_applications_dummy')
+      .select('app_uuid')
+      .eq('monday_id', appMondayId)
+      .maybeSingle();
+
+    if (fetchError || !appData) {
+      Logger.error(
+        `Error fetching application for monday_id ${appMondayId}: ${fetchError?.message}`,
+      );
+      return Response.json({ data });
+    }
+
+    // call Niranjana's query to find matched adoptee
+    const { data: matchResult, error: matchError } = await queryMatchedAdoptees(
+      appData.app_uuid,
+    );
+
+    if (matchError || !matchResult) {
+      Logger.error(
+        `Error finding matched adoptee for app ${appData.app_uuid}: ${matchError}`,
+      );
+      return Response.json({ data });
+    }
+
+    const { matchedAdopteeId, unmatchedAdopteeIds } = matchResult;
+
+    // calculate time_confirmation_due: midnight UTC 2 weeks from now
+    const confirmationDue = new Date();
+    confirmationDue.setUTCDate(confirmationDue.getUTCDate() + 14);
+    confirmationDue.setUTCHours(0, 0, 0, 0);
+
+    // update application with matched adoptee, confirmation due date, and waiting_confirmation
+    const { error: appUpdateError } = await supabase
+      .from('adopter_applications_dummy')
+      .update({
+        matched_adoptee: matchedAdopteeId,
+        time_confirmation_due: confirmationDue.toISOString(),
+        waiting_confirmation: true,
+      })
+      .eq('app_uuid', appData.app_uuid);
+
+    if (appUpdateError) {
+      Logger.error(
+        `Error updating matched adoptee for app ${appData.app_uuid}: ${appUpdateError.message}`,
+      );
+    }
+
+    // mark matched adoptee as ADOPTED in adoptee_vector_test
+    const { error: adoptedError } = await supabase
+      .from('adoptee_vector_test')
+      .update({ status: 'ADOPTED' })
+      .eq('id', matchedAdopteeId);
+
+    if (adoptedError) {
+      Logger.error(
+        `Error marking adoptee ${matchedAdopteeId} as ADOPTED: ${adoptedError.message}`,
+      );
+    }
+
+    // mark unmatched adoptees as WAIT_LISTED in adoptee_vector_test and on Monday WL PIPs board
+    if (unmatchedAdopteeIds.length > 0) {
+      const { error: wlError } = await supabase
+        .from('adoptee_vector_test')
+        .update({ status: 'WAIT_LISTED' })
+        .in('id', unmatchedAdopteeIds);
+
+      if (wlError) {
+        Logger.error(
+          `Error marking unmatched adoptees as WAIT_LISTED: ${wlError.message}`,
+        );
+      }
+
+      // update unmatched adoptees status on Monday WL PIPs board
+      try {
+        await updateAdopteeMondayStatus(unmatchedAdopteeIds, 'WL');
+      } catch (e) {
+        Logger.error(
+          `Error updating unmatched adoptees on Monday WL PIPs board: ${e}`,
+        );
+      }
+    }
+
+    Logger.log(
+      `Successfully processed PENDING_CONFIRMATION for app ${appData.app_uuid}. Matched: ${matchedAdopteeId}, Unmatched: ${unmatchedAdopteeIds}`,
+    );
   }
 
   // // send error notification

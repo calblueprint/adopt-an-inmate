@@ -13,9 +13,7 @@ export const checkCreationConstraints = async (user: User) => {
   const supabase = await getSupabaseServerClient();
 
   const { data: profile, error: getProfileError } = await supabase
-    .from('adopter_profiles')
-    .select()
-    .eq('user_id', user.id)
+    .rpc('get_profile_full', { id: user.id })
     .maybeSingle();
 
   if (getProfileError) {

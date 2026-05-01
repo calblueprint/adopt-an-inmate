@@ -42,7 +42,7 @@ export const useSubmitOnboarding = () => {
 
     const profile: Profile = {
       user_id: user.id,
-      date_of_birth: info.dob.toUTCString(),
+      date_of_birth: info.dob.toISOString(),
       first_name: info.firstName,
       last_name: info.lastName,
       pronouns: info.pronouns,

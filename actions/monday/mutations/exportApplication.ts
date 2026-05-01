@@ -216,7 +216,13 @@ const getQueryCreateSubItem = (
       status: 'Pending',
       gender_preference: parsedGenderPref,
       match_list_links: { item_ids: appData.ranked_cards },
-      bio: appData.personal_bio,
+      // prepend age preference (or "none" if not set) before the adopter bio,
+      // e.g. "age preference: 45-78, bio: ..."
+      bio: `age preference: ${
+        appData.age_pref && appData.age_pref.length === 2
+          ? `${appData.age_pref[0]}-${appData.age_pref[1]}`
+          : 'none'
+      }, bio: ${appData.personal_bio}`,
       order: rankedCardsOrder,
       date_received: currentDateISOString,
     },

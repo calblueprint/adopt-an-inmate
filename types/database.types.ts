@@ -433,6 +433,7 @@ export type Database = {
         Args: { app_id: string }
         Returns: {
           adopter_monday_id: string
+          age_pref: number[] | null
           date_of_birth: string
           exported_to_monday: boolean
           first_name: string

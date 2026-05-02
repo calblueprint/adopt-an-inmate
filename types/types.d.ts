@@ -25,4 +25,8 @@ export interface OnboardingInfo {
   pronouns: string;
   state: string;
   isVeteran: boolean;
+  adoptedBefore: boolean;
+  stillActive: boolean;
+  numPastActive?: number;
+  pastInactiveReason?: string;
 }

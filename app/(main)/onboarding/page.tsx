@@ -27,9 +27,9 @@ export default function OnboardingPage() {
                 <OnboardingQuestionName key="name" />,
                 <OnboardingQuestionDOB key="dob" />,
                 <OnboardingQuestionPronouns key="pronouns" />,
+                <OnboardingQuestionAdoptedBefore key="adoptedBefore" />,
                 <OnboardingQuestionState key="state" />,
                 <OnboardingQuestionVeteran key="veteran" />,
-                <OnboardingQuestionAdoptedBefore key="adoptedBefore" />,
                 <OnboardingComplete key="complete" />,
               ]}
             >

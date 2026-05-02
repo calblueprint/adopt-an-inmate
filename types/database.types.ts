@@ -294,9 +294,7 @@ export type Database = {
           last_name: string
           monday_id: string | null
           num_past_active: number | null
-          past_inactive_reason:
-            | Database["public"]["Enums"]["inactive_reason"]
-            | null
+          past_inactive_reason: string | null
           pronouns: string
           state: string
           user_id: string
@@ -308,9 +306,7 @@ export type Database = {
           last_name: string
           monday_id?: string | null
           num_past_active?: number | null
-          past_inactive_reason?:
-            | Database["public"]["Enums"]["inactive_reason"]
-            | null
+          past_inactive_reason?: string | null
           pronouns: string
           state: string
           user_id?: string
@@ -322,9 +318,7 @@ export type Database = {
           last_name?: string
           monday_id?: string | null
           num_past_active?: number | null
-          past_inactive_reason?:
-            | Database["public"]["Enums"]["inactive_reason"]
-            | null
+          past_inactive_reason?: string | null
           pronouns?: string
           state?: string
           user_id?: string

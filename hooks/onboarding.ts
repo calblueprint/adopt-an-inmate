@@ -6,16 +6,25 @@ import { upsertProfile } from '@/actions/queries/profile';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
 import { getSupabaseBrowserClient } from '@/lib/supabase';
 import { Profile } from '@/types/schema';
-import { OnboardingInfo } from '@/types/types';
 
 // schema used by useSubmitOnboarding for data validation
 const onboardingSchema = z.object({
-  firstName: z.string().nonoptional(),
-  lastName: z.string().nonoptional(),
-  dob: z.date().nonoptional(),
-  pronouns: z.string().nonoptional(),
-  state: z.string().nonoptional(),
-  isVeteran: z.boolean().nonoptional(),
+  firstName: z
+    .string({ error: 'Please fill out your first name.' })
+    .nonoptional(),
+  lastName: z
+    .string({ error: 'Please fill out your last name.' })
+    .nonoptional(),
+  dob: z.date({ error: 'Please fill out your date of birth.' }).nonoptional(),
+  pronouns: z.string({ error: 'Please fill out your pronouns.' }).nonoptional(),
+  state: z
+    .string({ error: 'Please fill out your state of residence.' })
+    .nonoptional(),
+  isVeteran: z
+    .boolean({ error: 'Please fill out your veteran status.' })
+    .nonoptional(),
+  numPastActive: z.number(),
+  pastInactiveReason: z.string(),
 });
 
 /**
@@ -27,9 +36,12 @@ export const useSubmitOnboarding = () => {
   const { onboardingInfoRef } = useOnboardingContext();
 
   const submitOnboardingInfo = async () => {
-    const info: OnboardingInfo = onboardingSchema.parse(
-      onboardingInfoRef.current,
-    );
+    let info: z.infer<typeof onboardingSchema>;
+    try {
+      info = onboardingSchema.parse(onboardingInfoRef.current);
+    } catch (error) {
+      return { error: String(error) };
+    }
 
     const supabase = getSupabaseBrowserClient();
     const {
@@ -37,7 +49,7 @@ export const useSubmitOnboarding = () => {
     } = await supabase.auth.getUser();
     if (!user) {
       Logger.warn('Attempt made to submit onboarding info without logging in');
-      return;
+      return { error: 'An unexpected error occurred.' };
     }
 
     const profile: Profile = {
@@ -49,11 +61,13 @@ export const useSubmitOnboarding = () => {
       state: info.state,
       veteran_status: info.isVeteran,
       monday_id: null,
-      past_inactive_reason: null,
-      num_past_active: null,
+      past_inactive_reason: info.pastInactiveReason,
+      num_past_active: info.numPastActive,
     };
 
     await upsertProfile(profile);
+
+    return { error: null };
   };
 
   return { submitOnboardingInfo };

@@ -82,7 +82,7 @@ export default function MainQuestionAge() {
     formState: { errors },
   } = useForm<z.infer<typeof agePrefFormSchema>>({
     defaultValues: {
-      hasAgePreference: appState.form.agePreference ? 'yes' : undefined,
+      hasAgePreference: savedPref ? 'yes' : undefined,
       minAge: savedPref?.[0] ?? 18,
       maxAge: savedPref?.[1] ?? 80,
     },

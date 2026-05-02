@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { verifyApplication } from '@/actions/applications/verifyApplication';
 import { Button } from '@/components/Button';
 import QuestionBack from '@/components/questions/QuestionBack';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
@@ -15,6 +16,7 @@ export default function MainQuestionReview() {
   const { advanceToStage } = useApplicationNavigation();
   const { userId } = useAuth();
   const { profileData, profileReady, loadProfile } = useProfile();
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     if (userId && !profileReady && !profileData) {
@@ -22,38 +24,54 @@ export default function MainQuestionReview() {
     }
   }, [userId, profileReady, profileData, loadProfile]);
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
+    // verify app
+    const { data, error } = await verifyApplication(appState.appId);
+
+    if (error) {
+      setErrorMsg(error);
+      return;
+    }
+
+    if (!data?.verified) {
+      setErrorMsg('Some fields are invalid.');
+      return;
+    }
+
     advanceToStage(ApplicationStage.MATCHING);
   };
 
   return (
-    <div className="flex h-[37rem] w-[27rem] flex-col gap-2">
-      <div className="flex items-center justify-between">
+    <div className="flex h-[37rem] w-[27rem] flex-col gap-4">
+      <div className="flex flex-col justify-between">
         <header className="flex flex-col gap-2">
           <h1>Review and Submit</h1>
         </header>
-        <div className="flex items-center gap-2"></div>
+        <div className="flex items-center gap-2">
+          <p className="text-red-9">{errorMsg ? `Error: ${errorMsg}` : ''}</p>
+        </div>
       </div>
 
       {/* Scrollable Text Box*/}
-      <div className="flex-1 space-y-6 overflow-x-hidden overflow-y-auto">
+      <div className="flex-1 space-y-6 overflow-x-hidden overflow-y-auto break-words">
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold text-gray-8">First Name</p>
             <p className="text-gray-12">
-              {profileData?.first_name ?? (profileReady ? '' : 'Loading...')}
+              {profileData?.first_name ?? (profileReady ? 'N/A' : 'Loading...')}
             </p>
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold text-gray-8">Last Name</p>
             <p className="text-gray-12">
-              {profileData?.last_name ?? (profileReady ? '' : 'Loading...')}
+              {profileData?.last_name ?? (profileReady ? 'N/A' : 'Loading...')}
             </p>
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold text-gray-8">Date of Birth</p>
             <p className="text-gray-12">
-              {profileData?.date_of_birth ?? (profileReady ? '' : 'Loading...')}
+              {profileData?.date_of_birth ??
+                (profileReady ? 'N/A' : 'Loading...')}
             </p>
           </div>
           <div className="flex flex-col gap-1">
@@ -61,7 +79,7 @@ export default function MainQuestionReview() {
               Preferred Pronouns
             </p>
             <p className="text-gray-12">
-              {profileData?.pronouns ?? (profileReady ? '' : 'Loading...')}
+              {profileData?.pronouns ?? (profileReady ? 'N/A' : 'Loading...')}
             </p>
           </div>
           <div className="flex flex-col gap-1">
@@ -70,14 +88,14 @@ export default function MainQuestionReview() {
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold text-gray-8">Personal bio</p>
-            <p className="text-gray-12">{appState.form.bio}</p>
+            <p className="text-gray-12">{appState.form.bio ?? 'N/A'}</p>
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold text-gray-8">
               Gender preference
             </p>
             <p className="text-gray-12">
-              {formatGenderPreference(appState.form.genderPreference)}
+              {formatGenderPreference(appState.form.genderPreference ?? 'N/A')}
             </p>
           </div>
           <div className="flex flex-col gap-1">

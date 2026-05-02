@@ -134,7 +134,7 @@ export default function MobileMatchingSelectScreen({
             <div className="w-full text-xs font-semibold text-gray-8">
               Biography
             </div>
-            <p className="text-sm font-normal whitespace-pre-line text-gray-12">
+            <p className="pr-2 text-sm font-normal whitespace-pre-line text-gray-12">
               {selectedMatch.bio}
             </p>
           </div>

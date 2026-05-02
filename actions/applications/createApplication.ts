@@ -109,7 +109,11 @@ export const checkCreationConstraints = async (user: User) => {
       };
     }
 
+    // constraint: time check (if submitted)
     if (!app.time_submitted) continue;
+
+    // skip if app should reapply
+    if (app.status === 'REAPPLY') continue;
 
     // constraint: 6mo recent
     const submittedTime = new Date(app.time_submitted);

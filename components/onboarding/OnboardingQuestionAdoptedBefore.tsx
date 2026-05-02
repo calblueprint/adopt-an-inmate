@@ -154,7 +154,7 @@ export default function OnboardingQuestionAdoptedBefore() {
                   <RadioCard
                     value="yes"
                     name="stillActive"
-                    checked={value}
+                    checked={value === true}
                     onBlur={onBlur}
                     onChange={() => {
                       onChange(true);

@@ -23,8 +23,8 @@ const onboardingSchema = z.object({
   isVeteran: z
     .boolean({ error: 'Please fill out your veteran status.' })
     .nonoptional(),
-  numPastActive: z.number(),
-  pastInactiveReason: z.string(),
+  numPastActive: z.number().optional(),
+  pastInactiveReason: z.string().optional(),
 });
 
 /**
@@ -61,8 +61,8 @@ export const useSubmitOnboarding = () => {
       state: info.state,
       veteran_status: info.isVeteran,
       monday_id: null,
-      past_inactive_reason: info.pastInactiveReason,
-      num_past_active: info.numPastActive,
+      past_inactive_reason: info.pastInactiveReason ?? null,
+      num_past_active: info.numPastActive ?? null,
     };
 
     await upsertProfile(profile);

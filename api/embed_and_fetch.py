@@ -7,7 +7,7 @@ import json
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 HF_TOKEN = os.getenv("HF_TOKEN")
 SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
-SUPABASE_KEY = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
 
 def embed_text(text: str, client) -> list[float]:
     """Generates an embedding for the given text using Hugging Face Inference API."""

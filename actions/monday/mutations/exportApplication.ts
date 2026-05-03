@@ -208,7 +208,7 @@ const getQueryCreateSubItem = (
       status: 'status',
       gender_preference: 'status2__1',
       match_list_links: 'connect_boards1__1',
-      bio: 'long_text__1',
+      age_pref: 'long_text__1',
       order: 'long_text5__1',
       date_received: 'date__1',
     },
@@ -216,9 +216,9 @@ const getQueryCreateSubItem = (
       status: 'Pending',
       gender_preference: parsedGenderPref,
       match_list_links: { item_ids: appData.ranked_cards },
-      // prepend age preference (or "none" if not set) before the adopter bio,
-      // e.g. "age preference: 45-78, bio: ..."
-      bio: `age preference: ${
+      // request notes column: age preference (or "none" if not set) prepended
+      // to the adopter bio, e.g. "age preference: 45-78, bio: ..."
+      age_pref: `age preference: ${
         appData.age_pref && appData.age_pref.length === 2
           ? `${appData.age_pref[0]}-${appData.age_pref[1]}`
           : 'none'

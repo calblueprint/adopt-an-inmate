@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
+import { useSubmitOnboarding } from '@/hooks/onboarding';
 import { useQuestionNavigaton } from '@/hooks/questions';
 import AsyncButton from '../AsyncButton';
 import Dropdown from '../Dropdown';
@@ -55,9 +57,11 @@ type AdoptedBeforeSchemaType = z.infer<typeof adoptedBeforeSchema>;
 
 export default function OnboardingQuestionAdoptedBefore() {
   const { onboardingInfo, setOnboardingInfo } = useOnboardingContext();
+  const { submitOnboardingInfo } = useSubmitOnboarding();
   const { nextQuestion } = useQuestionNavigaton();
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const { formState, handleSubmit, control, watch } =
+  const { formState, handleSubmit, control, watch, subscribe } =
     useForm<AdoptedBeforeSchemaType>({
       resolver: zodResolver(adoptedBeforeSchema),
       defaultValues: {
@@ -71,7 +75,7 @@ export default function OnboardingQuestionAdoptedBefore() {
   const adoptedBefore = watch('adoptedBefore');
   const stillActive = watch('stillActive');
 
-  const onSubmit = (data: AdoptedBeforeSchemaType) => {
+  const onSubmit = async (data: AdoptedBeforeSchemaType) => {
     setOnboardingInfo(prev => ({
       ...prev,
       adoptedBefore: data.adoptedBefore,
@@ -83,8 +87,22 @@ export default function OnboardingQuestionAdoptedBefore() {
           ? data.pastInactiveReason
           : undefined,
     }));
+
+    const { error } = await submitOnboardingInfo();
+    if (error) {
+      setErrorMsg(error);
+      return;
+    }
+
     nextQuestion();
   };
+
+  subscribe({
+    formState: { isDirty: true },
+    callback: () => {
+      setErrorMsg(null);
+    },
+  });
 
   return (
     // TODO: wrap in form tag once `handleSubmit` created
@@ -92,7 +110,7 @@ export default function OnboardingQuestionAdoptedBefore() {
       <header className="flex flex-col gap-2">
         <h1>Have you adopted before?</h1>
         <p className="text-red-9">
-          {formState.errors.adoptedBefore?.message ?? ''}
+          {formState.errors.adoptedBefore?.message ?? errorMsg}
         </p>
       </header>
 

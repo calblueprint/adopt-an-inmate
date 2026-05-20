@@ -1,11 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
-import { useSubmitOnboarding } from '@/hooks/onboarding';
 import { useQuestionNavigaton } from '@/hooks/questions';
 import AsyncButton from '../AsyncButton';
 import ErrorMessage from '../ErrorMessage';
@@ -18,9 +16,7 @@ const veteranFormSchema = z.object({
 
 export default function OnboardingQuestionVeteran() {
   const { onboardingInfo, setOnboardingInfo } = useOnboardingContext();
-  const { submitOnboardingInfo } = useSubmitOnboarding();
   const { nextQuestion } = useQuestionNavigaton();
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const {
     register,
@@ -49,16 +45,9 @@ export default function OnboardingQuestionVeteran() {
     },
   });
 
-  const onSubmit = async ({ veteran }: z.infer<typeof veteranFormSchema>) => {
+  const onSubmit = ({ veteran }: z.infer<typeof veteranFormSchema>) => {
     const isVeteran = veteran === 'yes';
     setOnboardingInfo(prev => ({ ...prev, isVeteran }));
-
-    const { error } = await submitOnboardingInfo();
-    if (error) {
-      setErrorMsg(error);
-      return;
-    }
-
     nextQuestion();
   };
 
@@ -66,7 +55,6 @@ export default function OnboardingQuestionVeteran() {
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <header className="flex flex-col gap-2">
         <h1>Are you a veteran?</h1>
-        <p className="text-red-9">{errorMsg ? `Error: ${errorMsg}` : ''}</p>
       </header>
 
       <div className="flex flex-col gap-4">

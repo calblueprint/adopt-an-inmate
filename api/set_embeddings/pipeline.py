@@ -13,12 +13,12 @@ class handler(BaseHTTPRequestHandler):
         adoptee_data = fetcher.fetch_data()
         print(f"Fetched {len(adoptee_data)} records from Monday.com.")
 
-        print("Upserting embeddings to vector database...")
-        upsert_embeddings(adoptee_data)
-        print("Embeddings upserted.")
+        # print("Upserting embeddings to vector database...")
+        # upsert_embeddings(adoptee_data)
+        # print("Embeddings upserted.")
         
-        vx.disconnect()
-        print("Pipeline complete.")
+        # vx.disconnect()
+        # print("Pipeline complete.")
 
         self.send_response(200)
         self.send_header('Content-type', 'application/json')

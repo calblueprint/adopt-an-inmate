@@ -17,7 +17,7 @@ type ProfileContextType = {
   profileData: Profile | null;
   profileReady: boolean;
   loadProfile: () => Promise<void>;
-  setProfile: (profile: Profile) => Promise<void>;
+  setProfile: (profile: Profile, num_ext?: number) => Promise<void>;
 };
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
@@ -61,12 +61,15 @@ export default function ProfileProvider({ children }: ProfileProviderProps) {
     loadProfile();
   }, [loadProfile]);
 
-  const setProfile = useCallback(async (profile: Profile) => {
-    const { error } = await upsertProfile(profile);
-    if (error) return; // TODO: error handling
+  const setProfile = useCallback(
+    async (profile: Profile, num_ext: number = 0) => {
+      const { error } = await upsertProfile(profile, num_ext);
+      if (error) return; // TODO: error handling
 
-    setProfileData(profile);
-  }, []);
+      setProfileData(profile);
+    },
+    [],
+  );
 
   return (
     <ProfileContext.Provider

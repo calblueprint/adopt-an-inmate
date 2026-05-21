@@ -66,7 +66,8 @@ export const checkCreationConstraints = async (user: User) => {
 
   // constraint: check number of active adoptees
   const numActiveApps = appsData.filter(app => app.status === 'ACTIVE').length;
-  const totalActiveAdoptees = numActiveApps + (profile.num_past_active || 0);
+  const totalActiveAdoptees =
+    numActiveApps + (profile.num_external_active || 0);
 
   if (totalActiveAdoptees >= 2) {
     return {

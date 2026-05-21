@@ -5,7 +5,7 @@ import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
 import { Profile } from '@/types/schema';
 import Logger from '../logging';
 
-export async function upsertProfile(profile: Profile) {
+export async function upsertProfile(profile: Profile, num_ext: number) {
   const supabase = await getSupabaseServerClient();
   const supabaseService = await dangerous_getSupabaseServiceClient();
 
@@ -21,10 +21,10 @@ export async function upsertProfile(profile: Profile) {
 
   // upsert num past active
   const { error: upsertNumPastActiveError } = await supabaseService
-    .from('adopter_num_past_inactive')
+    .from('adopter_num_external_active')
     .upsert({
       adopter_uuid: profile.user_id,
-      num_past_active: profile.num_past_active ?? 0,
+      num_external_active: num_ext ?? 0,
     });
 
   if (upsertNumPastActiveError) {

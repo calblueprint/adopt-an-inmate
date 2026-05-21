@@ -220,14 +220,17 @@ export default function OnboardingQuestionAdoptedBefore() {
               render={({ field: { value, onChange } }) => (
                 <Textbox
                   type="number"
-                  min={'1'}
+                  min={'0'}
                   value={value ?? ''}
                   onKeyDown={e => {
-                    if (['-', 'e', 'E', '.', '+', '0'].includes(e.key)) {
+                    if (['-', 'e', 'E', '.', '+'].includes(e.key)) {
                       e.preventDefault();
                     }
                   }}
-                  onChange={e => onChange(parseInt(e.target.value, 10))}
+                  onChange={e => {
+                    const parsed = parseInt(e.target.value, 10);
+                    onChange(isNaN(parsed) ? undefined : parsed);
+                  }}
                   placeholder="Enter a number"
                 />
               )}

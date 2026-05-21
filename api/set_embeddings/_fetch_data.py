@@ -102,7 +102,6 @@ class MondayBoardFetcher:
           for col in item["column_values"]:
             column_data[col["id"]] = col["text"]
           linked_items = item.get("linked_items", [])
-          print(f"linked_items: {linked_items}")
           facility_id = str(linked_items[0]["id"]) if linked_items else ""
           item_data = {
             "id": item["id"],

@@ -7,13 +7,13 @@ import QuestionBack from '@/components/questions/QuestionBack';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useProfile } from '@/contexts/ProfileProvider';
-import { useApplicationNavigation } from '@/hooks/app-process';
+import { useAppProcess } from '@/hooks/app-process';
 import { formatAgePreference, formatGenderPreference } from '@/lib/formatters';
 import { ApplicationStage } from '@/types/enums';
 
 export default function MainQuestionReview() {
   const { appState } = useApplicationContext();
-  const { advanceToStage } = useApplicationNavigation();
+  const { advanceToStage } = useAppProcess();
   const { userId } = useAuth();
   const { profileData, profileReady, loadProfile } = useProfile();
   const [errorMsg, setErrorMsg] = useState<string | null>(null);

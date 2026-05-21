@@ -3,8 +3,6 @@ export interface ApplicationState {
   form: Partial<FormState>;
   matches: string[] | null;
   selectedMatch: string | null;
-  stillInCorrespondence: boolean;
-  rankedMatches: string[] | null;
 }
 
 export interface FormState {

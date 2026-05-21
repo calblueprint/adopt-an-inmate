@@ -11,7 +11,7 @@ const statusPillStyles = cva('rounded-xl px-3 py-0.5 shadow-sm', {
       REJECTED: 'bg-[#FFCCCC] text-[#C04444]',
       REAPPLY: 'bg-[#EBD2FF] text-[#9C64CE]',
       ENDED: 'bg-[#FDDEF3] text-[#D16FB2]',
-      INCOMPLETE: 'bg-[#D9ECFF] text-[#CCE5FF]',
+      INCOMPLETE: 'bg-[#D9ECFF] text-[#4E7DAD]',
       ACTIVE: 'bg-[#DEF4DF] text-[#3E6430]',
     },
   },

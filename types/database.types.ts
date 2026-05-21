@@ -56,6 +56,27 @@ export type Database = {
         }
         Relationships: []
       }
+      adoptee_facilities: {
+        Row: {
+          facility_id: string
+          facility_name: string
+          mailing_address: string
+          system: string
+        }
+        Insert: {
+          facility_id: string
+          facility_name: string
+          mailing_address: string
+          system: string
+        }
+        Update: {
+          facility_id?: string
+          facility_name?: string
+          mailing_address?: string
+          system?: string
+        }
+        Relationships: []
+      }
       adoptee_vector: {
         Row: {
           age: number | null
@@ -102,7 +123,7 @@ export type Database = {
           bio: string | null
           dob: string | null
           embedding: string | null
-          facility: string | null
+          facility_id: string | null
           first_name: string | null
           formerly_adopted: boolean
           gender: string | null
@@ -118,7 +139,7 @@ export type Database = {
           bio?: string | null
           dob?: string | null
           embedding?: string | null
-          facility?: string | null
+          facility_id?: string | null
           first_name?: string | null
           formerly_adopted?: boolean
           gender?: string | null
@@ -134,7 +155,7 @@ export type Database = {
           bio?: string | null
           dob?: string | null
           embedding?: string | null
-          facility?: string | null
+          facility_id?: string | null
           first_name?: string | null
           formerly_adopted?: boolean
           gender?: string | null
@@ -146,7 +167,15 @@ export type Database = {
           status?: Database["public"]["Enums"]["adoptee_status"]
           veteran_status?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "adoptee_vector_test_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "adoptee_facilities"
+            referencedColumns: ["facility_id"]
+          },
+        ]
       }
       adopter_applications_dummy: {
         Row: {
@@ -243,6 +272,21 @@ export type Database = {
         }
         Relationships: []
       }
+      adopter_num_past_inactive: {
+        Row: {
+          adopter_uuid: string
+          num_past_active: number
+        }
+        Insert: {
+          adopter_uuid?: string
+          num_past_active?: number
+        }
+        Update: {
+          adopter_uuid?: string
+          num_past_active?: number
+        }
+        Relationships: []
+      }
       adopter_profiles: {
         Row: {
           date_of_birth: string
@@ -250,9 +294,7 @@ export type Database = {
           last_name: string
           monday_id: string | null
           num_past_active: number | null
-          past_inactive_reason:
-            | Database["public"]["Enums"]["inactive_reason"]
-            | null
+          past_inactive_reason: string | null
           pronouns: string
           state: string
           user_id: string
@@ -264,9 +306,7 @@ export type Database = {
           last_name: string
           monday_id?: string | null
           num_past_active?: number | null
-          past_inactive_reason?:
-            | Database["public"]["Enums"]["inactive_reason"]
-            | null
+          past_inactive_reason?: string | null
           pronouns: string
           state: string
           user_id?: string
@@ -278,9 +318,7 @@ export type Database = {
           last_name?: string
           monday_id?: string | null
           num_past_active?: number | null
-          past_inactive_reason?:
-            | Database["public"]["Enums"]["inactive_reason"]
-            | null
+          past_inactive_reason?: string | null
           pronouns?: string
           state?: string
           user_id?: string
@@ -308,6 +346,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      debug_vector_test: {
+        Args: { k: number; query_embedding: string }
+        Returns: {
+          distance: number
+          id: string
+        }[]
+      }
       find_top_k: {
         Args: { k: number; query_embedding: string }
         Returns: {
@@ -325,7 +370,6 @@ export type Database = {
       find_top_k_filtered: {
         Args: {
           adopter_gender?: string
-          adopter_offense?: string[]
           adopter_state?: string
           adopter_veteran_status?: string
           k: number
@@ -344,6 +388,26 @@ export type Database = {
           veteran_status: string
         }[]
       }
+      get_adoptee_with_facility: {
+        Args: { adoptee_id: string }
+        Returns: {
+          dob: string
+          facility_name: string
+          first_name: string
+          formerly_adopted: boolean
+          gender: string
+          id: string
+          inmate_id: string
+          last_name: string
+          mailing_address: string
+          offense: string
+          personal_bio: string
+          state: string
+          status: Database["public"]["Enums"]["adoptee_status"]
+          system: string
+          veteran_tatus: string
+        }[]
+      }
       get_dnr_applications: {
         Args: never
         Returns: {
@@ -351,6 +415,21 @@ export type Database = {
           app_uuid: string
           formerly_adopted: boolean
           matched_adoptee: string
+        }[]
+      }
+      get_profile_full: {
+        Args: { id: string }
+        Returns: {
+          date_of_birth: string
+          first_name: string
+          last_name: string
+          monday_id: string
+          num_past_active: number
+          past_inactive_reason: string
+          pronouns: string
+          state: string
+          user_id: string
+          veteran_status: boolean
         }[]
       }
       get_user_and_application: {

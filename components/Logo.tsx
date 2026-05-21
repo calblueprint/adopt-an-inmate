@@ -1,31 +1,37 @@
 import Image from 'next/image';
+import { cva } from 'class-variance-authority';
 import LogoImg from '@/assets/images/Adopt_An_Inmate_logo.png';
 import { cn } from '@/lib/utils';
 
+type LogoVariants = 'default' | 'sidebar';
+
 interface LogoProps {
-  compact?: boolean;
+  variant?: LogoVariants;
   className?: string;
 }
 
-export default function Logo({ compact = false, className }: LogoProps) {
+const logoStyles = cva('flex items-center', {
+  variants: {
+    variant: {
+      default: 'gap-6 pt-14 pb-3',
+      sidebar: 'gap-2',
+    },
+  },
+});
+
+export default function Logo({ variant = 'default', className }: LogoProps) {
   return (
-    <div
-      className={cn(
-        'flex flex-row items-center',
-        compact ? 'gap-2' : 'gap-6 pt-14 pb-3',
-        className,
-      )}
-    >
+    <div className={logoStyles({ variant, className })}>
       <Image
         src={LogoImg}
-        height={compact ? 28 : 42}
+        height={variant === 'sidebar' ? 28 : 42}
         alt="Adopt an Inmate"
         priority
       />
       <p
         className={cn(
-          'font-golos font-extrabold text-red-9',
-          compact ? 'text-base' : 'text-xl',
+          'font-golos text-xl font-extrabold text-red-9',
+          variant === 'sidebar' && 'font-semibold',
         )}
       >
         Adopt an Inmate

@@ -22,7 +22,7 @@ export default function LogoutButton() {
       variant="outline"
       aria-label="Logout"
     >
-      <LuLogOut className="h-5 w-5 text-red-9" />
+      <LuLogOut className="h-8 w-5 text-red-9" />
     </Button>
   );
 }

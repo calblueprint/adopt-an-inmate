@@ -73,6 +73,9 @@ class MondayBoardFetcher:
               id 
               text 
             }}
+            linked_items(link_to_item_column_id: "facility__1", linked_board_id: 6465684455) {{
+              id
+            }}
           }} }} }} }}"""
 
   def _fetch_page(self, query):
@@ -98,10 +101,13 @@ class MondayBoardFetcher:
           column_data = {}
           for col in item["column_values"]:
             column_data[col["id"]] = col["text"]
+          linked_items = item.get("linked_items", [])
+          facility_id = str(linked_items[0]["id"]) if linked_items else ""
           item_data = {
             "id": item["id"],
             "name": item["name"],
-            "columns": column_data
+            "columns": column_data,
+            "facility_id": facility_id
           }
           adoptee_batch.append(item_data)
 
@@ -144,7 +150,8 @@ class MondayBoardFetcher:
         "veteran_status": get_col_val(columns, MONDAY_COLUMN_IDS["veteran_status"]),
         "state": get_col_val(columns, MONDAY_COLUMN_IDS["state"]),
         # translate yes/no to boolean for formerly_adopted
-        "formerly_adopted": get_col_val(columns, MONDAY_COLUMN_IDS["formerly_adopted"]) == "Yes"
+        "formerly_adopted": get_col_val(columns, MONDAY_COLUMN_IDS["formerly_adopted"]) == "Yes",
+        "facility_id": item.get("facility_id", "")
       }
       adoptee_data_dict[record_id] = record   
 

@@ -1,88 +1,53 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import z from 'zod';
+import AsyncButton from '@/components/AsyncButton';
 import { Button } from '@/components/Button';
-import LoadingSpinner from '@/components/LoadingSpinner';
-import RadioCard from '@/components/RadioCard';
-import { Textbox } from '@/components/Textbox';
-
-// form schema
-const confirmationFormSchema = z
-  .object({
-    confirmation: z.enum(['yes', 'no']),
-    reason: z.string().optional(),
-  })
-  .superRefine((val, ctx) => {
-    if (val.confirmation === 'no' && !val.reason)
-      ctx.addIssue({
-        code: 'custom',
-        message: 'Please specify a reason',
-        path: ['reason'],
-      });
-  });
-
-export type ConfirmationFormValues = z.infer<typeof confirmationFormSchema>;
+import { formatDate } from '@/lib/formatters';
+import { ApplicationWithAdoptees } from '@/types/schema';
+import { CalloutCard } from './AppCallout';
+import { ApplicationDialogTabs } from './ApplicationPreviewDialog';
 
 export default function ConfirmationControls({
-  onSubmit,
+  onAccept,
+  setActiveTab,
+  app,
 }: {
-  onSubmit: (data: ConfirmationFormValues) => void;
+  onAccept: () => Promise<void>;
+  setActiveTab: React.Dispatch<React.SetStateAction<ApplicationDialogTabs>>;
+  app: ApplicationWithAdoptees;
 }) {
-  const [submitted, setSubmitted] = useState(false);
+  const [accepted, setAccepted] = useState(false);
 
-  const { register, handleSubmit, watch } = useForm<ConfirmationFormValues>({
-    resolver: zodResolver(confirmationFormSchema),
-  });
+  const deadlineText = app?.appData.time_confirmation_due
+    ? `You have until ${formatDate(app?.appData.time_confirmation_due)} to respond.`
+    : 'You have two weeks to respond.';
 
-  const selectedConfirmation = watch('confirmation');
-
-  const submitHandler = (data: ConfirmationFormValues) => {
-    onSubmit(data);
-    setSubmitted(true);
+  const handleAccept = async () => {
+    await onAccept();
+    setAccepted(true);
   };
 
-  return (
-    <form
-      className="flex flex-col gap-4"
-      onSubmit={handleSubmit(submitHandler)}
+  return accepted ? (
+    <CalloutCard
+      title={`${app?.appData.adoptee_name} is now officially your adoptee!`}
+      description="Read more on what to do next below."
+      status="ACTIVE"
+    />
+  ) : (
+    <CalloutCard
+      title={`You have been matched with ${app?.appData.adoptee_name}.`}
+      description={`Do you confirm that you will communicate with your adoptee? ${deadlineText}`}
+      status="PENDING"
     >
-      <p className="font-bold text-gray-12">
-        Do you confirm that you will communicate with your adoptee?
-      </p>
-
-      <div className="flex gap-2">
-        <RadioCard
-          value="yes"
-          {...register('confirmation')}
-          disabled={submitted}
-        >
+      <div className="mt-2 flex items-center gap-2 font-normal">
+        <AsyncButton variant="primary" onClick={handleAccept}>
           Yes
-        </RadioCard>
-        <RadioCard
-          value="no"
-          {...register('confirmation')}
-          disabled={submitted}
-        >
+        </AsyncButton>
+        <Button variant="outline" onClick={() => setActiveTab('confirmation')}>
           No
-        </RadioCard>
-      </div>
-
-      {selectedConfirmation === 'no' && (
-        <div className="flex flex-col gap-1">
-          <label htmlFor="reason">Why?</label>
-          <Textbox {...register('reason')} disabled={submitted} />
-        </div>
-      )}
-
-      <div className="flex justify-end">
-        <Button type="submit" variant="primary" disabled={submitted}>
-          {submitted && <LoadingSpinner />}
-          Submit
         </Button>
       </div>
-    </form>
+    </CalloutCard>
   );
 }

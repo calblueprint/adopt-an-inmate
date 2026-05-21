@@ -5,14 +5,12 @@ import MainDashboard from '@/components/MainDashboard/MainDashboard';
 export default function DashboardPage() {
   return (
     <>
+      {/* conditionally rendered dialogs */}
       <ConfirmationDialog />
-
       <ApplicationPreviewDialog />
 
-      {/* application page */}
-      <main className="flex min-h-svh py-7">
-        <MainDashboard />
-      </main>
+      {/* page */}
+      <MainDashboard />
     </>
   );
 }

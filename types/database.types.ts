@@ -343,6 +343,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      debug_vector_test: {
+        Args: { k: number; query_embedding: string }
+        Returns: {
+          distance: number
+          id: string
+        }[]
+      }
       find_top_k: {
         Args: { k: number; query_embedding: string }
         Returns: {

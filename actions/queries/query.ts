@@ -9,7 +9,7 @@ import {
   RankedAdopteeMatch,
 } from '@/types/schema';
 
-/* Fetch top k (by simliaity) adoptee rows with hierarchical filtering:
+/* Fetch top k (by similarity) adoptee rows with hierarchical filtering:
  * Start with all filters applied. If no results, progressively drop filters
  * starting with state, then veteran_status, and finally gender.
  */

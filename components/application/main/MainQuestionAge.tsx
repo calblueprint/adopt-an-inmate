@@ -10,7 +10,7 @@ import QuestionBack from '@/components/questions/QuestionBack';
 import RadioCard from '@/components/RadioCard';
 import { Textbox } from '@/components/Textbox';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
-import { useApplicationNavigation } from '@/hooks/app-process';
+import { useAppProcess } from '@/hooks/app-process';
 import { useQuestionNavigaton } from '@/hooks/questions';
 
 const agePrefFormSchema = z
@@ -62,7 +62,7 @@ const agePrefFormSchema = z
 export default function MainQuestionAge() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
-  const { upsertAppInfo } = useApplicationNavigation();
+  const { upsertAppInfo } = useAppProcess();
 
   // Read saved values from appState first
   const savedPref = appState.form.agePreference;
@@ -82,7 +82,7 @@ export default function MainQuestionAge() {
     formState: { errors },
   } = useForm<z.infer<typeof agePrefFormSchema>>({
     defaultValues: {
-      hasAgePreference: appState.form.agePreference ? 'yes' : undefined,
+      hasAgePreference: savedPref ? 'yes' : undefined,
       minAge: savedPref?.[0] ?? 18,
       maxAge: savedPref?.[1] ?? 80,
     },

@@ -19,10 +19,10 @@ export async function GET(request: NextRequest) {
   }
 
   // find apps waiting for confirmation and 2 weeks late
-  const supabase = await dangerous_getSupabaseServiceClient();
+  const supabaseService = await dangerous_getSupabaseServiceClient();
   const now = new Date();
 
-  const { data: dnrApps, error: getAppsError } = await supabase.rpc(
+  const { data: dnrApps, error: getAppsError } = await supabaseService.rpc(
     'get_dnr_applications',
   );
 
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
     .filter(adoptee => adoptee.id !== null);
 
   // db: update app status
-  const { error: updateAppStatusError } = await supabase
+  const { error: updateAppStatusError } = await supabaseService
     .from('adopter_applications_dummy')
     .update({
       status: 'REAPPLY',
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
   }
 
   // db: update adoptee status
-  const { error: updateAdopteeStatusError } = await supabase
+  const { error: updateAdopteeStatusError } = await supabaseService
     .from('adoptee_vector_test')
     .update({ status: 'WAIT_LISTED' })
     .in(

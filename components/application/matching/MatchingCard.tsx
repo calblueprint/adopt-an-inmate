@@ -100,7 +100,10 @@ export default function MatchingCard({
       <div className="space-y-2">
         <p className="text-xs font-semibold text-gray-8 uppercase">Biography</p>
         <div className="relative">
-          <div className="h-52 overflow-y-auto pb-4" onScroll={handleBioScroll}>
+          <div
+            className="h-52 overflow-y-auto pr-2 pb-4"
+            onScroll={handleBioScroll}
+          >
             <p>{match.bio}</p>
           </div>
           <div

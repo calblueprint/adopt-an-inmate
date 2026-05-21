@@ -2,6 +2,7 @@
 
 import { autoEmailSender } from '@/actions/emails/email';
 import { getSupabaseServerClient } from '@/lib/supabase';
+import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
 import {
   AdopteeMatch,
   AdopterApplicationUpdate,
@@ -19,9 +20,9 @@ export async function fetchTopK(
   veteran_status?: string,
   state?: string,
 ): Promise<AdopteeMatch[]> {
-  const supabase = await getSupabaseServerClient();
+  const supabaseService = await dangerous_getSupabaseServiceClient();
 
-  const { data, error } = await supabase.rpc('find_top_k_filtered', {
+  const { data, error } = await supabaseService.rpc('find_top_k_filtered', {
     query_embedding: JSON.stringify(embedding),
     k: k_value,
     adopter_gender: gender,
@@ -88,9 +89,9 @@ export async function upsertApplication(
 export async function fetchAdopteeCardsInfo(
   ids: string[],
 ): Promise<RankedAdopteeMatch[]> {
-  const supabase = await getSupabaseServerClient();
+  const supabaseService = await dangerous_getSupabaseServiceClient();
 
-  const { data, error } = await supabase
+  const { data, error } = await supabaseService
     .from('adoptee_vector_test')
     .select('id, dob, bio, first_name, gender, state')
     .in('id', ids);

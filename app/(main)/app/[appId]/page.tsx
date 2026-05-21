@@ -67,11 +67,10 @@ export default async function ApplicationDetailPage({
               genderPreference:
                 (appData.gender_pref as FormState['genderPreference']) ??
                 undefined,
+              agePreference: appData.age_pref ?? undefined,
             },
-            matches: null,
-            selectedMatch: null,
-            stillInCorrespondence: false,
-            rankedMatches: null,
+            matches: appData.ranked_cards ?? null,
+            selectedMatch: appData.matched_adoptee ?? null,
           }}
           defaultStage={initialStage}
         >

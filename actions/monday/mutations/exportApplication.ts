@@ -244,6 +244,7 @@ const exportApplication = async (appId: string) => {
     return { success: false, error: 'Forbidden action.' };
 
   const supabase = await getSupabaseServerClient();
+  const supabaseService = await dangerous_getSupabaseServiceClient();
 
   // get logged in user
   const {
@@ -271,10 +272,11 @@ const exportApplication = async (appId: string) => {
   if (!appData) return { success: false, error: appDataError };
 
   // get relevant adoptee data
-  const { data: adopteeData, error: getAdopteeError } = await supabase
+  const { data: adopteeData, error: getAdopteeError } = await supabaseService
     .from('adoptee_vector_test')
     .select('id, inmate_id')
     .in('id', appData.ranked_cards as Array<string>);
+
   if (getAdopteeError || !adopteeData || adopteeData.length !== 4) {
     Logger.error(
       `Error fetching adoptees for application ${appId}: ${getAdopteeError}`,
@@ -383,7 +385,6 @@ const exportApplication = async (appId: string) => {
   }
 
   // mark adoptees as OFC on Supabase
-  const supabaseService = await dangerous_getSupabaseServiceClient();
   const { error: updateAdopteesError } = await supabaseService
     .from('adoptee_vector_test')
     .update({ status: 'OUT_FOR_CONSIDERATION' })

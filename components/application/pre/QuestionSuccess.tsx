@@ -2,11 +2,11 @@
 
 import { MdOutlineCheckCircle } from 'react-icons/md';
 import { Button } from '@/components/Button';
-import { useApplicationNavigation } from '@/hooks/app-process';
+import { useAppProcess } from '@/hooks/app-process';
 import { ApplicationStage } from '@/types/enums';
 
 export default function QuestionSuccess() {
-  const { advanceToStage } = useApplicationNavigation();
+  const { advanceToStage } = useAppProcess();
 
   const nextStage = () => {
     advanceToStage(ApplicationStage.MAIN);

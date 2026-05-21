@@ -272,18 +272,18 @@ export type Database = {
         }
         Relationships: []
       }
-      adopter_num_past_inactive: {
+      adopter_num_external_active: {
         Row: {
           adopter_uuid: string
-          num_past_active: number
+          num_external_active: number
         }
         Insert: {
           adopter_uuid?: string
-          num_past_active?: number
+          num_external_active?: number
         }
         Update: {
           adopter_uuid?: string
-          num_past_active?: number
+          num_external_active?: number
         }
         Relationships: []
       }
@@ -293,7 +293,6 @@ export type Database = {
           first_name: string
           last_name: string
           monday_id: string | null
-          num_past_active: number | null
           past_inactive_reason: string | null
           pronouns: string
           state: string
@@ -305,7 +304,6 @@ export type Database = {
           first_name: string
           last_name: string
           monday_id?: string | null
-          num_past_active?: number | null
           past_inactive_reason?: string | null
           pronouns: string
           state: string
@@ -317,7 +315,6 @@ export type Database = {
           first_name?: string
           last_name?: string
           monday_id?: string | null
-          num_past_active?: number | null
           past_inactive_reason?: string | null
           pronouns?: string
           state?: string
@@ -424,7 +421,7 @@ export type Database = {
           first_name: string
           last_name: string
           monday_id: string
-          num_past_active: number
+          num_external_active: number
           past_inactive_reason: string
           pronouns: string
           state: string

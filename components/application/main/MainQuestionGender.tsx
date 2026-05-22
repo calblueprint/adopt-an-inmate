@@ -50,7 +50,7 @@ export default function MainQuestionGender() {
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <header className="flex flex-col gap-2">
         <h1>
-          Do you have any gender preferences?
+          Do you have a gender preference?
           <sup className="text-red-600">*</sup>
         </h1>
       </header>
@@ -60,8 +60,7 @@ export default function MainQuestionGender() {
           className="w-full"
           error={errors.genderPreference?.message}
         />
-        <div className="flex flex-col gap-1">
-          <p className="text-sm text-gray-11">Gender preference</p>
+        <div className="mb-[8vh] flex flex-col gap-1">
           <div className="flex flex-col gap-2">
             <RadioCard value="male" {...register('genderPreference')}>
               <p>Male</p>
@@ -78,7 +77,7 @@ export default function MainQuestionGender() {
 
       <div className="flex items-center justify-between">
         <QuestionBack />
-        <Button variant="primary" type="submit">
+        <Button variant="quaternary" type="submit">
           Next
         </Button>
       </div>

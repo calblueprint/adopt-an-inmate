@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/Button';
+import { Button, ButtonLink } from '@/components/Button';
 import RadioCard from '@/components/RadioCard';
 import { useQuestionsContext } from '@/contexts/QuestionsContext';
 import IneligiblePopup from './IneligiblePopup';
@@ -56,14 +56,8 @@ export default function QuestionIncarcerated() {
     }
 
     // if not, continue to next question
-    setQuestionsCompleted(prev => (prev >= 2 ? prev : 2));
-    params.set('q', '2');
-    router.push(`?${params.toString()}`);
-  };
-
-  const goBack = () => {
-    const params = new URLSearchParams(searchParams);
-    params.set('q', '0');
+    setQuestionsCompleted(prev => (prev >= 1 ? prev : 1));
+    params.set('q', '1');
     router.push(`?${params.toString()}`);
   };
 
@@ -92,9 +86,9 @@ export default function QuestionIncarcerated() {
         </div>
 
         <div className="flex justify-between">
-          <Button onClick={goBack} variant="secondary" type="button">
+          <ButtonLink href="/" variant="secondary" type="button">
             Back
-          </Button>
+          </ButtonLink>
           <Button variant="primary" type="submit">
             Next
           </Button>

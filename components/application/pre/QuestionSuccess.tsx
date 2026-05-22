@@ -20,7 +20,7 @@ export default function QuestionSuccess() {
       <h1>Success!</h1>
       <p>
         Based on your answers, you&apos;re eligible to apply as an Adopter for
-        Adopt an Inmate. Press continue to finish your application.
+        Adopt an Inmate. Time to start your application!
       </p>
       <div className="mt-6">
         <Button variant="primary" className="w-full py-2" onClick={nextStage}>

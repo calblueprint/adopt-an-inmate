@@ -56,8 +56,14 @@ export default function QuestionSeekingRomance() {
     }
 
     // if not, continue to next question
-    setQuestionsCompleted(prev => (prev >= 1 ? prev : 1));
-    params.set('q', '1');
+    setQuestionsCompleted(prev => (prev >= 2 ? prev : 2));
+    params.set('q', '2');
+    router.push(`?${params.toString()}`);
+  };
+
+  const goBack = () => {
+    const params = new URLSearchParams(searchParams);
+    params.set('q', '0');
     router.push(`?${params.toString()}`);
   };
 
@@ -86,9 +92,9 @@ export default function QuestionSeekingRomance() {
         </div>
 
         <div className="flex justify-between">
-          <ButtonLink href="/" variant="secondary" type="button">
+          <Button onClick={goBack} variant="secondary" type="button">
             Back
-          </ButtonLink>
+          </Button>
           <Button variant="primary" type="submit">
             Next
           </Button>

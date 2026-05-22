@@ -1,65 +1,96 @@
 'use client';
 
+import type { Option } from '@/components/Dropdown';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import Select from 'react-select';
+import Dropdown from '@/components/Dropdown';
+import { useProfile } from '@/contexts/ProfileProvider';
 import { statesDropdownOptions } from '@/data/states';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 import { Profile } from '@/types/schema';
-import Checkbox from '../Checkbox';
 import { Textbox } from '../Textbox';
 
 interface EditProfileFormProps {
   profile: Profile;
+  onClose: () => void;
 }
-
 interface EditProfileFormData {
   first_name: string;
   last_name: string;
   date_of_birth: string;
   pronouns: string;
-  state: { label: string; value: string } | null;
-  veteran_status: boolean;
+  state: string;
+  veteran_status: string;
+}
+interface FieldWrapperProps {
+  label: string;
+  children: React.ReactNode;
 }
 
-export default function EditProfileForm({ profile }: EditProfileFormProps) {
-  const supabase = getSupabaseBrowserClient();
+function FieldWrapper({ label, children }: FieldWrapperProps) {
+  return (
+    <div className="flex flex-col gap-0.5 rounded-lg border border-transparent bg-gray-100 px-3 py-2 focus-within:border-black">
+      <span className="pl-1 text-[11px] text-black">{label}</span>
 
+      {children}
+    </div>
+  );
+}
+
+export default function EditProfileForm({
+  profile,
+  onClose,
+}: EditProfileFormProps) {
+  const supabase = getSupabaseBrowserClient();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const { loadProfile } = useProfile();
 
-  const { control, handleSubmit } = useForm<EditProfileFormData>({
+  const currentDate = new Date();
+  const date = currentDate.toISOString().split('T')[0];
+
+  const { control, register, handleSubmit } = useForm<EditProfileFormData>({
     defaultValues: {
-      first_name: profile?.first_name ?? '',
-      last_name: profile?.last_name ?? '',
-      state: profile?.state
-        ? (statesDropdownOptions.find(
-            s => s.value === profile.state.toLowerCase(),
-          ) ?? null)
-        : null,
-      veteran_status: profile?.veteran_status ?? false,
+      first_name: profile.first_name ?? '',
+      last_name: profile.last_name ?? '',
+      date_of_birth: profile.date_of_birth,
+      pronouns: profile.pronouns,
+      state: profile.state?.toLowerCase(),
+      veteran_status: profile.veteran_status ? 'yes' : 'no',
     },
   });
+
+  const PRONOUNS_OPTIONS: Option[] = [
+    { label: 'he/him', value: 'he/him' },
+    { label: 'she/her', value: 'she/her' },
+    { label: 'they/them', value: 'they/them' },
+  ];
+
+  const VETERAN_OPTIONS: Option[] = [
+    { label: 'Yes, I am a veteran.', value: 'yes' },
+    { label: 'No, I am not a veteran.', value: 'no' },
+  ];
 
   const onSubmit = async (data: EditProfileFormData) => {
     setLoading(true);
     setError(null);
-    setSuccess(false);
 
     try {
       const { error } = await supabase
-        .from('adopter_profiles') // table name
+        .from('adopter_profiles')
         .update({
           first_name: data.first_name,
           last_name: data.last_name,
-          state: data.state?.label ?? '',
-          veteran_status: data.veteran_status,
+          date_of_birth: data.date_of_birth,
+          pronouns: data.pronouns,
+          state: data.state,
+          veteran_status: data.veteran_status === 'yes',
         })
         .eq('user_id', profile.user_id);
 
       if (error) throw error;
-      setSuccess(true);
+      await loadProfile();
+      onClose();
     } catch (err: unknown) {
       if (err instanceof Error) setError(err.message);
       else setError('An unknown error occurred');
@@ -69,77 +100,97 @@ export default function EditProfileForm({ profile }: EditProfileFormProps) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex w-80 flex-col gap-3"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
+      {/* First Name */}
+      <FieldWrapper label="First Name">
+        <Textbox
+          variant="borderless"
+          placeholder="First Name"
+          {...register('first_name')}
+        />
+      </FieldWrapper>
+      {/* Last Name */}
+      <FieldWrapper label="Last Name">
+        <Textbox
+          variant="borderless"
+          placeholder="Last Name"
+          {...register('last_name')}
+        />
+      </FieldWrapper>
+      {/* Date of Birth */}
+      <FieldWrapper label="Date of Birth">
+        <Textbox
+          variant="borderless"
+          type="date"
+          max={date}
+          min="1900-01-01"
+          {...register('date_of_birth')}
+        />
+      </FieldWrapper>
+      {/* Pronouns */}
       <Controller
-        name="first_name"
-        control={control}
-        render={({ field }) => <Textbox {...field} placeholder="First Name" />}
-      />
-
-      <Controller
-        name="last_name"
-        control={control}
-        render={({ field }) => <Textbox {...field} placeholder="Last Name" />}
-      />
-
-      <div className="flex flex-col gap-0.5 rounded-lg bg-gray-5 px-3 py-2">
-        <p className="text-[10px]">Email</p>
-        <p>actual users email</p>
-      </div>
-
-      <Controller
-        name="date_of_birth"
+        name="pronouns"
         control={control}
         render={({ field }) => (
-          <Textbox {...field} placeholder="Date of Birth" />
+          <FieldWrapper label="Pronouns">
+            <Dropdown
+              value={field.value}
+              onChange={field.onChange}
+              options={PRONOUNS_OPTIONS}
+              placeholder={profile.pronouns}
+              variant="borderless"
+            />
+          </FieldWrapper>
+        )}
+      />
+      {/* State */}
+      <Controller
+        name="state"
+        control={control}
+        render={({ field }) => (
+          <FieldWrapper label="State">
+            <Dropdown
+              value={field.value}
+              onChange={field.onChange}
+              options={statesDropdownOptions}
+              placeholder={profile.state}
+              variant="borderless"
+            />
+          </FieldWrapper>
+        )}
+      />
+      {/* Veteran Status */}
+      <Controller
+        name="veteran_status"
+        control={control}
+        render={({ field }) => (
+          <FieldWrapper label="Veteran Status">
+            <Dropdown
+              value={field.value}
+              onChange={field.onChange}
+              options={VETERAN_OPTIONS}
+              placeholder={
+                profile.veteran_status
+                  ? 'Yes, I am a veteran'
+                  : 'No, I am not a veteran'
+              }
+              variant="borderless"
+            />
+          </FieldWrapper>
         )}
       />
 
-      <div className="flex flex-col gap-1">
-        <label htmlFor="state" className="text-sm text-gray-700">
-          State
-        </label>
-        <Controller
-          name="state"
-          control={control}
-          render={({ field }) => (
-            <Select
-              {...field}
-              options={statesDropdownOptions}
-              placeholder="Select a state"
-              className="text-sm"
-            />
-          )}
-        />
+      {error && <p className="text-sm text-red-600">{error}</p>}
+
+      <div className="flex justify-end pt-1">
+        <button
+          type="submit"
+          disabled={loading}
+          className="rounded-[10px] bg-black px-8 py-2.5 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-50"
+        >
+          {loading ? 'Saving...' : 'Confirm'}
+        </button>
       </div>
-
-      <label className="flex items-center gap-2">
-        <Controller
-          name="veteran_status"
-          control={control}
-          render={({ field }) => (
-            <Checkbox
-              checked={!!field.value}
-              onChange={e => field.onChange(e.target.checked)}
-            />
-          )}
-        />
-        Veteran
-      </label>
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="rounded bg-blue-500 p-2 text-white hover:bg-blue-600 disabled:opacity-50"
-      >
-        {loading ? 'Saving...' : 'Save'}
-      </button>
-
-      {success && <p className="text-green-600">Profile updated!</p>}
-      {error && <p className="text-red-600">{error}</p>}
     </form>
   );
 }

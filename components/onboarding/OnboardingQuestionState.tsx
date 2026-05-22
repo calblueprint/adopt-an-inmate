@@ -25,7 +25,7 @@ export default function OnboardingQuestionState() {
   });
 
   const onSubmit = ({ state: stateOption }: StateForm) => {
-    const state = stateOption.value;
+    const state = stateOption.value.toLowerCase();
     setOnboardingInfo(prev => ({ ...prev, state }));
     nextQuestion();
   };

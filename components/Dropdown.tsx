@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { SlArrowDown } from 'react-icons/sl';
+import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
-interface Option {
+export interface Option {
   label: string;
   value: string;
 }
@@ -14,13 +15,31 @@ interface DropdownProps {
   onChange: (value: string) => void;
   options: Option[];
   placeholder?: string;
+  variant?: 'default' | 'borderless';
 }
+
+const dropdownStyles = cva('', {
+  variants: {
+    variant: {
+      default:
+        'flex w-full items-center justify-between rounded-lg border border-red-12 px-3 py-2 text-sm transition-colors',
+
+      borderless:
+        'flex w-full items-center justify-between bg-transparent pl-1 text-sm text-black border-none outline-none shadow-none',
+    },
+  },
+
+  defaultVariants: {
+    variant: 'default',
+  },
+});
 
 export default function Dropdown({
   value,
   onChange,
   options,
   placeholder = 'Select...',
+  variant = 'default',
 }: DropdownProps) {
   const [open, setOpen] = useState(false);
 
@@ -31,7 +50,7 @@ export default function Dropdown({
       <button
         type="button"
         onClick={() => setOpen(prev => !prev)}
-        className="flex w-full items-center justify-between rounded-lg border border-red-12 px-3 py-2 text-sm transition-colors"
+        className={dropdownStyles({ variant })}
       >
         <span className={value ? 'text-gray-12' : 'text-gray-10'}>
           {selected?.label || placeholder}

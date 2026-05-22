@@ -13,9 +13,7 @@ export const checkCreationConstraints = async (user: User) => {
   const supabase = await getSupabaseServerClient();
 
   const { data: profile, error: getProfileError } = await supabase
-    .from('adopter_profiles')
-    .select()
-    .eq('user_id', user.id)
+    .rpc('get_profile_full', { id: user.id })
     .maybeSingle();
 
   if (getProfileError) {
@@ -68,7 +66,8 @@ export const checkCreationConstraints = async (user: User) => {
 
   // constraint: check number of active adoptees
   const numActiveApps = appsData.filter(app => app.status === 'ACTIVE').length;
-  const totalActiveAdoptees = numActiveApps + (profile.num_past_active || 0);
+  const totalActiveAdoptees =
+    numActiveApps + (profile.num_external_active || 0);
 
   if (totalActiveAdoptees >= 2) {
     return {
@@ -111,7 +110,11 @@ export const checkCreationConstraints = async (user: User) => {
       };
     }
 
+    // constraint: time check (if submitted)
     if (!app.time_submitted) continue;
+
+    // skip if app should reapply
+    if (app.status === 'REAPPLY') continue;
 
     // constraint: 6mo recent
     const submittedTime = new Date(app.time_submitted);

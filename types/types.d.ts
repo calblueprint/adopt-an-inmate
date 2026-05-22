@@ -3,8 +3,6 @@ export interface ApplicationState {
   form: Partial<FormState>;
   matches: string[] | null;
   selectedMatch: string | null;
-  stillInCorrespondence: boolean;
-  rankedMatches: string[] | null;
 }
 
 export interface FormState {
@@ -25,4 +23,8 @@ export interface OnboardingInfo {
   pronouns: string;
   state: string;
   isVeteran: boolean;
+  adoptedBefore: boolean;
+  stillActive: boolean;
+  numPastActive?: number;
+  pastInactiveReason?: string;
 }

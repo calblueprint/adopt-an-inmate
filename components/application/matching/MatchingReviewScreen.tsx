@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/Button';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { useApplicationNavigation } from '@/hooks/app-process';
+import { useAppProcess } from '@/hooks/app-process';
 import useMediaQuery from '@/hooks/useMediaQuery';
 import { ApplicationStage } from '@/types/enums';
 import { RankedAdopteeMatch } from '@/types/schema';
@@ -27,16 +27,12 @@ export default function MatchingReviewScreen({
     null,
   );
   const isMobile = useMediaQuery('(max-width: 640px)');
-  const { advanceToStage, upsertAppInfo } = useApplicationNavigation();
+  const { advanceToStage, submitApp } = useAppProcess();
 
   const nextStage = async () => {
     setIsLoading(true);
 
-    upsertAppInfo({
-      status: 'PENDING',
-      ranked_cards: ranks, // upsert only IDs
-      time_submitted: new Date().toISOString(),
-    });
+    submitApp(ranks);
 
     advanceToStage(ApplicationStage.SUBMITTED);
     setIsLoading(false);

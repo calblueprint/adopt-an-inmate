@@ -37,9 +37,10 @@ def upsert_embeddings(data: list, batch_size=64):
             metadata = {k: row.get(k, "") for k in [
                 "first_name", "last_name", "bio", "gender", 
                 "dob", "veteran_status", "state", 
-                "inmate_id", "formerly_adopted"  # new field
+                "inmate_id", "formerly_adopted", "facility_id"  # added facility
             ]}
             records.append((ids[j], embeddings[j], metadata))
+        print(f"Sample record metadata: {records[0][2]}")
 
         try:
             adoptee_vector_collection.upsert(records)

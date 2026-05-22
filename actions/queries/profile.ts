@@ -1,20 +1,40 @@
 'use server';
 
 import { getSupabaseServerClient } from '@/lib/supabase';
+import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
 import { Profile } from '@/types/schema';
+import Logger from '../logging';
 
-export async function upsertProfile(profile: Profile) {
+export async function upsertProfile(profile: Profile, num_ext: number) {
   const supabase = await getSupabaseServerClient();
+  const supabaseService = await dangerous_getSupabaseServiceClient();
 
-  const { data, error } = await supabase
+  // upsert general app
+  const { error: upsertAppError } = await supabase
     .from('adopter_profiles')
-    .upsert(profile)
-    .select()
-    .single();
+    .upsert(profile);
 
-  if (error) throw new Error(`Error upserting profile data: ${error.message}`);
+  if (upsertAppError) {
+    Logger.error(`Error upserting profile data: ${upsertAppError.message}`);
+    return { error: 'An unexpected error occurred.' };
+  }
 
-  return data;
+  // upsert num past active
+  const { error: upsertNumPastActiveError } = await supabaseService
+    .from('adopter_num_external_active')
+    .upsert({
+      adopter_uuid: profile.user_id,
+      num_external_active: num_ext ?? 0,
+    });
+
+  if (upsertNumPastActiveError) {
+    Logger.error(
+      `Error upserting num past inactive: ${upsertNumPastActiveError.message}`,
+    );
+    return { error: 'An unexpected error occurred.' };
+  }
+
+  return { error: null };
 }
 
 export async function fetchProfileById(userId: string) {

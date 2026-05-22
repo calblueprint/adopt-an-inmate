@@ -8,7 +8,7 @@ import ErrorMessage from '@/components/ErrorMessage';
 import QuestionBack from '@/components/questions/QuestionBack';
 import RadioCard from '@/components/RadioCard';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
-import { useApplicationNavigation } from '@/hooks/app-process';
+import { useAppProcess } from '@/hooks/app-process';
 import { useQuestionNavigaton } from '@/hooks/questions';
 
 const genderPrefFormSchema = z.object({
@@ -21,7 +21,7 @@ const genderPrefFormSchema = z.object({
 export default function MainQuestionGender() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
-  const { upsertAppInfo } = useApplicationNavigation();
+  const { upsertAppInfo } = useAppProcess();
 
   const {
     register,

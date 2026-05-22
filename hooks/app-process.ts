@@ -9,10 +9,10 @@ import { ApplicationStage } from '@/types/enums';
 import { AdopterApplicationUpdate } from '@/types/schema';
 
 /**
- * Hook that returns helper functions related to navigation
- * within the adopter application process.
+ * Hook that returns helper functions related to
+ * the adopter application process.
  */
-export const useApplicationNavigation = () => {
+export const useAppProcess = () => {
   const router = useRouter();
   const { appState, appStage } = useApplicationContext();
   const { userId } = useAuth();
@@ -27,15 +27,19 @@ export const useApplicationNavigation = () => {
   };
 
   /**
-   * Helper function to validate user id, app id,
-   * and then upsert their application responses
+   * Helper function to validate user id and app state
+   * before upserting main app response
    */
   const upsertAppInfo = async (app: AdopterApplicationUpdate) => {
     try {
       if (!userId) {
-        Logger.error('Updating Application Info: missing userId');
+        Logger.error('Error updating application info: missing userId');
         return;
       }
+
+      // ignore upserts if matches are set
+      if (appState.matches) return;
+
       await upsertApplication({
         adopter_uuid: userId,
         app_uuid: appState.appId,
@@ -46,5 +50,28 @@ export const useApplicationNavigation = () => {
     }
   };
 
-  return { advanceToStage, upsertAppInfo };
+  /**
+   * Uses logged in user ID and application in context.
+   * Takes a ranked order of adoptee IDs and submits the application.
+   */
+  const submitApp = async (ranks: string[]) => {
+    try {
+      if (!userId) {
+        Logger.error('Error updating application info: missing userId');
+        return;
+      }
+
+      await upsertApplication({
+        adopter_uuid: userId,
+        app_uuid: appState.appId,
+        status: 'PENDING',
+        ranked_cards: ranks,
+        time_submitted: new Date().toISOString(),
+      });
+    } catch (error) {
+      Logger.error(`Failed to save application: ${String(error)}`);
+    }
+  };
+
+  return { advanceToStage, upsertAppInfo, submitApp };
 };

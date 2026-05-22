@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button, ButtonLink } from '@/components/Button';
+import { Button } from '@/components/Button';
 import RadioCard from '@/components/RadioCard';
 import { useQuestionsContext } from '@/contexts/QuestionsContext';
 import IneligiblePopup from './IneligiblePopup';

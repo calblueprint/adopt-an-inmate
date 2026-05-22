@@ -1,7 +1,7 @@
-// import EditProfileForm from 'components/EditProfilePage.tsx';
-import EditProfileForm from '@/components/EditProfilePage';
+import EditProfileForm from '@/components/profile/EditProfileForm';
 import { Profile } from '@/types/schema';
-import EditProfilePage from './page';
+
+//import EditProfilePage from '@/components/profile/EditProfilePage';
 
 interface EditProfileModalProps {
   profileData: Profile;

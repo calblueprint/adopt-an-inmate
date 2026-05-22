@@ -6,8 +6,8 @@ import Select from 'react-select';
 import { statesDropdownOptions } from '@/data/states';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 import { Profile } from '@/types/schema';
-import Checkbox from './Checkbox';
-import { Textbox } from './Textbox';
+import Checkbox from '../Checkbox';
+import { Textbox } from '../Textbox';
 
 interface EditProfileFormProps {
   profile: Profile;

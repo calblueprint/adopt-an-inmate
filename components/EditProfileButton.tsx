@@ -7,7 +7,7 @@ export default function EditProfileButton() {
   const router = useRouter();
 
   const handleEditProfile = () => {
-    router.push('/profile/edit');
+    router.push('/profile'); //uhh
   };
 
   return (

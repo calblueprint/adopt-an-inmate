@@ -3,12 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 import { expect, test } from 'vitest';
 import { loadEnvironment } from '@/lib/test-utils';
 
+loadEnvironment();
 const run = process.env.RUN_FIND_TOP_K_INTEGRATION === '1';
 
 test.skipIf(!run)(
-  'find_top_k_filtered matches TestTopK-style inputs',
+  'find_top_k_filtered_new matches TestTopK-style inputs',
   async () => {
-    loadEnvironment();
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key =
       process.env.SUPABASE_SERVICE_ROLE_KEY ??
@@ -26,7 +26,7 @@ test.skipIf(!run)(
     const adopter_age_pref: [number, number] = [18, 70];
 
     const supabase = createClient<Database>(url, key);
-    const { data, error } = await supabase.rpc('find_top_k_filtered', {
+    const { data, error } = await supabase.rpc('find_top_k_filtered_new', {
       query_embedding: JSON.stringify(embedding),
       k: k_value,
       adopter_gender: gender,

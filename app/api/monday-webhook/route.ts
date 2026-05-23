@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ data });
   }
 
+  console.log("HERE'S THE ACTUAL STATUS:", status);
   // if status is PENDING_CONFIRMATION, find and store matched adoptee
   if (status === 'PENDING_CONFIRMATION') {
     // fetch the application to get its app_uuid
@@ -87,7 +88,18 @@ export async function POST(request: NextRequest) {
       Logger.error(
         `Error finding matched adoptee for app ${appData.app_uuid}: ${matchError}`,
       );
-      return Response.json({ data });
+      return new Response(
+        JSON.stringify({
+          data,
+          success: false,
+          severityCode: 4000,
+          notificationErrorTitle: 'Failed to fetch match',
+          notificationErrorDescription:
+            "Couldn't identify which adoptee was matched. Did you update the adoptee's status?",
+          runtimeErrorDescription: 'Webhook failed to identify matched adoptee',
+        }),
+        { status: 404 },
+      );
     }
 
     const { matchedAdopteeId, unmatchedAdopteeIds } = matchResult;
@@ -152,22 +164,6 @@ export async function POST(request: NextRequest) {
       `Successfully processed PENDING_CONFIRMATION for app ${appData.app_uuid}. Matched: ${matchedAdopteeId}, Unmatched: ${unmatchedAdopteeIds}`,
     );
   }
-
-  // // send error notification
-  // const errorPayload = {
-  //   success: false,
-  //   severityCode: 4000,
-  //   notificationErrorTitle: 'Failed to update status',
-  //   notificationErrorDescription:
-  //     "Couldn't identify which adoptee was matched. Did you update the adoptee's status?",
-  //   runtimeErrorDescription: 'Webhook failed to identify matched adoptee',
-  // };
-
-  // // respond to received
-  // const resp = new Response(JSON.stringify(errorPayload), {
-  //   status: 404,
-  //   statusText: 'Not Found',
-  // });
 
   return Response.json({ data });
 }

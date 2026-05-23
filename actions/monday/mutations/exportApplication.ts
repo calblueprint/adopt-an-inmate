@@ -208,7 +208,7 @@ const getQueryCreateSubItem = (
       status: 'status',
       gender_preference: 'status2__1',
       match_list_links: 'connect_boards1__1',
-      age_pref: 'long_text__1',
+      bio_and_age: 'long_text__1',
       order: 'long_text5__1',
       date_received: 'date__1',
     },
@@ -218,7 +218,7 @@ const getQueryCreateSubItem = (
       match_list_links: { item_ids: appData.ranked_cards },
       // request notes column: age preference (or "none" if not set) prepended
       // to the adopter bio, e.g. "age preference: 45-78, bio: ..."
-      age_pref: `age preference: ${
+      bio_and_age: `age preference: ${
         appData.age_pref && appData.age_pref.length === 2
           ? `${appData.age_pref[0]}-${appData.age_pref[1]}`
           : 'none'
@@ -290,11 +290,11 @@ const exportApplication = async (appId: string) => {
     return { success: false, error: 'Failed to fetch adoptees.' };
   }
 
-  // check if main item already exists on monday
-  let mainItemId = appData.adopter_monday_id;
+  // check if main item (adopter profile) already exists on monday
+  let mainItemId = appData.monday_id;
 
   // if main item doesn't exist, create it
-  if (!appData.adopter_monday_id) {
+  if (!appData.monday_id) {
     const createMainItemQuery = getQueryCreateMainItem(appData, user.email);
 
     const response = await mondayApiClient.request(createMainItemQuery);

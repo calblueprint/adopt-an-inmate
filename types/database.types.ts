@@ -432,18 +432,19 @@ export type Database = {
       get_user_and_application: {
         Args: { app_id: string }
         Returns: {
-          adopter_monday_id: string
+          age_pref: number[]
           date_of_birth: string
           exported_to_monday: boolean
           first_name: string
           gender_pref: string
           last_name: string
+          monday_id: string
           personal_bio: string
           pronouns: string
           ranked_cards: string[]
           state: string
           user_id: string
-          veteran_status: string
+          veteran_status: boolean
         }[]
       }
       transfer_tables: { Args: never; Returns: undefined }

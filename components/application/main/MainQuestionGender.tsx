@@ -1,8 +1,11 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
+import xIcon from '@/assets/images/x.svg';
 import { Button } from '@/components/Button';
 import ErrorMessage from '@/components/ErrorMessage';
 import QuestionBack from '@/components/questions/QuestionBack';
@@ -22,6 +25,7 @@ export default function MainQuestionGender() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
   const { upsertAppInfo } = useAppProcess();
+  const router = useRouter();
 
   const {
     register,
@@ -47,40 +51,50 @@ export default function MainQuestionGender() {
   };
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-      <header className="flex flex-col gap-2">
-        <h1>
-          Do you have a gender preference?
-          <sup className="text-red-600">*</sup>
-        </h1>
-      </header>
+    <div>
+      <button
+        type="button"
+        onClick={() => router.push('/app')}
+        className="fixed top-[8.5vh] right-[9.5vh] cursor-pointer"
+      >
+        <Image src={xIcon} alt="Close" />
+      </button>
 
-      <div className="flex flex-col gap-4">
-        <ErrorMessage
-          className="w-full"
-          error={errors.genderPreference?.message}
-        />
-        <div className="mb-[8vh] flex flex-col gap-1">
-          <div className="flex flex-col gap-2">
-            <RadioCard value="male" {...register('genderPreference')}>
-              <p>Male</p>
-            </RadioCard>
-            <RadioCard value="female" {...register('genderPreference')}>
-              <p>Female</p>
-            </RadioCard>
-            <RadioCard value="no_preference" {...register('genderPreference')}>
-              <p>No preference</p>
-            </RadioCard>
+      <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+        <header className="flex flex-col gap-2">
+          <h1>Do you have a gender preference?</h1>
+        </header>
+
+        <div className="flex flex-col gap-4">
+          <ErrorMessage
+            className="w-full"
+            error={errors.genderPreference?.message}
+          />
+          <div className="mb-[8vh] flex flex-col gap-1">
+            <div className="flex flex-col gap-2">
+              <RadioCard value="male" {...register('genderPreference')}>
+                <p>Male</p>
+              </RadioCard>
+              <RadioCard value="female" {...register('genderPreference')}>
+                <p>Female</p>
+              </RadioCard>
+              <RadioCard
+                value="no_preference"
+                {...register('genderPreference')}
+              >
+                <p>No preference</p>
+              </RadioCard>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="flex items-center justify-between">
-        <QuestionBack />
-        <Button variant="quaternary" type="submit">
-          Next
-        </Button>
-      </div>
-    </form>
+        <div className="flex items-center justify-between">
+          <QuestionBack />
+          <Button variant="quaternary" type="submit">
+            Next
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 }

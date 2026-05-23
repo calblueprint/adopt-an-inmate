@@ -2,7 +2,9 @@
 
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
+import xIcon from '@/assets/images/x.svg';
 import { Button, ButtonLink } from '@/components/Button';
 import RadioCard from '@/components/RadioCard';
 import { useQuestionsContext } from '@/contexts/QuestionsContext';
@@ -63,6 +65,14 @@ export default function QuestionIncarcerated() {
 
   return (
     <>
+      <button
+        type="button"
+        onClick={() => router.push('/app')}
+        className="fixed top-[8.5vh] right-[9.5vh] cursor-pointer"
+      >
+        <Image src={xIcon} alt="Close" />
+      </button>
+
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <header className="flex flex-col gap-2">
           <h1>Are you currently incarcerated?</h1>
@@ -75,7 +85,7 @@ export default function QuestionIncarcerated() {
         <div className="space-y-2">
           <p className="text-sm text-gray-11">Select one</p>
 
-          <div className="flex flex-col gap-2">
+          <div className="mb-[10vh] flex flex-col gap-2">
             <RadioCard value="true" {...register('isIncarcerated')}>
               <p>Yes</p>
             </RadioCard>
@@ -89,7 +99,7 @@ export default function QuestionIncarcerated() {
           <ButtonLink href="/" variant="secondary" type="button">
             Back
           </ButtonLink>
-          <Button variant="primary" type="submit">
+          <Button variant="quaternary" type="submit">
             Next
           </Button>
         </div>

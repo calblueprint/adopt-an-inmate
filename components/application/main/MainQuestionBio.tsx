@@ -1,6 +1,9 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import xIcon from '@/assets/images/x.svg';
 import { Button } from '@/components/Button';
 import { TextArea } from '@/components/TextArea';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
@@ -15,6 +18,7 @@ export default function MainQuestionBio() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
   const { upsertAppInfo } = useAppProcess();
+  const router = useRouter();
 
   const {
     register,
@@ -31,59 +35,69 @@ export default function MainQuestionBio() {
 
   const onSubmit = async ({ bio }: BioForm) => {
     setAppState(prev => ({ ...prev, form: { ...prev.form, bio } }));
-    upsertAppInfo({ personal_bio: bio });
+    upsertAppInfo({ personal_bio: bio }); //new upsert helper
     nextQuestion();
   };
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex flex-col gap-1">
-        <header className="flex flex-col gap-2">
-          <h1>Enter your bio</h1>
+    <>
+      <button
+        type="button"
+        onClick={() => router.push('/app')}
+        className="fixed top-[8.5vh] right-[9.5vh] cursor-pointer"
+      >
+        <Image src={xIcon} alt="Close" />
+      </button>
 
-          <label htmlFor="bio" className="text-sm text-gray-11">
-            This information will be used for matching you with adoptees.
-            Minimum 350 characters, maximum 750 characters.
-          </label>
-        </header>
+      <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-col gap-1">
+          <header className="flex flex-col gap-2">
+            <h1>Enter your bio</h1>
 
-        <div className="flex items-center justify-between text-sm">
-          <span className={errors.bio ? 'text-red-600' : 'text-gray-500'}>
-            {errors.bio?.message}
-          </span>
+            <label htmlFor="bio" className="text-sm text-gray-11">
+              This information will be used for matching you with adoptees.
+              Minimum 350 characters, maximum 750 characters.
+            </label>
+          </header>
+
+          <div className="flex items-center justify-between text-sm">
+            <span className={errors.bio ? 'text-red-600' : 'text-gray-500'}>
+              {errors.bio?.message}
+            </span>
+          </div>
         </div>
-      </div>
 
-      <div className="mb-[10vh] flex flex-col gap-4">
-        <div className="flex flex-col">
-          <TextArea
-            id="bio"
-            placeholder="Ex. I love eating food, traveling, lorem ipsum..."
-            {...register('bio', {
-              required: 'Bio is required',
-              minLength: {
-                value: 350,
-                message: 'Must be at least 350 characters',
-              },
-              maxLength: {
-                value: 750,
-                message: 'Must be 750 characters or less',
-              },
-            })}
-          />
-          <span className="text-[10px] font-normal text-gray-11">
-            {bioValue.length}/750 characters
-          </span>
+        <div className="mb-[10vh] flex flex-col gap-4">
+          <div className="flex flex-col">
+            <TextArea
+              id="bio"
+              placeholder="Ex. I love eating food, traveling, lorem ipsum..."
+              {...register('bio', {
+                required: 'Bio is required',
+                minLength: {
+                  value: 350,
+                  message: 'Must be at least 350 characters',
+                },
+                maxLength: {
+                  value: 750,
+                  message: 'Must be 750 characters or less',
+                },
+              })}
+            />
+            <span className="text-[10px] font-normal text-gray-11">
+              {bioValue.length}/750 characters
+            </span>
+          </div>
         </div>
-      </div>
 
-      <div className="flex items-center justify-between">
-        <div />
+        <div className="flex items-center justify-between">
+          <div />
 
-        <Button variant="quaternary" type="submit">
-          Next
-        </Button>
-      </div>
-    </form>
+          <Button variant="quaternary" type="submit">
+            Next
+          </Button>
+        </div>
+      </form>
+    </>
   );
 }

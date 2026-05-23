@@ -8,7 +8,13 @@ import { fetchTopK } from '../queries/query';
 
 assertEnvVarExists('HF_TOKEN');
 
-///finds matches
+/**
+ * Takes in an application ID and finds four matches
+ * based on the application bio stored on the database.
+ *
+ * Returns existing matches if the application already has matches.
+ * Errors if the application bio does not exist.
+ */
 export const findMatches = async (appId: string) => {
   // check if app id already has matches
   const supabase = await getSupabaseServerClient();

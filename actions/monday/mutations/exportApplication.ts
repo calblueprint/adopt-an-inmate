@@ -359,7 +359,7 @@ const exportApplication = async (appId: string) => {
   const supplementaryQuery = `
     mutation {
       ${createSubitemQuery},
-      ${updateAdopteesQuery}
+      ${updateAdopteesQuery.data}
     }
   `;
 

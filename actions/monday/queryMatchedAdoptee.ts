@@ -118,10 +118,6 @@ export async function queryMatchedAdoptees(
     .eq('app_uuid', applicationId)
     .maybeSingle();
 
-  console.log('[queryMatchedAdoptees] applicationId:', applicationId);
-  console.log('[queryMatchedAdoptees] appData:', JSON.stringify(appData));
-  console.log('[queryMatchedAdoptees] error:', error);
-
   if (error) throw new Error(`Failed to fetch ranked_cards: ${error.message}`);
 
   if (!appData) {

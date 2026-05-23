@@ -62,7 +62,6 @@ export async function POST(request: NextRequest) {
     return Response.json({ data });
   }
 
-  console.log("HERE'S THE ACTUAL STATUS:", status);
   // if status is PENDING_CONFIRMATION, find and store matched adoptee
   if (status === 'PENDING_CONFIRMATION') {
     // fetch the application to get its app_uuid
@@ -80,7 +79,6 @@ export async function POST(request: NextRequest) {
     }
 
     // call Niranjana's query to find matched adoptee
-    console.log("HERE'S THE APP ID:", appData.app_uuid);
     const { data: matchResult, error: matchError } = await queryMatchedAdoptees(
       appData.app_uuid,
     );

@@ -102,8 +102,7 @@ export const checkCreationConstraints = async (user: User) => {
   if (appsData.some(app => app.status === 'PENDING_CONFIRMATION')) {
     return {
       data: false,
-      error:
-        'You have a match waiting for your confirmation.',
+      error: 'You have a match waiting for your confirmation.',
     };
   }
 

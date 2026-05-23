@@ -55,7 +55,7 @@ export default function MainQuestionGender() {
       <button
         type="button"
         onClick={() => router.push('/app')}
-        className="fixed top-[8.5vh] right-[9.5vh] cursor-pointer"
+        className="fixed top-[7vh] right-[9.5vh] cursor-pointer"
       >
         <Image src={xIcon} alt="Close" />
       </button>

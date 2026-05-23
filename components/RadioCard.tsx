@@ -2,11 +2,8 @@
 
 import React, { useId } from 'react';
 
-// import { cn } from '@/lib/utils';
-
 export default function RadioCard({
   children,
-  // className,
   ...props
 }: Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'id'>) {
   const id = useId();

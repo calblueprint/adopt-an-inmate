@@ -44,7 +44,7 @@ export default function MainQuestionBio() {
       <button
         type="button"
         onClick={() => router.push('/app')}
-        className="fixed top-[8.5vh] right-[9.5vh] cursor-pointer"
+        className="fixed top-[7vh] right-[9.5vh] cursor-pointer"
       >
         <Image src={xIcon} alt="Close" />
       </button>
@@ -52,11 +52,11 @@ export default function MainQuestionBio() {
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-1">
           <header className="flex flex-col gap-2">
-            <h1>Enter your bio</h1>
+            <h1>What is your story?</h1>
 
             <label htmlFor="bio" className="text-sm text-gray-11">
-              This information will be used for matching you with adoptees.
-              Minimum 350 characters, maximum 750 characters.
+              This bio will be used for matching you with adoptees. Minimum 350
+              characters, maximum 750 characters.
             </label>
           </header>
 

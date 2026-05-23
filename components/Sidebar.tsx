@@ -17,10 +17,25 @@ import { ButtonLink } from './Button';
 import SidebarItem from './SidebarItem';
 
 const NAV_LINKS = [
-  { href: '/', label: 'Applications', icon: LuLayoutDashboard },
-  { href: '/?tab=history', label: 'History', icon: LuClock },
-  { href: '#', label: 'Donate', icon: LuHeart },
-  { href: '#', label: 'Learn More', icon: LuInfo },
+  {
+    href: '/',
+    label: 'Applications',
+    icon: LuLayoutDashboard,
+    external: false,
+  },
+  { href: '/?tab=history', label: 'History', icon: LuClock, external: false },
+  {
+    href: 'https://givebutter.com/zuB5RG',
+    label: 'Donate',
+    icon: LuHeart,
+    external: true,
+  },
+  {
+    href: 'https://adoptaninmate.org/adopting/',
+    label: 'Learn More',
+    icon: LuInfo,
+    external: true,
+  },
 ] as const;
 
 export default function Sidebar() {
@@ -50,13 +65,13 @@ export default function Sidebar() {
         <Logo variant="sidebar" />
       </Link>
 
-      {/* Greeting + notification bell */}
+      {/* Greeting */}
       <section className="flex w-53 flex-col gap-4">
         <p className="text-xl text-black/60">Hi {displayName}!</p>
 
         {/* Nav links */}
         <nav className="flex flex-1 flex-col gap-0.5">
-          {NAV_LINKS.map(({ href, label, icon: Icon }) => {
+          {NAV_LINKS.map(({ href, label, icon: Icon, external }) => {
             const active = isActive(label, href);
             return (
               <SidebarItem
@@ -64,6 +79,8 @@ export default function Sidebar() {
                 active={active}
                 label={label}
                 href={href}
+                target={external ? '_blank' : undefined}
+                rel={external ? 'noopener noreferrer' : undefined}
               >
                 <Icon className="h-5 w-5 shrink-0" />
               </SidebarItem>

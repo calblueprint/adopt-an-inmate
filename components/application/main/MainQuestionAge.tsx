@@ -47,14 +47,11 @@ const agePrefFormSchema = z
   )
   .refine(
     data => {
-      if (
-        data.hasAgePreference === 'yes' &&
-        data.minAge !== undefined &&
-        data.maxAge !== undefined
-      ) {
-        return data.minAge <= data.maxAge;
-      }
-      return true;
+      if (data.hasAgePreference !== 'yes') return true;
+
+      if (data.minAge == null || data.maxAge == null) return false;
+
+      return data.minAge <= data.maxAge;
     },
     {
       message: 'Minimum age cannot exceed maximum age.',
@@ -66,6 +63,7 @@ export default function MainQuestionAge() {
   const { appState, setAppState } = useApplicationContext();
   const { nextQuestion } = useQuestionNavigaton();
   const { upsertAppInfo } = useAppProcess();
+
   const router = useRouter();
 
   // Read saved values from appState first
@@ -126,20 +124,19 @@ export default function MainQuestionAge() {
       <button
         type="button"
         onClick={() => router.push('/app')}
-        className="fixed top-[8.5vh] right-[9.5vh] cursor-pointer"
+        className="fixed top-[7vh] right-[9.5vh] cursor-pointer"
       >
         <Image src={xIcon} alt="Close" />
       </button>
 
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-1">
-          <Image src={xIcon} alt="X icon" />
           <header className="flex flex-col gap-2">
             <h1>Do you have an age preference? </h1>
           </header>
         </div>
 
-        <div className="mb-15 flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           <RadioCard value="yes" {...register('hasAgePreference')}>
             <p>Yes</p>
           </RadioCard>
@@ -198,6 +195,11 @@ export default function MainQuestionAge() {
                         shouldValidate: true,
                       });
                     }}
+                    onKeyDown={e => {
+                      if (['-', 'e', 'E', '.', '+'].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                   ></Textbox>
                   {errors.minAge?.type === 'too_small' && (
                     <p className="text-sm text-red-600"> Minimum age is 18.</p>
@@ -233,6 +235,11 @@ export default function MainQuestionAge() {
                         setValue('maxAge', parsed, { shouldValidate: true });
                       } else {
                         setValue('maxAge', undefined, { shouldValidate: true });
+                      }
+                    }}
+                    onKeyDown={e => {
+                      if (['-', 'e', 'E', '.', '+'].includes(e.key)) {
+                        e.preventDefault();
                       }
                     }}
                   ></Textbox>

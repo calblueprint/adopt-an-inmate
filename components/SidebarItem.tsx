@@ -6,6 +6,8 @@ interface SidebarItemProps {
   href: string;
   active: boolean;
   children: React.ReactNode;
+  target?: string;
+  rel?: string;
 }
 
 const itemStyles = cva(
@@ -25,9 +27,16 @@ export default function SidebarItem({
   label,
   href,
   children,
+  target,
+  rel,
 }: SidebarItemProps) {
   return (
-    <Link href={href} className={itemStyles({ active })}>
+    <Link
+      href={href}
+      className={itemStyles({ active })}
+      target={target}
+      rel={rel}
+    >
       {children}
       <p className="text-xl">{label}</p>
     </Link>

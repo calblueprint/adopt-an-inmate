@@ -1,6 +1,6 @@
 'use server';
 
-import { getSupabaseServerClient } from '@/lib/supabase/server';
+import { dangerous_getSupabaseServiceClient } from '@/lib/supabase/service';
 import { assertEnvVarExists, getEnvVar } from '@/lib/utils';
 import Logger from '../logging';
 import { mondayApiClient } from './core';
@@ -111,7 +111,7 @@ async function validateItemIds(
 export async function queryMatchedAdoptees(
   applicationId: string,
 ): Promise<MatchedAdopteeResult> {
-  const supabase = await getSupabaseServerClient();
+  const supabase = await dangerous_getSupabaseServiceClient();
   const { data: appData, error } = await supabase
     .from('adopter_applications_dummy')
     .select('ranked_cards')
@@ -120,7 +120,12 @@ export async function queryMatchedAdoptees(
 
   if (error) throw new Error(`Failed to fetch ranked_cards: ${error.message}`);
 
-  const candidateIds: string[] = appData?.ranked_cards ?? [];
+  if (!appData) {
+    Logger.error(`Unable to find application info for ${applicationId}`);
+    throw new Error(`Unable to find application info for ${applicationId}`);
+  }
+
+  const candidateIds: string[] = appData.ranked_cards ?? [];
 
   if (candidateIds.length === 0) {
     Logger.warn(`No candidate IDs found for application ${applicationId}`);

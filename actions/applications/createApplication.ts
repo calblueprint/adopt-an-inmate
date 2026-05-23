@@ -98,6 +98,14 @@ export const checkCreationConstraints = async (user: User) => {
     };
   }
 
+  // constraint: has pending app awaiting confirmation
+  if (appsData.some(app => app.status === 'PENDING_CONFIRMATION')) {
+    return {
+      data: false,
+      error: 'You have a match waiting for your confirmation.',
+    };
+  }
+
   const now = new Date();
 
   for (const app of appsData) {

@@ -2,8 +2,10 @@
 
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button, ButtonLink } from '@/components/Button';
+import xIcon from '@/assets/images/x.svg';
+import { Button } from '@/components/Button';
 import RadioCard from '@/components/RadioCard';
 import { useQuestionsContext } from '@/contexts/QuestionsContext';
 import IneligiblePopup from './IneligiblePopup';
@@ -56,13 +58,27 @@ export default function QuestionSeekingRomance() {
     }
 
     // if not, continue to next question
-    setQuestionsCompleted(prev => (prev >= 1 ? prev : 1));
-    params.set('q', '1');
+    setQuestionsCompleted(prev => (prev >= 2 ? prev : 2));
+    params.set('q', '2');
+    router.push(`?${params.toString()}`);
+  };
+
+  const goBack = () => {
+    const params = new URLSearchParams(searchParams);
+    params.set('q', '0');
     router.push(`?${params.toString()}`);
   };
 
   return (
     <>
+      <button
+        type="button"
+        onClick={() => router.push('/app')}
+        className="fixed top-[8.5vh] right-[9.5vh] cursor-pointer"
+      >
+        <Image src={xIcon} alt="Close" />
+      </button>
+
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <header className="flex flex-col gap-2">
           <h1>Are you seeking romance?</h1>
@@ -75,7 +91,7 @@ export default function QuestionSeekingRomance() {
         <div className="space-y-2">
           <p className="text-sm text-gray-11">Select one</p>
 
-          <div className="flex flex-col gap-2">
+          <div className="mb-[10vh] flex flex-col gap-2">
             <RadioCard value="true" {...register('seekingRomance')}>
               <p>Yes</p>
             </RadioCard>
@@ -86,10 +102,10 @@ export default function QuestionSeekingRomance() {
         </div>
 
         <div className="flex justify-between">
-          <ButtonLink href="/" variant="secondary" type="button">
+          <Button onClick={goBack} variant="secondary" type="button">
             Back
-          </ButtonLink>
-          <Button variant="primary" type="submit">
+          </Button>
+          <Button variant="quaternary" type="submit">
             Next
           </Button>
         </div>

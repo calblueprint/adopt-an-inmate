@@ -339,7 +339,7 @@ const exportApplication = async (appId: string) => {
     adopteeData,
   );
 
-  let updateAdopteesQuery: string;
+  let updateAdopteesQuery;
   try {
     updateAdopteesQuery = await updateAdopteeMondayStatus(
       appData.ranked_cards as Array<string>,

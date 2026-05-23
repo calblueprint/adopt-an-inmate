@@ -19,6 +19,7 @@ export async function fetchTopK(
   gender?: string,
   veteran_status?: string,
   state?: string,
+  adopter_age_pref?: number[],
 ): Promise<AdopteeMatch[]> {
   const supabaseService = await dangerous_getSupabaseServiceClient();
 
@@ -28,6 +29,7 @@ export async function fetchTopK(
     adopter_gender: gender,
     adopter_veteran_status: veteran_status,
     adopter_state: state,
+    ...(adopter_age_pref != null ? { adopter_age_pref } : {}),
   });
 
   if (error) {

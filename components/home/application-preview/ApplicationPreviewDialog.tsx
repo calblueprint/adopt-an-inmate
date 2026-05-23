@@ -53,7 +53,7 @@ export default function ApplicationPreviewDialog() {
       const { data, error } = await getApplicationWithAdoptees(previewId);
 
       if (error) {
-        console.log(
+        Logger.error(
           `Error fetching preview for application ID ${previewId}: ${error}`,
         );
         return;

@@ -338,26 +338,28 @@ const exportApplication = async (appId: string) => {
     mainItemId,
     adopteeData,
   );
-  const { data: updateAdopteesQuery, error: updateAdopteesFieldsError } =
-    await updateAdopteeMondayStatus(
+
+  let updateAdopteesQuery;
+  try {
+    updateAdopteesQuery = await updateAdopteeMondayStatus(
       appData.ranked_cards as Array<string>,
       'OFC',
     );
-
-  if (updateAdopteesFieldsError || updateAdopteesQuery === null) {
+  } catch (updateAdopteesError) {
     Logger.error(
-      `exportApplication: could not build Monday OFC status fields for app ${appId}: ${updateAdopteesFieldsError ?? 'null data'}`,
+      `exportApplication: could not build Monday OFC status fields for app ${appId}. ${updateAdopteesError}`,
     );
+
     return {
       success: false,
-      error: updateAdopteesFieldsError ?? 'An unexpected error occurred.',
+      error: 'An unexpected error occurred.',
     };
   }
 
   const supplementaryQuery = `
     mutation {
       ${createSubitemQuery},
-      ${updateAdopteesQuery}
+      ${updateAdopteesQuery.data}
     }
   `;
 

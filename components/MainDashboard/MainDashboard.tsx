@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { LuClock, LuLayoutDashboard } from 'react-icons/lu';
 import { useSearchParams } from 'next/navigation';
+import { getSupabaseBrowserClient } from '@/lib/supabase'; // new import
 import MainDashboardTabs from './MainDashboardTabs';
 import NewApplicationButton from './NewApplicationButton';
 
@@ -13,6 +14,57 @@ export default function MainDashboard() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isSliding, setIsSliding] = useState(false);
+
+  // new: stats for history snackbar
+  const [portalApps, setPortalApps] = useState<number>(0);
+  const [externalApps, setExternalApps] = useState<number>(0);
+  const [totalApps, setTotalApps] = useState<number>(0);
+
+  // new: fetch history stats
+  useEffect(() => {
+    const fetchHistoryStats = async () => {
+      const supabase = getSupabaseBrowserClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // fetch portal (inactive) applications count
+      const { data: apps } = await supabase
+        .from('adopter_applications_dummy')
+        .select('*')
+        .eq('adopter_uuid', user.id);
+
+      const inactiveApps = (apps ?? []).filter(
+        app =>
+          app.status === 'REJECTED' ||
+          app.status === 'ENDED' ||
+          app.status === 'REAPPLY',
+      );
+      setPortalApps(inactiveApps.length);
+
+      // fetch external applications count
+      const { data: externalData } = await supabase
+        .from('adopter_num_external_active')
+        .select('num_external_active')
+        .eq('adopter_uuid', user.id)
+        .maybeSingle();
+
+      const external = externalData?.num_external_active ?? 0;
+      setExternalApps(external);
+
+      // fetch total from app_counter
+      const { data: counterData } = await supabase
+        .from('app_counter')
+        .select('last_app_num')
+        .eq('adopter_uuid', user.id)
+        .maybeSingle();
+
+      setTotalApps(counterData?.last_app_num ?? inactiveApps.length + external);
+    };
+
+    fetchHistoryStats();
+  }, []);
 
   useEffect(() => {
     if (errorMessage) {
@@ -50,6 +102,54 @@ export default function MainDashboard() {
           </div>
         </div>
       </div>
+
+      {/* new: history snackbar panel, only shown on history tab */}
+      {showHistory && (
+        <div className="flex flex-col gap-3 px-16 pt-7">
+          <div className="flex w-full gap-4">
+            {/* Total Applications card */}
+            <div className="flex flex-1 flex-col gap-1 rounded-lg border border-gray-4 bg-white px-6 py-4">
+              <p className="text-xs tracking-wide text-gray-11 uppercase">
+                Total Applications
+              </p>
+              <p className="text-green-9 text-3xl">{totalApps}</p>
+              <p className="text-sm text-gray-11">All time, incl. offline</p>
+            </div>
+
+            {/* Portal Applications card */}
+            <div className="flex flex-1 flex-col gap-1 rounded-lg border border-gray-4 bg-white px-6 py-4">
+              <p className="text-xs tracking-wide text-gray-11 uppercase">
+                Portal Applications
+              </p>
+              <p className="text-3xl text-gray-12">{portalApps}</p>
+              <p className="text-sm text-gray-11">Via this platform</p>
+            </div>
+
+            {/* External Applications card */}
+            <div className="flex flex-1 flex-col gap-1 rounded-lg border border-gray-4 bg-white px-6 py-4">
+              <p className="text-xs tracking-wide text-gray-11 uppercase">
+                External Applications
+              </p>
+              <p className="text-3xl text-gray-12">{externalApps}</p>
+              <p className="text-sm text-gray-11">Pre-platform records</p>
+            </div>
+          </div>
+
+          {/* disclaimer message */}
+          <p className="text-sm text-gray-11">
+            We don&apos;t have adoptee info for matches made on external
+            platforms. Email{' '}
+            <a
+              href="mailto:adopt@adoptaninmate.org"
+              className="underline hover:text-gray-12"
+            >
+              adopt@adoptaninmate.org
+            </a>{' '}
+            if this number is inaccurate.
+          </p>
+        </div>
+      )}
+
       <div className="flex h-full w-full max-w-400 flex-row justify-end gap-7 px-16 py-7">
         <MainDashboardTabs />
       </div>

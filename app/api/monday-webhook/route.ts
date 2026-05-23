@@ -80,6 +80,7 @@ export async function POST(request: NextRequest) {
     }
 
     // call Niranjana's query to find matched adoptee
+    console.log("HERE'S THE APP ID:", appData.app_uuid);
     const { data: matchResult, error: matchError } = await queryMatchedAdoptees(
       appData.app_uuid,
     );

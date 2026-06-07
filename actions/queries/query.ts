@@ -19,15 +19,17 @@ export async function fetchTopK(
   gender?: string,
   veteran_status?: string,
   state?: string,
+  adopter_age_pref?: number[],
 ): Promise<AdopteeMatch[]> {
   const supabaseService = await dangerous_getSupabaseServiceClient();
 
-  const { data, error } = await supabaseService.rpc('find_top_k_filtered', {
+  const { data, error } = await supabaseService.rpc('find_top_k_filtered_new', {
     query_embedding: JSON.stringify(embedding),
     k: k_value,
     adopter_gender: gender,
     adopter_veteran_status: veteran_status,
     adopter_state: state,
+    ...(adopter_age_pref != null ? { adopter_age_pref } : {}),
   });
 
   if (error) {

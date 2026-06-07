@@ -13,7 +13,8 @@ export default function MatchingLoading() {
       <div className="flex flex-col gap-3">
         <h1 className="text-8">Matching you...</h1>
         <p className="font-golos text-sm text-gray-11">
-          We&apos;re now matching you with potential adoptees.
+          We&apos;re now matching you with potential adoptees. We&apos;ll try
+          our best to accommodate your preferences.
         </p>
       </div>
     </div>

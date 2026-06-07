@@ -52,6 +52,22 @@ export default function ForgotPassword() {
         case 'email_address_invalid':
           setError('email', { message: 'Invalid email.' });
           break;
+        case 'email_not_confirmed':
+          const supabase = getSupabaseBrowserClient();
+          const { error: resendError } = await supabase.auth.resend({
+            type: 'signup',
+            email,
+          });
+
+          if (resendError)
+            Logger.error(
+              `Error resending confirmation email: ${resendError.message}`,
+            );
+
+          router.push(
+            `/sign-up?type=check-email&email=${encodeURIComponent(email)}`,
+          );
+          break;
         default:
           setError('email', {
             message: 'An unexpected error occurred, please try again later.',
@@ -65,7 +81,9 @@ export default function ForgotPassword() {
       return;
     }
 
-    router.push(`?status=check-email&email=${email}`);
+    router.push(
+      `/forgot-password?status=check-email&email=${encodeURIComponent(email)}`,
+    );
   };
 
   const onSubmit = async ({ email }: ForgotPasswordForm) => {

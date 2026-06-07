@@ -5,6 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import { useOnboardingContext } from '@/contexts/OnboardingContext';
+import { endReasons } from '@/data/endCorrespondenceDropdown';
 import { useSubmitOnboarding } from '@/hooks/onboarding';
 import { useQuestionNavigaton } from '@/hooks/questions';
 import AsyncButton from '../AsyncButton';
@@ -12,13 +13,6 @@ import Dropdown from '../Dropdown';
 import QuestionBack from '../questions/QuestionBack';
 import RadioCard from '../RadioCard';
 import { Textbox } from '../Textbox';
-
-const WHY_OPTIONS = [
-  { label: 'Ended', value: 'ended' },
-  { label: 'Inmate Cancelled', value: 'inmate_cancelled' },
-  { label: 'NPO Cancelled', value: 'npo_cancelled' },
-  { label: 'Other', value: 'other' },
-];
 
 const adoptedBeforeSchema = z
   .object({
@@ -257,7 +251,7 @@ export default function OnboardingQuestionAdoptedBefore() {
                   <Dropdown
                     value={value ?? ''}
                     onChange={onChange}
-                    options={WHY_OPTIONS}
+                    options={endReasons}
                     placeholder="Select Reason..."
                   />
                 )}

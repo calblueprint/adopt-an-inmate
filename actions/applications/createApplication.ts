@@ -1,6 +1,7 @@
 'use server';
 
 import { User } from '@supabase/supabase-js';
+import { unacceptableEndReasons } from '@/data/endCorrespondenceDropdown';
 import { getSupabaseServerClient } from '@/lib/supabase';
 import Logger from '../logging';
 
@@ -45,7 +46,12 @@ export const checkCreationConstraints = async (user: User) => {
   }
 
   // constraint: invalid ended reason
-  if (profile.past_inactive_reason === 'NPO_CANCELLED') {
+  if (
+    profile.past_inactive_reason &&
+    unacceptableEndReasons.some(
+      reason => reason.value === profile.past_inactive_reason,
+    )
+  ) {
     return {
       data: false,
       error:

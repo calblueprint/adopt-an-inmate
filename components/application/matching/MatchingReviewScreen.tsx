@@ -32,7 +32,7 @@ export default function MatchingReviewScreen({
   const nextStage = async () => {
     setIsLoading(true);
 
-    submitApp(ranks);
+    await submitApp(ranks);
 
     advanceToStage(ApplicationStage.SUBMITTED);
     setIsLoading(false);

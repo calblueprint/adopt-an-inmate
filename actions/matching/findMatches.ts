@@ -72,6 +72,7 @@ export const findMatches = async (appId: string) => {
     appData.gender_pref ?? undefined,
     userProfile.veteran_status ? 'Yes' : 'No',
     userProfile.state,
+    appData.age_pref ?? undefined,
   );
 
   if (!matches) return { data: null, error: 'An unexpected error occurred' };

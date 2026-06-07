@@ -343,13 +343,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      debug_vector_test: {
-        Args: { k: number; query_embedding: string }
-        Returns: {
-          distance: number
-          id: string
-        }[]
-      }
       find_top_k: {
         Args: { k: number; query_embedding: string }
         Returns: {
@@ -366,6 +359,28 @@ export type Database = {
       }
       find_top_k_filtered: {
         Args: {
+          adopter_gender?: string
+          adopter_state?: string
+          adopter_veteran_status?: string
+          k: number
+          query_embedding: string
+        }
+        Returns: {
+          age: number
+          bio: string
+          embedding: string
+          first_name: string
+          gender: string
+          id: string
+          last_name: string
+          similarity: number
+          state: string
+          veteran_status: string
+        }[]
+      }
+      find_top_k_filtered_new: {
+        Args: {
+          adopter_age_pref?: number[]
           adopter_gender?: string
           adopter_state?: string
           adopter_veteran_status?: string

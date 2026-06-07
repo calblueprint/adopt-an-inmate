@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import Logo from '@/components/Logo';
 import { getSupabaseServerClient } from '@/lib/supabase';
@@ -21,7 +22,9 @@ export default async function MainLayout({
 
   return (
     <div className="flex size-full flex-col items-center gap-4">
-      <Logo />
+      <Link href="/">
+        <Logo />
+      </Link>
 
       {children}
 

@@ -203,6 +203,13 @@ const getQueryCreateSubItem = (
   const rankedCards = appData.ranked_cards as Array<string>;
   const rankedCardsOrder = rankedCards.map(c => adopteeMap[c]).join(', ');
 
+  const parsedBio = (appData.personal_bio ?? '')
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, "'")
+    .replace(/\n/g, ' ')
+    .replace(/\r/g, ' ')
+    .trim();
+
   const subItemColumnValues = parseColumns(
     {
       status: 'status',
@@ -222,7 +229,7 @@ const getQueryCreateSubItem = (
         appData.age_pref && appData.age_pref.length === 2
           ? `${appData.age_pref[0]}-${appData.age_pref[1]}`
           : 'none'
-      }, bio: ${appData.personal_bio}`,
+      }, bio: ${parsedBio}`,
       order: rankedCardsOrder,
       date_received: currentDateISOString,
     },
@@ -297,7 +304,13 @@ const exportApplication = async (appId: string) => {
   if (!appData.monday_id) {
     const createMainItemQuery = getQueryCreateMainItem(appData, user.email);
 
-    const response = await mondayApiClient.request(createMainItemQuery);
+    let response;
+    try {
+      response = await mondayApiClient.request(createMainItemQuery);
+    } catch (err) {
+      Logger.error(`Monday API error: ${JSON.stringify(err)}`);
+      return { success: false, error: 'Monday API request failed.' };
+    }
 
     // interpret response, get main item id
     try {

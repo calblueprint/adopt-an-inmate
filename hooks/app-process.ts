@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import Logger from '@/actions/logging';
+import exportApplication from '@/actions/monday/mutations/exportApplication';
 import { upsertApplication } from '@/actions/queries/query';
 import { useApplicationContext } from '@/contexts/ApplicationContext';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -61,6 +62,7 @@ export const useAppProcess = () => {
         return;
       }
 
+      // save the application on supabase
       await upsertApplication({
         adopter_uuid: userId,
         app_uuid: appState.appId,
@@ -70,6 +72,14 @@ export const useAppProcess = () => {
       });
     } catch (error) {
       Logger.error(`Failed to save application: ${String(error)}`);
+    }
+
+    // export the application to monday
+    const { success, error } = await exportApplication(appState.appId);
+
+    if (!success || error) {
+      Logger.error(`Application export failed: ${String(error)}`);
+      throw new Error(String(error));
     }
   };
 

@@ -5,10 +5,12 @@ import { useForm } from 'react-hook-form';
 import { LuEye, LuEyeOff } from 'react-icons/lu';
 import { useRouter } from 'next/navigation';
 import { loginWithEmailPassword } from '@/actions/auth';
+import Logger from '@/actions/logging';
 import { Button, ButtonLink } from '@/components/Button';
 import CustomLink from '@/components/CustomLink';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { Textbox } from '@/components/Textbox';
+import { getSupabaseBrowserClient } from '@/lib/supabase';
 
 interface LoginForm {
   email: string;
@@ -42,8 +44,21 @@ export default function LoginPage() {
             setAuthError('Email address not supported.');
             break;
           case 'email_not_confirmed':
-            setAuthError('Email not confirmed.');
-            break;
+            const supabase = getSupabaseBrowserClient();
+            const { error } = await supabase.auth.resend({
+              type: 'signup',
+              email,
+            });
+
+            if (error)
+              Logger.error(
+                `Error resending confirmation email: ${error.message}`,
+              );
+
+            router.push(
+              `/sign-up?type=check-email&email=${encodeURIComponent(email)}`,
+            );
+            return;
           case 'invalid_credentials':
             setAuthError('Either email or password is incorrect.');
             break;

@@ -53,7 +53,7 @@ export default function MainQuestionReview() {
       </div>
 
       {/* Scrollable Text Box*/}
-      <div className="flex-1 space-y-6 overflow-x-hidden overflow-y-auto break-words">
+      <div className="flex-1 space-y-6 overflow-x-hidden overflow-y-auto px-1 pr-2 break-words">
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-1">
             <p className="text-xs font-semibold text-gray-8">First Name</p>

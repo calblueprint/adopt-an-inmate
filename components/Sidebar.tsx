@@ -112,7 +112,7 @@ export default function Sidebar() {
 
         {/* Nav links */}
         <nav className="flex flex-1 flex-col gap-0.5">
-          {NAV_LINKS.map(({ href, label, icon: Icon }) => {
+          {NAV_LINKS.map(({ href, label, icon: Icon, external }) => {
             const active = isActive(label, href);
             return (
               <SidebarItem
@@ -120,6 +120,8 @@ export default function Sidebar() {
                 active={active}
                 label={label}
                 href={href}
+                target={external ? '_blank' : undefined}
+                rel={external ? 'noopener noreferrer' : undefined}
               >
                 <Icon className="h-5 w-5 shrink-0" />
               </SidebarItem>

@@ -61,15 +61,27 @@ export default function Sidebar() {
       href: '/',
       label: `Applications (${activeCount})`,
       icon: LuLayoutDashboard,
+      external: false,
     },
     {
       href: '/?tab=history',
       label: `History (${historyCount})`,
       icon: LuClock,
+      external: false,
     },
-    { href: '#', label: 'Donate', icon: LuHeart },
-    { href: '#', label: 'Learn More', icon: LuInfo },
-  ];
+    {
+      href: 'https://givebutter.com/zuB5RG',
+      label: 'Donate',
+      icon: LuHeart,
+      external: true,
+    },
+    {
+      href: 'https://adoptaninmate.org/adopting/',
+      label: 'Learn More',
+      icon: LuInfo,
+      external: true,
+    },
+  ] as const;
 
   const displayName = useMemo(
     () => profileData?.first_name || 'User',

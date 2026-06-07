@@ -15,12 +15,12 @@ export default function MainDashboard() {
   const [isVisible, setIsVisible] = useState(false);
   const [isSliding, setIsSliding] = useState(false);
 
-  // new: stats for history snackbar
+  // stats for history app counter snackbar
   const [portalApps, setPortalApps] = useState<number>(0);
   const [externalApps, setExternalApps] = useState<number>(0);
   const [totalApps, setTotalApps] = useState<number>(0);
 
-  // new: fetch history stats
+  // fetch history stats
   useEffect(() => {
     const fetchHistoryStats = async () => {
       const supabase = getSupabaseBrowserClient();
@@ -28,20 +28,6 @@ export default function MainDashboard() {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) return;
-
-      // fetch portal (inactive) applications count
-      const { data: apps } = await supabase
-        .from('adopter_applications_dummy')
-        .select('*')
-        .eq('adopter_uuid', user.id);
-
-      const inactiveApps = (apps ?? []).filter(
-        app =>
-          app.status === 'REJECTED' ||
-          app.status === 'ENDED' ||
-          app.status === 'REAPPLY',
-      );
-      setPortalApps(inactiveApps.length);
 
       // fetch external applications count
       const { data: externalData } = await supabase
@@ -59,8 +45,10 @@ export default function MainDashboard() {
         .select('last_app_num')
         .eq('adopter_uuid', user.id)
         .maybeSingle();
+      const portal = counterData?.last_app_num ?? 0;
+      setPortalApps(portal);
 
-      setTotalApps(counterData?.last_app_num ?? inactiveApps.length + external);
+      setTotalApps(external + portal);
     };
 
     fetchHistoryStats();

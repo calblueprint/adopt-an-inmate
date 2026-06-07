@@ -13,13 +13,11 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import Logo from '@/components/Logo';
 import LogoutButton from '@/components/MainDashboard/LogoutButton';
 import { useProfile } from '@/contexts/ProfileProvider';
-import { getSupabaseBrowserClient } from '@/lib/supabase'; // new import
-import { appIsActive } from '@/lib/utils'; // new import
-import { AdopterApplication } from '@/types/schema'; // new import
+import { getSupabaseBrowserClient } from '@/lib/supabase';
+import { appIsActive } from '@/lib/utils';
+import { AdopterApplication } from '@/types/schema';
 import { ButtonLink } from './Button';
 import SidebarItem from './SidebarItem';
-
-// NAV_LINKS moved inside component since it now uses state
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -27,11 +25,11 @@ export default function Sidebar() {
   const tab = searchParams.get('tab');
   const { profileData } = useProfile();
 
-  // new: counts for Applications and History
+  // counts for Applications and History
   const [activeCount, setActiveCount] = useState<number>(0);
   const [historyCount, setHistoryCount] = useState<number>(0);
 
-  // new: fetch application counts
+  // fetch application counts
   useEffect(() => {
     const fetchCounts = async () => {
       const supabase = getSupabaseBrowserClient();
@@ -58,7 +56,6 @@ export default function Sidebar() {
     fetchCounts();
   }, []);
 
-  // new: NAV_LINKS moved inside component and uses counts
   const NAV_LINKS = [
     {
       href: '/',
@@ -79,7 +76,7 @@ export default function Sidebar() {
     [profileData?.first_name],
   );
 
-  // new: isActive now checks for startsWith on Applications/History labels with counts
+  // isActive checks for startsWith on Applications/History labels with counts
   const isActive = (label: string, href: string) => {
     if (label.startsWith('Applications'))
       return (
@@ -97,8 +94,8 @@ export default function Sidebar() {
         <Logo variant="sidebar" />
       </Link>
 
-      {/* Greeting + notification bell */}
-      <section className="flex w-53 flex-col gap-4">
+      {/* Greeting */}
+      <section className="flex w-56 flex-col gap-4">
         <p className="text-xl text-black/60">Hi {displayName}!</p>
 
         {/* Nav links */}
